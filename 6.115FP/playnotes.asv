@@ -1,0 +1,9 @@
+function [notes] = playnotes()
+    notes = [];
+    freqs = [];
+    for i = 1:length(freqs)
+        f = fre
+        notes(i) = saxnotes(1, , 2317, 2372);
+    end
+    
+end
