@@ -7,13 +7,12 @@ function [beginning, middle, ending, freq] = playnotes()
     for i = 1:length(freqs)
         f = freqs(i)/392;
         [beginning, middle, ending, freq(i)] = saxnotes(f, 100, 2317, 2372, 10);
-        % pause(0.5);
-
+        pause(0.5);
     end
     % writematrix(transpose(freq), "freq");
-    % writematrix(beginning, "beginning");
-    % writematrix(middle, "middle");
-    % writematrix(ending, "ending");
-    periods = round(24000000*1./freq);
-    writematrix(transpose(periods), "periods");
+    writematrix(transpose(beginning), "waveforms/beginning");
+    writematrix(transpose(middle), "waveforms/middle");
+    writematrix(transpose(ending), "waveforms/ending");
+    % periods = round(24000000*1./freq);
+    % writematrix(transpose(periods), "periods");
 end
