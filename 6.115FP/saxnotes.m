@@ -9,6 +9,6 @@ function [beginning, continuation, ending, F] = saxnotes(f, n, x1, x2, v)
     plot(1:length(y), v*y)
     F = f*Fs;
     % Produce the sound file
-    sound(y/100, F);
+    % sound(y/100, F);
  end
 
