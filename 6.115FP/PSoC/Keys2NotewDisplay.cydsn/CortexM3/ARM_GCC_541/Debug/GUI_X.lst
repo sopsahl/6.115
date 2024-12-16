@@ -1,0 +1,1420 @@
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"GUI_X.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.GUI_X_Systick_Intr,"ax",%progbits
+  20              		.align	2
+  21              		.global	GUI_X_Systick_Intr
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	GUI_X_Systick_Intr, %function
+  25              	GUI_X_Systick_Intr:
+  26              	.LFB70:
+  27              		.file 1 "GUI_X.c"
+   1:GUI_X.c       **** /*********************************************************************
+   2:GUI_X.c       **** *                SEGGER Microcontroller GmbH & Co. KG                *
+   3:GUI_X.c       **** *        Solutions for real time microcontroller applications        *
+   4:GUI_X.c       **** **********************************************************************
+   5:GUI_X.c       **** *                                                                    *
+   6:GUI_X.c       **** *        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
+   7:GUI_X.c       **** *                                                                    *
+   8:GUI_X.c       **** *        Internet: www.segger.com    Support:  support@segger.com    *
+   9:GUI_X.c       **** *                                                                    *
+  10:GUI_X.c       **** **********************************************************************
+  11:GUI_X.c       **** 
+  12:GUI_X.c       **** ** emWin V5.46 - Graphical user interface for embedded applications **
+  13:GUI_X.c       **** All  Intellectual Property rights  in the Software belongs to  SEGGER.
+  14:GUI_X.c       **** emWin is protected by  international copyright laws.  Knowledge of the
+  15:GUI_X.c       **** source code may not be used to write a similar product.  This file may
+  16:GUI_X.c       **** only be used in accordance with the following terms:
+  17:GUI_X.c       **** 
+  18:GUI_X.c       **** The software  has been licensed to  Cypress Semiconductor Corporation,
+  19:GUI_X.c       **** whose registered  office is situated  at 198 Champion Ct. San Jose, CA 
+  20:GUI_X.c       **** 95134 USA  solely for the  purposes of creating  libraries for Cypress
+  21:GUI_X.c       **** PSoC3 and  PSoC5 processor-based devices,  sublicensed and distributed
+  22:GUI_X.c       **** under  the  terms  and  conditions  of  the  Cypress  End User License
+  23:GUI_X.c       **** Agreement.
+  24:GUI_X.c       **** Full source code is available at: www.segger.com
+  25:GUI_X.c       **** 
+  26:GUI_X.c       **** We appreciate your understanding and fairness.
+  27:GUI_X.c       **** ----------------------------------------------------------------------
+  28:GUI_X.c       **** Licensing information
+  29:GUI_X.c       **** Licensor:                 SEGGER Microcontroller Systems LLC
+  30:GUI_X.c       **** Licensed to:              Cypress Semiconductor Corp, 198 Champion Ct., San Jose, CA 95134, USA
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 2
+
+
+  31:GUI_X.c       **** Licensed SEGGER software: emWin
+  32:GUI_X.c       **** License number:           GUI-00319
+  33:GUI_X.c       **** License model:            Services and License Agreement, signed June 10th, 2009
+  34:GUI_X.c       **** Licensed platform:        Any Cypress platform (Initial targets are: PSoC3, PSoC5)
+  35:GUI_X.c       **** ----------------------------------------------------------------------
+  36:GUI_X.c       **** Support and Update Agreement (SUA)
+  37:GUI_X.c       **** SUA period:               2009-06-12 - 2022-07-27
+  38:GUI_X.c       **** Contact to extend SUA:    sales@segger.com
+  39:GUI_X.c       **** ----------------------------------------------------------------------
+  40:GUI_X.c       **** File        : GUI_X.C
+  41:GUI_X.c       **** Purpose     : Config / System dependent externals for GUI
+  42:GUI_X.c       **** ---------------------------END-OF-HEADER------------------------------
+  43:GUI_X.c       **** */
+  44:GUI_X.c       **** 
+  45:GUI_X.c       **** #include "GUI.h"
+  46:GUI_X.c       **** 
+  47:GUI_X.c       **** #include "project.h"
+  48:GUI_X.c       **** 
+  49:GUI_X.c       **** /*********************************************************************
+  50:GUI_X.c       **** *
+  51:GUI_X.c       **** *       Function Prototypes
+  52:GUI_X.c       **** */
+  53:GUI_X.c       **** void GUI_X_Systick_Init(void);
+  54:GUI_X.c       **** 
+  55:GUI_X.c       **** /*********************************************************************
+  56:GUI_X.c       **** *
+  57:GUI_X.c       **** *       Global data
+  58:GUI_X.c       **** */
+  59:GUI_X.c       **** volatile GUI_TIMER_TIME OS_TimeMS;
+  60:GUI_X.c       **** 
+  61:GUI_X.c       **** /*********************************************************************
+  62:GUI_X.c       **** *
+  63:GUI_X.c       **** *      Timing:
+  64:GUI_X.c       **** *                 GUI_X_GetTime()
+  65:GUI_X.c       **** *                 GUI_X_Delay(int)
+  66:GUI_X.c       **** *
+  67:GUI_X.c       **** *   Some timing dependent routines require a GetTime
+  68:GUI_X.c       **** *   and delay function. Default time unit (tick), normally is
+  69:GUI_X.c       **** *   1 ms.
+  70:GUI_X.c       **** */
+  71:GUI_X.c       **** 
+  72:GUI_X.c       **** GUI_TIMER_TIME GUI_X_GetTime(void) { 
+  73:GUI_X.c       ****   return OS_TimeMS; 
+  74:GUI_X.c       **** }
+  75:GUI_X.c       **** 
+  76:GUI_X.c       **** void GUI_X_Delay(int ms) { 
+  77:GUI_X.c       ****   int tEnd = OS_TimeMS + ms;
+  78:GUI_X.c       ****   while ((tEnd - OS_TimeMS) > 0);
+  79:GUI_X.c       **** }
+  80:GUI_X.c       **** 
+  81:GUI_X.c       **** /*********************************************************************
+  82:GUI_X.c       **** *
+  83:GUI_X.c       **** *       GUI_X_Init()
+  84:GUI_X.c       **** *
+  85:GUI_X.c       **** * Note:
+  86:GUI_X.c       **** *     GUI_X_Init() is called from GUI_Init is a possibility to init
+  87:GUI_X.c       **** *     some hardware which needs to be up and running before the GUI.
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 3
+
+
+  88:GUI_X.c       **** */
+  89:GUI_X.c       **** void GUI_X_Init(void) {
+  90:GUI_X.c       ****   GUI_X_Systick_Init();
+  91:GUI_X.c       **** }
+  92:GUI_X.c       **** 
+  93:GUI_X.c       **** 
+  94:GUI_X.c       **** /*********************************************************************
+  95:GUI_X.c       **** *
+  96:GUI_X.c       **** *       GUI_X_ExecIdle
+  97:GUI_X.c       **** *
+  98:GUI_X.c       **** * Note:
+  99:GUI_X.c       **** *  Called if WM is in idle state
+ 100:GUI_X.c       **** */
+ 101:GUI_X.c       **** void GUI_X_ExecIdle(void) {}
+ 102:GUI_X.c       **** 
+ 103:GUI_X.c       **** /*********************************************************************
+ 104:GUI_X.c       **** *
+ 105:GUI_X.c       **** *      Logging: OS dependent
+ 106:GUI_X.c       **** 
+ 107:GUI_X.c       **** Note:
+ 108:GUI_X.c       ****   Logging is used in higher debug levels only. The typical target
+ 109:GUI_X.c       ****   build does not use logging and does therefor not require any of
+ 110:GUI_X.c       ****   the logging routines below. For a release build without logging
+ 111:GUI_X.c       ****   the routines below may be eliminated to save some space.
+ 112:GUI_X.c       ****   (If the linker is not function aware and eliminates unreferenced
+ 113:GUI_X.c       ****   functions automatically)
+ 114:GUI_X.c       **** 
+ 115:GUI_X.c       **** */
+ 116:GUI_X.c       **** 
+ 117:GUI_X.c       **** void GUI_X_Log     (const char *s) { GUI_USE_PARA(s); }
+ 118:GUI_X.c       **** void GUI_X_Warn    (const char *s) { GUI_USE_PARA(s); }
+ 119:GUI_X.c       **** void GUI_X_ErrorOut(const char *s) { GUI_USE_PARA(s); }
+ 120:GUI_X.c       **** 
+ 121:GUI_X.c       **** /*********************************************************************
+ 122:GUI_X.c       **** *
+ 123:GUI_X.c       **** *         Setup Systick for timing
+ 124:GUI_X.c       **** *
+ 125:GUI_X.c       **** */
+ 126:GUI_X.c       **** /*********************************************************************
+ 127:GUI_X.c       **** *
+ 128:GUI_X.c       **** *       GUI_X_Systick_Intr
+ 129:GUI_X.c       **** *
+ 130:GUI_X.c       **** * Purpose:
+ 131:GUI_X.c       **** *   Interrupt Service Routine for Systick.
+ 132:GUI_X.c       **** */
+ 133:GUI_X.c       **** void GUI_X_Systick_Intr(void){    
+  28              		.loc 1 133 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 134:GUI_X.c       ****   OS_TimeMS++;
+  33              		.loc 1 134 0
+  34 0000 024A     		ldr	r2, .L2
+  35 0002 1368     		ldr	r3, [r2]
+  36 0004 0133     		adds	r3, r3, #1
+  37 0006 1360     		str	r3, [r2]
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 4
+
+
+  38 0008 7047     		bx	lr
+  39              	.L3:
+  40 000a 00BF     		.align	2
+  41              	.L2:
+  42 000c 00000000 		.word	OS_TimeMS
+  43              		.cfi_endproc
+  44              	.LFE70:
+  45              		.size	GUI_X_Systick_Intr, .-GUI_X_Systick_Intr
+  46              		.section	.text.GUI_X_GetTime,"ax",%progbits
+  47              		.align	2
+  48              		.global	GUI_X_GetTime
+  49              		.thumb
+  50              		.thumb_func
+  51              		.type	GUI_X_GetTime, %function
+  52              	GUI_X_GetTime:
+  53              	.LFB63:
+  72:GUI_X.c       ****   return OS_TimeMS; 
+  54              		.loc 1 72 0
+  55              		.cfi_startproc
+  56              		@ args = 0, pretend = 0, frame = 0
+  57              		@ frame_needed = 0, uses_anonymous_args = 0
+  58              		@ link register save eliminated.
+  73:GUI_X.c       **** }
+  59              		.loc 1 73 0
+  60 0000 014B     		ldr	r3, .L5
+  61 0002 1868     		ldr	r0, [r3]
+  74:GUI_X.c       **** 
+  62              		.loc 1 74 0
+  63 0004 7047     		bx	lr
+  64              	.L6:
+  65 0006 00BF     		.align	2
+  66              	.L5:
+  67 0008 00000000 		.word	OS_TimeMS
+  68              		.cfi_endproc
+  69              	.LFE63:
+  70              		.size	GUI_X_GetTime, .-GUI_X_GetTime
+  71              		.section	.text.GUI_X_Delay,"ax",%progbits
+  72              		.align	2
+  73              		.global	GUI_X_Delay
+  74              		.thumb
+  75              		.thumb_func
+  76              		.type	GUI_X_Delay, %function
+  77              	GUI_X_Delay:
+  78              	.LFB64:
+  76:GUI_X.c       ****   int tEnd = OS_TimeMS + ms;
+  79              		.loc 1 76 0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  83              		@ link register save eliminated.
+  84              	.LVL0:
+  77:GUI_X.c       ****   while ((tEnd - OS_TimeMS) > 0);
+  85              		.loc 1 77 0
+  86 0000 044B     		ldr	r3, .L9
+  87 0002 1B68     		ldr	r3, [r3]
+  88 0004 1844     		add	r0, r0, r3
+  89              	.LVL1:
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 5
+
+
+  90              	.L8:
+  78:GUI_X.c       **** }
+  91              		.loc 1 78 0 discriminator 1
+  92 0006 034B     		ldr	r3, .L9
+  93 0008 1B68     		ldr	r3, [r3]
+  94 000a C31A     		subs	r3, r0, r3
+  95 000c 002B     		cmp	r3, #0
+  96 000e FADC     		bgt	.L8
+  79:GUI_X.c       **** 
+  97              		.loc 1 79 0
+  98 0010 7047     		bx	lr
+  99              	.L10:
+ 100 0012 00BF     		.align	2
+ 101              	.L9:
+ 102 0014 00000000 		.word	OS_TimeMS
+ 103              		.cfi_endproc
+ 104              	.LFE64:
+ 105              		.size	GUI_X_Delay, .-GUI_X_Delay
+ 106              		.section	.text.GUI_X_ExecIdle,"ax",%progbits
+ 107              		.align	2
+ 108              		.global	GUI_X_ExecIdle
+ 109              		.thumb
+ 110              		.thumb_func
+ 111              		.type	GUI_X_ExecIdle, %function
+ 112              	GUI_X_ExecIdle:
+ 113              	.LFB66:
+ 101:GUI_X.c       **** 
+ 114              		.loc 1 101 0
+ 115              		.cfi_startproc
+ 116              		@ args = 0, pretend = 0, frame = 0
+ 117              		@ frame_needed = 0, uses_anonymous_args = 0
+ 118              		@ link register save eliminated.
+ 119 0000 7047     		bx	lr
+ 120              		.cfi_endproc
+ 121              	.LFE66:
+ 122              		.size	GUI_X_ExecIdle, .-GUI_X_ExecIdle
+ 123 0002 00BF     		.section	.text.GUI_X_Log,"ax",%progbits
+ 124              		.align	2
+ 125              		.global	GUI_X_Log
+ 126              		.thumb
+ 127              		.thumb_func
+ 128              		.type	GUI_X_Log, %function
+ 129              	GUI_X_Log:
+ 130              	.LFB67:
+ 117:GUI_X.c       **** void GUI_X_Warn    (const char *s) { GUI_USE_PARA(s); }
+ 131              		.loc 1 117 0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135              		@ link register save eliminated.
+ 136              	.LVL2:
+ 137 0000 7047     		bx	lr
+ 138              		.cfi_endproc
+ 139              	.LFE67:
+ 140              		.size	GUI_X_Log, .-GUI_X_Log
+ 141 0002 00BF     		.section	.text.GUI_X_Warn,"ax",%progbits
+ 142              		.align	2
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 6
+
+
+ 143              		.global	GUI_X_Warn
+ 144              		.thumb
+ 145              		.thumb_func
+ 146              		.type	GUI_X_Warn, %function
+ 147              	GUI_X_Warn:
+ 148              	.LFB68:
+ 118:GUI_X.c       **** void GUI_X_ErrorOut(const char *s) { GUI_USE_PARA(s); }
+ 149              		.loc 1 118 0
+ 150              		.cfi_startproc
+ 151              		@ args = 0, pretend = 0, frame = 0
+ 152              		@ frame_needed = 0, uses_anonymous_args = 0
+ 153              		@ link register save eliminated.
+ 154              	.LVL3:
+ 155 0000 7047     		bx	lr
+ 156              		.cfi_endproc
+ 157              	.LFE68:
+ 158              		.size	GUI_X_Warn, .-GUI_X_Warn
+ 159 0002 00BF     		.section	.text.GUI_X_ErrorOut,"ax",%progbits
+ 160              		.align	2
+ 161              		.global	GUI_X_ErrorOut
+ 162              		.thumb
+ 163              		.thumb_func
+ 164              		.type	GUI_X_ErrorOut, %function
+ 165              	GUI_X_ErrorOut:
+ 166              	.LFB69:
+ 119:GUI_X.c       **** 
+ 167              		.loc 1 119 0
+ 168              		.cfi_startproc
+ 169              		@ args = 0, pretend = 0, frame = 0
+ 170              		@ frame_needed = 0, uses_anonymous_args = 0
+ 171              		@ link register save eliminated.
+ 172              	.LVL4:
+ 173 0000 7047     		bx	lr
+ 174              		.cfi_endproc
+ 175              	.LFE69:
+ 176              		.size	GUI_X_ErrorOut, .-GUI_X_ErrorOut
+ 177 0002 00BF     		.section	.text.GUI_X_Systick_Init,"ax",%progbits
+ 178              		.align	2
+ 179              		.global	GUI_X_Systick_Init
+ 180              		.thumb
+ 181              		.thumb_func
+ 182              		.type	GUI_X_Systick_Init, %function
+ 183              	GUI_X_Systick_Init:
+ 184              	.LFB71:
+ 135:GUI_X.c       **** }
+ 136:GUI_X.c       **** 
+ 137:GUI_X.c       **** /*********************************************************************
+ 138:GUI_X.c       **** *
+ 139:GUI_X.c       **** *       GUI_X_Systick_Init()
+ 140:GUI_X.c       **** *
+ 141:GUI_X.c       **** * Purpose:
+ 142:GUI_X.c       **** *   Sets up the Systick interrupt and enable it.
+ 143:GUI_X.c       **** */
+ 144:GUI_X.c       **** void GUI_X_Systick_Init(void){  
+ 185              		.loc 1 144 0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 7
+
+
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189              		.loc 1 144 0
+ 190 0000 10B5     		push	{r4, lr}
+ 191              		.cfi_def_cfa_offset 8
+ 192              		.cfi_offset 4, -8
+ 193              		.cfi_offset 14, -4
+ 145:GUI_X.c       ****   uint32_t i; 
+ 146:GUI_X.c       ****   CySysTickStart();
+ 194              		.loc 1 146 0
+ 195 0002 FFF7FEFF 		bl	CySysTickStart
+ 196              	.LVL5:
+ 147:GUI_X.c       ****   //
+ 148:GUI_X.c       ****   // Find unused callback slot.
+ 149:GUI_X.c       ****   //
+ 150:GUI_X.c       ****     for (i = 0u; i < CY_SYS_SYST_NUM_OF_CALLBACKS; i++)
+ 197              		.loc 1 150 0
+ 198 0006 0024     		movs	r4, #0
+ 199 0008 09E0     		b	.L16
+ 200              	.LVL6:
+ 201              	.L19:
+ 151:GUI_X.c       ****     {
+ 152:GUI_X.c       ****         if (CySysTickGetCallback(i) == NULL)
+ 202              		.loc 1 152 0
+ 203 000a 2046     		mov	r0, r4
+ 204 000c FFF7FEFF 		bl	CySysTickGetCallback
+ 205              	.LVL7:
+ 206 0010 20B9     		cbnz	r0, .L17
+ 153:GUI_X.c       ****         {
+ 154:GUI_X.c       ****             CySysTickSetCallback(i, GUI_X_Systick_Intr);
+ 207              		.loc 1 154 0
+ 208 0012 0749     		ldr	r1, .L22
+ 209 0014 2046     		mov	r0, r4
+ 210 0016 FFF7FEFF 		bl	CySysTickSetCallback
+ 211              	.LVL8:
+ 155:GUI_X.c       ****             break;
+ 212              		.loc 1 155 0
+ 213 001a 02E0     		b	.L18
+ 214              	.L17:
+ 150:GUI_X.c       ****     {
+ 215              		.loc 1 150 0 discriminator 2
+ 216 001c 0134     		adds	r4, r4, #1
+ 217              	.LVL9:
+ 218              	.L16:
+ 150:GUI_X.c       ****     {
+ 219              		.loc 1 150 0 is_stmt 0 discriminator 1
+ 220 001e 042C     		cmp	r4, #4
+ 221 0020 F3D9     		bls	.L19
+ 222              	.L18:
+ 156:GUI_X.c       ****         }
+ 157:GUI_X.c       ****     }
+ 158:GUI_X.c       ****     
+ 159:GUI_X.c       ****     CYASSERT(i < CY_SYS_SYST_NUM_OF_CALLBACKS);
+ 223              		.loc 1 159 0 is_stmt 1
+ 224 0022 042C     		cmp	r4, #4
+ 225 0024 02D9     		bls	.L15
+ 226              		.loc 1 159 0 is_stmt 0 discriminator 1
+ 227 0026 0020     		movs	r0, #0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 8
+
+
+ 228 0028 FFF7FEFF 		bl	CyHalt
+ 229              	.LVL10:
+ 230              	.L15:
+ 231 002c 10BD     		pop	{r4, pc}
+ 232              	.LVL11:
+ 233              	.L23:
+ 234 002e 00BF     		.align	2
+ 235              	.L22:
+ 236 0030 00000000 		.word	GUI_X_Systick_Intr
+ 237              		.cfi_endproc
+ 238              	.LFE71:
+ 239              		.size	GUI_X_Systick_Init, .-GUI_X_Systick_Init
+ 240              		.section	.text.GUI_X_Init,"ax",%progbits
+ 241              		.align	2
+ 242              		.global	GUI_X_Init
+ 243              		.thumb
+ 244              		.thumb_func
+ 245              		.type	GUI_X_Init, %function
+ 246              	GUI_X_Init:
+ 247              	.LFB65:
+  89:GUI_X.c       ****   GUI_X_Systick_Init();
+ 248              		.loc 1 89 0 is_stmt 1
+ 249              		.cfi_startproc
+ 250              		@ args = 0, pretend = 0, frame = 0
+ 251              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252 0000 08B5     		push	{r3, lr}
+ 253              		.cfi_def_cfa_offset 8
+ 254              		.cfi_offset 3, -8
+ 255              		.cfi_offset 14, -4
+  90:GUI_X.c       **** }
+ 256              		.loc 1 90 0
+ 257 0002 FFF7FEFF 		bl	GUI_X_Systick_Init
+ 258              	.LVL12:
+ 259 0006 08BD     		pop	{r3, pc}
+ 260              		.cfi_endproc
+ 261              	.LFE65:
+ 262              		.size	GUI_X_Init, .-GUI_X_Init
+ 263              		.comm	OS_TimeMS,4,4
+ 264              		.text
+ 265              	.Letext0:
+ 266              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 267              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 268              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 269              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 270              		.file 6 "Generated_Source\\PSoC5/CyLib.h"
+ 271              		.section	.debug_info,"",%progbits
+ 272              	.Ldebug_info0:
+ 273 0000 83020000 		.4byte	0x283
+ 274 0004 0400     		.2byte	0x4
+ 275 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 276 000a 04       		.byte	0x4
+ 277 000b 01       		.uleb128 0x1
+ 278 000c 9A000000 		.4byte	.LASF35
+ 279 0010 0C       		.byte	0xc
+ 280 0011 2B020000 		.4byte	.LASF36
+ 281 0015 5B010000 		.4byte	.LASF37
+ 282 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 9
+
+
+ 283 001d 00000000 		.4byte	0
+ 284 0021 00000000 		.4byte	.Ldebug_line0
+ 285 0025 02       		.uleb128 0x2
+ 286 0026 04       		.byte	0x4
+ 287 0027 05       		.byte	0x5
+ 288 0028 696E7400 		.ascii	"int\000"
+ 289 002c 03       		.uleb128 0x3
+ 290 002d 04       		.byte	0x4
+ 291 002e 07       		.byte	0x7
+ 292 002f E4010000 		.4byte	.LASF0
+ 293 0033 03       		.uleb128 0x3
+ 294 0034 08       		.byte	0x8
+ 295 0035 05       		.byte	0x5
+ 296 0036 1D020000 		.4byte	.LASF1
+ 297 003a 03       		.uleb128 0x3
+ 298 003b 08       		.byte	0x8
+ 299 003c 04       		.byte	0x4
+ 300 003d 8A020000 		.4byte	.LASF2
+ 301 0041 03       		.uleb128 0x3
+ 302 0042 04       		.byte	0x4
+ 303 0043 07       		.byte	0x7
+ 304 0044 37010000 		.4byte	.LASF3
+ 305 0048 03       		.uleb128 0x3
+ 306 0049 02       		.byte	0x2
+ 307 004a 05       		.byte	0x5
+ 308 004b 4F000000 		.4byte	.LASF4
+ 309 004f 03       		.uleb128 0x3
+ 310 0050 01       		.byte	0x1
+ 311 0051 08       		.byte	0x8
+ 312 0052 F1010000 		.4byte	.LASF5
+ 313 0056 03       		.uleb128 0x3
+ 314 0057 01       		.byte	0x1
+ 315 0058 08       		.byte	0x8
+ 316 0059 8C000000 		.4byte	.LASF6
+ 317 005d 03       		.uleb128 0x3
+ 318 005e 04       		.byte	0x4
+ 319 005f 05       		.byte	0x5
+ 320 0060 81020000 		.4byte	.LASF7
+ 321 0064 04       		.uleb128 0x4
+ 322 0065 04       		.byte	0x4
+ 323 0066 6A000000 		.4byte	0x6a
+ 324 006a 05       		.uleb128 0x5
+ 325 006b 4F000000 		.4byte	0x4f
+ 326 006f 03       		.uleb128 0x3
+ 327 0070 02       		.byte	0x2
+ 328 0071 07       		.byte	0x7
+ 329 0072 3C000000 		.4byte	.LASF8
+ 330 0076 03       		.uleb128 0x3
+ 331 0077 01       		.byte	0x1
+ 332 0078 06       		.byte	0x6
+ 333 0079 96020000 		.4byte	.LASF9
+ 334 007d 03       		.uleb128 0x3
+ 335 007e 04       		.byte	0x4
+ 336 007f 07       		.byte	0x7
+ 337 0080 0F020000 		.4byte	.LASF10
+ 338 0084 06       		.uleb128 0x6
+ 339 0085 28000000 		.4byte	.LASF11
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 10
+
+
+ 340 0089 02       		.byte	0x2
+ 341 008a 3F       		.byte	0x3f
+ 342 008b 5D000000 		.4byte	0x5d
+ 343 008f 06       		.uleb128 0x6
+ 344 0090 C3010000 		.4byte	.LASF12
+ 345 0094 02       		.byte	0x2
+ 346 0095 41       		.byte	0x41
+ 347 0096 41000000 		.4byte	0x41
+ 348 009a 03       		.uleb128 0x3
+ 349 009b 08       		.byte	0x8
+ 350 009c 07       		.byte	0x7
+ 351 009d 75000000 		.4byte	.LASF13
+ 352 00a1 06       		.uleb128 0x6
+ 353 00a2 07020000 		.4byte	.LASF14
+ 354 00a6 03       		.byte	0x3
+ 355 00a7 2C       		.byte	0x2c
+ 356 00a8 84000000 		.4byte	0x84
+ 357 00ac 06       		.uleb128 0x6
+ 358 00ad 78020000 		.4byte	.LASF15
+ 359 00b1 03       		.byte	0x3
+ 360 00b2 30       		.byte	0x30
+ 361 00b3 8F000000 		.4byte	0x8f
+ 362 00b7 07       		.uleb128 0x7
+ 363 00b8 49010000 		.4byte	.LASF16
+ 364 00bc 04       		.byte	0x4
+ 365 00bd E901     		.2byte	0x1e9
+ 366 00bf 56000000 		.4byte	0x56
+ 367 00c3 07       		.uleb128 0x7
+ 368 00c4 CE010000 		.4byte	.LASF17
+ 369 00c8 04       		.byte	0x4
+ 370 00c9 EB01     		.2byte	0x1eb
+ 371 00cb 41000000 		.4byte	0x41
+ 372 00cf 03       		.uleb128 0x3
+ 373 00d0 04       		.byte	0x4
+ 374 00d1 04       		.byte	0x4
+ 375 00d2 64000000 		.4byte	.LASF18
+ 376 00d6 03       		.uleb128 0x3
+ 377 00d7 08       		.byte	0x8
+ 378 00d8 04       		.byte	0x4
+ 379 00d9 BC010000 		.4byte	.LASF19
+ 380 00dd 08       		.uleb128 0x8
+ 381 00de 15000000 		.4byte	.LASF20
+ 382 00e2 01       		.byte	0x1
+ 383 00e3 85       		.byte	0x85
+ 384 00e4 00000000 		.4byte	.LFB70
+ 385 00e8 10000000 		.4byte	.LFE70-.LFB70
+ 386 00ec 01       		.uleb128 0x1
+ 387 00ed 9C       		.byte	0x9c
+ 388 00ee 09       		.uleb128 0x9
+ 389 00ef 55020000 		.4byte	.LASF38
+ 390 00f3 01       		.byte	0x1
+ 391 00f4 48       		.byte	0x48
+ 392 00f5 25000000 		.4byte	0x25
+ 393 00f9 00000000 		.4byte	.LFB63
+ 394 00fd 0C000000 		.4byte	.LFE63-.LFB63
+ 395 0101 01       		.uleb128 0x1
+ 396 0102 9C       		.byte	0x9c
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 11
+
+
+ 397 0103 0A       		.uleb128 0xa
+ 398 0104 4F010000 		.4byte	.LASF22
+ 399 0108 01       		.byte	0x1
+ 400 0109 4C       		.byte	0x4c
+ 401 010a 00000000 		.4byte	.LFB64
+ 402 010e 18000000 		.4byte	.LFE64-.LFB64
+ 403 0112 01       		.uleb128 0x1
+ 404 0113 9C       		.byte	0x9c
+ 405 0114 34010000 		.4byte	0x134
+ 406 0118 0B       		.uleb128 0xb
+ 407 0119 6D7300   		.ascii	"ms\000"
+ 408 011c 01       		.byte	0x1
+ 409 011d 4C       		.byte	0x4c
+ 410 011e 25000000 		.4byte	0x25
+ 411 0122 00000000 		.4byte	.LLST0
+ 412 0126 0C       		.uleb128 0xc
+ 413 0127 18020000 		.4byte	.LASF27
+ 414 012b 01       		.byte	0x1
+ 415 012c 4D       		.byte	0x4d
+ 416 012d 25000000 		.4byte	0x25
+ 417 0131 01       		.uleb128 0x1
+ 418 0132 50       		.byte	0x50
+ 419 0133 00       		.byte	0
+ 420 0134 08       		.uleb128 0x8
+ 421 0135 46020000 		.4byte	.LASF21
+ 422 0139 01       		.byte	0x1
+ 423 013a 65       		.byte	0x65
+ 424 013b 00000000 		.4byte	.LFB66
+ 425 013f 02000000 		.4byte	.LFE66-.LFB66
+ 426 0143 01       		.uleb128 0x1
+ 427 0144 9C       		.byte	0x9c
+ 428 0145 0A       		.uleb128 0xa
+ 429 0146 32000000 		.4byte	.LASF23
+ 430 014a 01       		.byte	0x1
+ 431 014b 75       		.byte	0x75
+ 432 014c 00000000 		.4byte	.LFB67
+ 433 0150 02000000 		.4byte	.LFE67-.LFB67
+ 434 0154 01       		.uleb128 0x1
+ 435 0155 9C       		.byte	0x9c
+ 436 0156 66010000 		.4byte	0x166
+ 437 015a 0D       		.uleb128 0xd
+ 438 015b 7300     		.ascii	"s\000"
+ 439 015d 01       		.byte	0x1
+ 440 015e 75       		.byte	0x75
+ 441 015f 64000000 		.4byte	0x64
+ 442 0163 01       		.uleb128 0x1
+ 443 0164 50       		.byte	0x50
+ 444 0165 00       		.byte	0
+ 445 0166 0A       		.uleb128 0xa
+ 446 0167 6A000000 		.4byte	.LASF24
+ 447 016b 01       		.byte	0x1
+ 448 016c 76       		.byte	0x76
+ 449 016d 00000000 		.4byte	.LFB68
+ 450 0171 02000000 		.4byte	.LFE68-.LFB68
+ 451 0175 01       		.uleb128 0x1
+ 452 0176 9C       		.byte	0x9c
+ 453 0177 87010000 		.4byte	0x187
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 12
+
+
+ 454 017b 0D       		.uleb128 0xd
+ 455 017c 7300     		.ascii	"s\000"
+ 456 017e 01       		.byte	0x1
+ 457 017f 76       		.byte	0x76
+ 458 0180 64000000 		.4byte	0x64
+ 459 0184 01       		.uleb128 0x1
+ 460 0185 50       		.byte	0x50
+ 461 0186 00       		.byte	0
+ 462 0187 0A       		.uleb128 0xa
+ 463 0188 D5010000 		.4byte	.LASF25
+ 464 018c 01       		.byte	0x1
+ 465 018d 77       		.byte	0x77
+ 466 018e 00000000 		.4byte	.LFB69
+ 467 0192 02000000 		.4byte	.LFE69-.LFB69
+ 468 0196 01       		.uleb128 0x1
+ 469 0197 9C       		.byte	0x9c
+ 470 0198 A8010000 		.4byte	0x1a8
+ 471 019c 0D       		.uleb128 0xd
+ 472 019d 7300     		.ascii	"s\000"
+ 473 019f 01       		.byte	0x1
+ 474 01a0 77       		.byte	0x77
+ 475 01a1 64000000 		.4byte	0x64
+ 476 01a5 01       		.uleb128 0x1
+ 477 01a6 50       		.byte	0x50
+ 478 01a7 00       		.byte	0
+ 479 01a8 0A       		.uleb128 0xa
+ 480 01a9 33020000 		.4byte	.LASF26
+ 481 01ad 01       		.byte	0x1
+ 482 01ae 90       		.byte	0x90
+ 483 01af 00000000 		.4byte	.LFB71
+ 484 01b3 34000000 		.4byte	.LFE71-.LFB71
+ 485 01b7 01       		.uleb128 0x1
+ 486 01b8 9C       		.byte	0x9c
+ 487 01b9 14020000 		.4byte	0x214
+ 488 01bd 0E       		.uleb128 0xe
+ 489 01be 6900     		.ascii	"i\000"
+ 490 01c0 01       		.byte	0x1
+ 491 01c1 91       		.byte	0x91
+ 492 01c2 AC000000 		.4byte	0xac
+ 493 01c6 21000000 		.4byte	.LLST1
+ 494 01ca 0F       		.uleb128 0xf
+ 495 01cb 06000000 		.4byte	.LVL5
+ 496 01cf 5A020000 		.4byte	0x25a
+ 497 01d3 10       		.uleb128 0x10
+ 498 01d4 10000000 		.4byte	.LVL7
+ 499 01d8 65020000 		.4byte	0x265
+ 500 01dc E7010000 		.4byte	0x1e7
+ 501 01e0 11       		.uleb128 0x11
+ 502 01e1 01       		.uleb128 0x1
+ 503 01e2 50       		.byte	0x50
+ 504 01e3 02       		.uleb128 0x2
+ 505 01e4 74       		.byte	0x74
+ 506 01e5 00       		.sleb128 0
+ 507 01e6 00       		.byte	0
+ 508 01e7 10       		.uleb128 0x10
+ 509 01e8 1A000000 		.4byte	.LVL8
+ 510 01ec 70020000 		.4byte	0x270
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 13
+
+
+ 511 01f0 04020000 		.4byte	0x204
+ 512 01f4 11       		.uleb128 0x11
+ 513 01f5 01       		.uleb128 0x1
+ 514 01f6 50       		.byte	0x50
+ 515 01f7 02       		.uleb128 0x2
+ 516 01f8 74       		.byte	0x74
+ 517 01f9 00       		.sleb128 0
+ 518 01fa 11       		.uleb128 0x11
+ 519 01fb 01       		.uleb128 0x1
+ 520 01fc 51       		.byte	0x51
+ 521 01fd 05       		.uleb128 0x5
+ 522 01fe 03       		.byte	0x3
+ 523 01ff 00000000 		.4byte	GUI_X_Systick_Intr
+ 524 0203 00       		.byte	0
+ 525 0204 12       		.uleb128 0x12
+ 526 0205 2C000000 		.4byte	.LVL10
+ 527 0209 7B020000 		.4byte	0x27b
+ 528 020d 11       		.uleb128 0x11
+ 529 020e 01       		.uleb128 0x1
+ 530 020f 50       		.byte	0x50
+ 531 0210 01       		.uleb128 0x1
+ 532 0211 30       		.byte	0x30
+ 533 0212 00       		.byte	0
+ 534 0213 00       		.byte	0
+ 535 0214 0A       		.uleb128 0xa
+ 536 0215 59000000 		.4byte	.LASF28
+ 537 0219 01       		.byte	0x1
+ 538 021a 59       		.byte	0x59
+ 539 021b 00000000 		.4byte	.LFB65
+ 540 021f 08000000 		.4byte	.LFE65-.LFB65
+ 541 0223 01       		.uleb128 0x1
+ 542 0224 9C       		.byte	0x9c
+ 543 0225 33020000 		.4byte	0x233
+ 544 0229 0F       		.uleb128 0xf
+ 545 022a 06000000 		.4byte	.LVL12
+ 546 022e A8010000 		.4byte	0x1a8
+ 547 0232 00       		.byte	0
+ 548 0233 13       		.uleb128 0x13
+ 549 0234 AF010000 		.4byte	.LASF29
+ 550 0238 05       		.byte	0x5
+ 551 0239 1207     		.2byte	0x712
+ 552 023b 3F020000 		.4byte	0x23f
+ 553 023f 14       		.uleb128 0x14
+ 554 0240 A1000000 		.4byte	0xa1
+ 555 0244 15       		.uleb128 0x15
+ 556 0245 FD010000 		.4byte	.LASF30
+ 557 0249 01       		.byte	0x1
+ 558 024a 3B       		.byte	0x3b
+ 559 024b 55020000 		.4byte	0x255
+ 560 024f 05       		.uleb128 0x5
+ 561 0250 03       		.byte	0x3
+ 562 0251 00000000 		.4byte	OS_TimeMS
+ 563 0255 14       		.uleb128 0x14
+ 564 0256 25000000 		.4byte	0x25
+ 565 025a 16       		.uleb128 0x16
+ 566 025b 28010000 		.4byte	.LASF31
+ 567 025f 28010000 		.4byte	.LASF31
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 14
+
+
+ 568 0263 06       		.byte	0x6
+ 569 0264 AE       		.byte	0xae
+ 570 0265 16       		.uleb128 0x16
+ 571 0266 63020000 		.4byte	.LASF32
+ 572 026a 63020000 		.4byte	.LASF32
+ 573 026e 06       		.byte	0x6
+ 574 026f B8       		.byte	0xb8
+ 575 0270 16       		.uleb128 0x16
+ 576 0271 00000000 		.4byte	.LASF33
+ 577 0275 00000000 		.4byte	.LASF33
+ 578 0279 06       		.byte	0x6
+ 579 027a B7       		.byte	0xb7
+ 580 027b 16       		.uleb128 0x16
+ 581 027c F6010000 		.4byte	.LASF34
+ 582 0280 F6010000 		.4byte	.LASF34
+ 583 0284 06       		.byte	0x6
+ 584 0285 7F       		.byte	0x7f
+ 585 0286 00       		.byte	0
+ 586              		.section	.debug_abbrev,"",%progbits
+ 587              	.Ldebug_abbrev0:
+ 588 0000 01       		.uleb128 0x1
+ 589 0001 11       		.uleb128 0x11
+ 590 0002 01       		.byte	0x1
+ 591 0003 25       		.uleb128 0x25
+ 592 0004 0E       		.uleb128 0xe
+ 593 0005 13       		.uleb128 0x13
+ 594 0006 0B       		.uleb128 0xb
+ 595 0007 03       		.uleb128 0x3
+ 596 0008 0E       		.uleb128 0xe
+ 597 0009 1B       		.uleb128 0x1b
+ 598 000a 0E       		.uleb128 0xe
+ 599 000b 55       		.uleb128 0x55
+ 600 000c 17       		.uleb128 0x17
+ 601 000d 11       		.uleb128 0x11
+ 602 000e 01       		.uleb128 0x1
+ 603 000f 10       		.uleb128 0x10
+ 604 0010 17       		.uleb128 0x17
+ 605 0011 00       		.byte	0
+ 606 0012 00       		.byte	0
+ 607 0013 02       		.uleb128 0x2
+ 608 0014 24       		.uleb128 0x24
+ 609 0015 00       		.byte	0
+ 610 0016 0B       		.uleb128 0xb
+ 611 0017 0B       		.uleb128 0xb
+ 612 0018 3E       		.uleb128 0x3e
+ 613 0019 0B       		.uleb128 0xb
+ 614 001a 03       		.uleb128 0x3
+ 615 001b 08       		.uleb128 0x8
+ 616 001c 00       		.byte	0
+ 617 001d 00       		.byte	0
+ 618 001e 03       		.uleb128 0x3
+ 619 001f 24       		.uleb128 0x24
+ 620 0020 00       		.byte	0
+ 621 0021 0B       		.uleb128 0xb
+ 622 0022 0B       		.uleb128 0xb
+ 623 0023 3E       		.uleb128 0x3e
+ 624 0024 0B       		.uleb128 0xb
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 15
+
+
+ 625 0025 03       		.uleb128 0x3
+ 626 0026 0E       		.uleb128 0xe
+ 627 0027 00       		.byte	0
+ 628 0028 00       		.byte	0
+ 629 0029 04       		.uleb128 0x4
+ 630 002a 0F       		.uleb128 0xf
+ 631 002b 00       		.byte	0
+ 632 002c 0B       		.uleb128 0xb
+ 633 002d 0B       		.uleb128 0xb
+ 634 002e 49       		.uleb128 0x49
+ 635 002f 13       		.uleb128 0x13
+ 636 0030 00       		.byte	0
+ 637 0031 00       		.byte	0
+ 638 0032 05       		.uleb128 0x5
+ 639 0033 26       		.uleb128 0x26
+ 640 0034 00       		.byte	0
+ 641 0035 49       		.uleb128 0x49
+ 642 0036 13       		.uleb128 0x13
+ 643 0037 00       		.byte	0
+ 644 0038 00       		.byte	0
+ 645 0039 06       		.uleb128 0x6
+ 646 003a 16       		.uleb128 0x16
+ 647 003b 00       		.byte	0
+ 648 003c 03       		.uleb128 0x3
+ 649 003d 0E       		.uleb128 0xe
+ 650 003e 3A       		.uleb128 0x3a
+ 651 003f 0B       		.uleb128 0xb
+ 652 0040 3B       		.uleb128 0x3b
+ 653 0041 0B       		.uleb128 0xb
+ 654 0042 49       		.uleb128 0x49
+ 655 0043 13       		.uleb128 0x13
+ 656 0044 00       		.byte	0
+ 657 0045 00       		.byte	0
+ 658 0046 07       		.uleb128 0x7
+ 659 0047 16       		.uleb128 0x16
+ 660 0048 00       		.byte	0
+ 661 0049 03       		.uleb128 0x3
+ 662 004a 0E       		.uleb128 0xe
+ 663 004b 3A       		.uleb128 0x3a
+ 664 004c 0B       		.uleb128 0xb
+ 665 004d 3B       		.uleb128 0x3b
+ 666 004e 05       		.uleb128 0x5
+ 667 004f 49       		.uleb128 0x49
+ 668 0050 13       		.uleb128 0x13
+ 669 0051 00       		.byte	0
+ 670 0052 00       		.byte	0
+ 671 0053 08       		.uleb128 0x8
+ 672 0054 2E       		.uleb128 0x2e
+ 673 0055 00       		.byte	0
+ 674 0056 3F       		.uleb128 0x3f
+ 675 0057 19       		.uleb128 0x19
+ 676 0058 03       		.uleb128 0x3
+ 677 0059 0E       		.uleb128 0xe
+ 678 005a 3A       		.uleb128 0x3a
+ 679 005b 0B       		.uleb128 0xb
+ 680 005c 3B       		.uleb128 0x3b
+ 681 005d 0B       		.uleb128 0xb
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 16
+
+
+ 682 005e 27       		.uleb128 0x27
+ 683 005f 19       		.uleb128 0x19
+ 684 0060 11       		.uleb128 0x11
+ 685 0061 01       		.uleb128 0x1
+ 686 0062 12       		.uleb128 0x12
+ 687 0063 06       		.uleb128 0x6
+ 688 0064 40       		.uleb128 0x40
+ 689 0065 18       		.uleb128 0x18
+ 690 0066 9742     		.uleb128 0x2117
+ 691 0068 19       		.uleb128 0x19
+ 692 0069 00       		.byte	0
+ 693 006a 00       		.byte	0
+ 694 006b 09       		.uleb128 0x9
+ 695 006c 2E       		.uleb128 0x2e
+ 696 006d 00       		.byte	0
+ 697 006e 3F       		.uleb128 0x3f
+ 698 006f 19       		.uleb128 0x19
+ 699 0070 03       		.uleb128 0x3
+ 700 0071 0E       		.uleb128 0xe
+ 701 0072 3A       		.uleb128 0x3a
+ 702 0073 0B       		.uleb128 0xb
+ 703 0074 3B       		.uleb128 0x3b
+ 704 0075 0B       		.uleb128 0xb
+ 705 0076 27       		.uleb128 0x27
+ 706 0077 19       		.uleb128 0x19
+ 707 0078 49       		.uleb128 0x49
+ 708 0079 13       		.uleb128 0x13
+ 709 007a 11       		.uleb128 0x11
+ 710 007b 01       		.uleb128 0x1
+ 711 007c 12       		.uleb128 0x12
+ 712 007d 06       		.uleb128 0x6
+ 713 007e 40       		.uleb128 0x40
+ 714 007f 18       		.uleb128 0x18
+ 715 0080 9742     		.uleb128 0x2117
+ 716 0082 19       		.uleb128 0x19
+ 717 0083 00       		.byte	0
+ 718 0084 00       		.byte	0
+ 719 0085 0A       		.uleb128 0xa
+ 720 0086 2E       		.uleb128 0x2e
+ 721 0087 01       		.byte	0x1
+ 722 0088 3F       		.uleb128 0x3f
+ 723 0089 19       		.uleb128 0x19
+ 724 008a 03       		.uleb128 0x3
+ 725 008b 0E       		.uleb128 0xe
+ 726 008c 3A       		.uleb128 0x3a
+ 727 008d 0B       		.uleb128 0xb
+ 728 008e 3B       		.uleb128 0x3b
+ 729 008f 0B       		.uleb128 0xb
+ 730 0090 27       		.uleb128 0x27
+ 731 0091 19       		.uleb128 0x19
+ 732 0092 11       		.uleb128 0x11
+ 733 0093 01       		.uleb128 0x1
+ 734 0094 12       		.uleb128 0x12
+ 735 0095 06       		.uleb128 0x6
+ 736 0096 40       		.uleb128 0x40
+ 737 0097 18       		.uleb128 0x18
+ 738 0098 9742     		.uleb128 0x2117
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 17
+
+
+ 739 009a 19       		.uleb128 0x19
+ 740 009b 01       		.uleb128 0x1
+ 741 009c 13       		.uleb128 0x13
+ 742 009d 00       		.byte	0
+ 743 009e 00       		.byte	0
+ 744 009f 0B       		.uleb128 0xb
+ 745 00a0 05       		.uleb128 0x5
+ 746 00a1 00       		.byte	0
+ 747 00a2 03       		.uleb128 0x3
+ 748 00a3 08       		.uleb128 0x8
+ 749 00a4 3A       		.uleb128 0x3a
+ 750 00a5 0B       		.uleb128 0xb
+ 751 00a6 3B       		.uleb128 0x3b
+ 752 00a7 0B       		.uleb128 0xb
+ 753 00a8 49       		.uleb128 0x49
+ 754 00a9 13       		.uleb128 0x13
+ 755 00aa 02       		.uleb128 0x2
+ 756 00ab 17       		.uleb128 0x17
+ 757 00ac 00       		.byte	0
+ 758 00ad 00       		.byte	0
+ 759 00ae 0C       		.uleb128 0xc
+ 760 00af 34       		.uleb128 0x34
+ 761 00b0 00       		.byte	0
+ 762 00b1 03       		.uleb128 0x3
+ 763 00b2 0E       		.uleb128 0xe
+ 764 00b3 3A       		.uleb128 0x3a
+ 765 00b4 0B       		.uleb128 0xb
+ 766 00b5 3B       		.uleb128 0x3b
+ 767 00b6 0B       		.uleb128 0xb
+ 768 00b7 49       		.uleb128 0x49
+ 769 00b8 13       		.uleb128 0x13
+ 770 00b9 02       		.uleb128 0x2
+ 771 00ba 18       		.uleb128 0x18
+ 772 00bb 00       		.byte	0
+ 773 00bc 00       		.byte	0
+ 774 00bd 0D       		.uleb128 0xd
+ 775 00be 05       		.uleb128 0x5
+ 776 00bf 00       		.byte	0
+ 777 00c0 03       		.uleb128 0x3
+ 778 00c1 08       		.uleb128 0x8
+ 779 00c2 3A       		.uleb128 0x3a
+ 780 00c3 0B       		.uleb128 0xb
+ 781 00c4 3B       		.uleb128 0x3b
+ 782 00c5 0B       		.uleb128 0xb
+ 783 00c6 49       		.uleb128 0x49
+ 784 00c7 13       		.uleb128 0x13
+ 785 00c8 02       		.uleb128 0x2
+ 786 00c9 18       		.uleb128 0x18
+ 787 00ca 00       		.byte	0
+ 788 00cb 00       		.byte	0
+ 789 00cc 0E       		.uleb128 0xe
+ 790 00cd 34       		.uleb128 0x34
+ 791 00ce 00       		.byte	0
+ 792 00cf 03       		.uleb128 0x3
+ 793 00d0 08       		.uleb128 0x8
+ 794 00d1 3A       		.uleb128 0x3a
+ 795 00d2 0B       		.uleb128 0xb
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 18
+
+
+ 796 00d3 3B       		.uleb128 0x3b
+ 797 00d4 0B       		.uleb128 0xb
+ 798 00d5 49       		.uleb128 0x49
+ 799 00d6 13       		.uleb128 0x13
+ 800 00d7 02       		.uleb128 0x2
+ 801 00d8 17       		.uleb128 0x17
+ 802 00d9 00       		.byte	0
+ 803 00da 00       		.byte	0
+ 804 00db 0F       		.uleb128 0xf
+ 805 00dc 898201   		.uleb128 0x4109
+ 806 00df 00       		.byte	0
+ 807 00e0 11       		.uleb128 0x11
+ 808 00e1 01       		.uleb128 0x1
+ 809 00e2 31       		.uleb128 0x31
+ 810 00e3 13       		.uleb128 0x13
+ 811 00e4 00       		.byte	0
+ 812 00e5 00       		.byte	0
+ 813 00e6 10       		.uleb128 0x10
+ 814 00e7 898201   		.uleb128 0x4109
+ 815 00ea 01       		.byte	0x1
+ 816 00eb 11       		.uleb128 0x11
+ 817 00ec 01       		.uleb128 0x1
+ 818 00ed 31       		.uleb128 0x31
+ 819 00ee 13       		.uleb128 0x13
+ 820 00ef 01       		.uleb128 0x1
+ 821 00f0 13       		.uleb128 0x13
+ 822 00f1 00       		.byte	0
+ 823 00f2 00       		.byte	0
+ 824 00f3 11       		.uleb128 0x11
+ 825 00f4 8A8201   		.uleb128 0x410a
+ 826 00f7 00       		.byte	0
+ 827 00f8 02       		.uleb128 0x2
+ 828 00f9 18       		.uleb128 0x18
+ 829 00fa 9142     		.uleb128 0x2111
+ 830 00fc 18       		.uleb128 0x18
+ 831 00fd 00       		.byte	0
+ 832 00fe 00       		.byte	0
+ 833 00ff 12       		.uleb128 0x12
+ 834 0100 898201   		.uleb128 0x4109
+ 835 0103 01       		.byte	0x1
+ 836 0104 11       		.uleb128 0x11
+ 837 0105 01       		.uleb128 0x1
+ 838 0106 31       		.uleb128 0x31
+ 839 0107 13       		.uleb128 0x13
+ 840 0108 00       		.byte	0
+ 841 0109 00       		.byte	0
+ 842 010a 13       		.uleb128 0x13
+ 843 010b 34       		.uleb128 0x34
+ 844 010c 00       		.byte	0
+ 845 010d 03       		.uleb128 0x3
+ 846 010e 0E       		.uleb128 0xe
+ 847 010f 3A       		.uleb128 0x3a
+ 848 0110 0B       		.uleb128 0xb
+ 849 0111 3B       		.uleb128 0x3b
+ 850 0112 05       		.uleb128 0x5
+ 851 0113 49       		.uleb128 0x49
+ 852 0114 13       		.uleb128 0x13
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 19
+
+
+ 853 0115 3F       		.uleb128 0x3f
+ 854 0116 19       		.uleb128 0x19
+ 855 0117 3C       		.uleb128 0x3c
+ 856 0118 19       		.uleb128 0x19
+ 857 0119 00       		.byte	0
+ 858 011a 00       		.byte	0
+ 859 011b 14       		.uleb128 0x14
+ 860 011c 35       		.uleb128 0x35
+ 861 011d 00       		.byte	0
+ 862 011e 49       		.uleb128 0x49
+ 863 011f 13       		.uleb128 0x13
+ 864 0120 00       		.byte	0
+ 865 0121 00       		.byte	0
+ 866 0122 15       		.uleb128 0x15
+ 867 0123 34       		.uleb128 0x34
+ 868 0124 00       		.byte	0
+ 869 0125 03       		.uleb128 0x3
+ 870 0126 0E       		.uleb128 0xe
+ 871 0127 3A       		.uleb128 0x3a
+ 872 0128 0B       		.uleb128 0xb
+ 873 0129 3B       		.uleb128 0x3b
+ 874 012a 0B       		.uleb128 0xb
+ 875 012b 49       		.uleb128 0x49
+ 876 012c 13       		.uleb128 0x13
+ 877 012d 3F       		.uleb128 0x3f
+ 878 012e 19       		.uleb128 0x19
+ 879 012f 02       		.uleb128 0x2
+ 880 0130 18       		.uleb128 0x18
+ 881 0131 00       		.byte	0
+ 882 0132 00       		.byte	0
+ 883 0133 16       		.uleb128 0x16
+ 884 0134 2E       		.uleb128 0x2e
+ 885 0135 00       		.byte	0
+ 886 0136 3F       		.uleb128 0x3f
+ 887 0137 19       		.uleb128 0x19
+ 888 0138 3C       		.uleb128 0x3c
+ 889 0139 19       		.uleb128 0x19
+ 890 013a 6E       		.uleb128 0x6e
+ 891 013b 0E       		.uleb128 0xe
+ 892 013c 03       		.uleb128 0x3
+ 893 013d 0E       		.uleb128 0xe
+ 894 013e 3A       		.uleb128 0x3a
+ 895 013f 0B       		.uleb128 0xb
+ 896 0140 3B       		.uleb128 0x3b
+ 897 0141 0B       		.uleb128 0xb
+ 898 0142 00       		.byte	0
+ 899 0143 00       		.byte	0
+ 900 0144 00       		.byte	0
+ 901              		.section	.debug_loc,"",%progbits
+ 902              	.Ldebug_loc0:
+ 903              	.LLST0:
+ 904 0000 00000000 		.4byte	.LVL0
+ 905 0004 06000000 		.4byte	.LVL1
+ 906 0008 0100     		.2byte	0x1
+ 907 000a 50       		.byte	0x50
+ 908 000b 06000000 		.4byte	.LVL1
+ 909 000f 18000000 		.4byte	.LFE64
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 20
+
+
+ 910 0013 0400     		.2byte	0x4
+ 911 0015 F3       		.byte	0xf3
+ 912 0016 01       		.uleb128 0x1
+ 913 0017 50       		.byte	0x50
+ 914 0018 9F       		.byte	0x9f
+ 915 0019 00000000 		.4byte	0
+ 916 001d 00000000 		.4byte	0
+ 917              	.LLST1:
+ 918 0021 06000000 		.4byte	.LVL5
+ 919 0025 0A000000 		.4byte	.LVL6
+ 920 0029 0200     		.2byte	0x2
+ 921 002b 30       		.byte	0x30
+ 922 002c 9F       		.byte	0x9f
+ 923 002d 0A000000 		.4byte	.LVL6
+ 924 0031 2E000000 		.4byte	.LVL11
+ 925 0035 0100     		.2byte	0x1
+ 926 0037 54       		.byte	0x54
+ 927 0038 00000000 		.4byte	0
+ 928 003c 00000000 		.4byte	0
+ 929              		.section	.debug_aranges,"",%progbits
+ 930 0000 5C000000 		.4byte	0x5c
+ 931 0004 0200     		.2byte	0x2
+ 932 0006 00000000 		.4byte	.Ldebug_info0
+ 933 000a 04       		.byte	0x4
+ 934 000b 00       		.byte	0
+ 935 000c 0000     		.2byte	0
+ 936 000e 0000     		.2byte	0
+ 937 0010 00000000 		.4byte	.LFB70
+ 938 0014 10000000 		.4byte	.LFE70-.LFB70
+ 939 0018 00000000 		.4byte	.LFB63
+ 940 001c 0C000000 		.4byte	.LFE63-.LFB63
+ 941 0020 00000000 		.4byte	.LFB64
+ 942 0024 18000000 		.4byte	.LFE64-.LFB64
+ 943 0028 00000000 		.4byte	.LFB66
+ 944 002c 02000000 		.4byte	.LFE66-.LFB66
+ 945 0030 00000000 		.4byte	.LFB67
+ 946 0034 02000000 		.4byte	.LFE67-.LFB67
+ 947 0038 00000000 		.4byte	.LFB68
+ 948 003c 02000000 		.4byte	.LFE68-.LFB68
+ 949 0040 00000000 		.4byte	.LFB69
+ 950 0044 02000000 		.4byte	.LFE69-.LFB69
+ 951 0048 00000000 		.4byte	.LFB71
+ 952 004c 34000000 		.4byte	.LFE71-.LFB71
+ 953 0050 00000000 		.4byte	.LFB65
+ 954 0054 08000000 		.4byte	.LFE65-.LFB65
+ 955 0058 00000000 		.4byte	0
+ 956 005c 00000000 		.4byte	0
+ 957              		.section	.debug_ranges,"",%progbits
+ 958              	.Ldebug_ranges0:
+ 959 0000 00000000 		.4byte	.LFB70
+ 960 0004 10000000 		.4byte	.LFE70
+ 961 0008 00000000 		.4byte	.LFB63
+ 962 000c 0C000000 		.4byte	.LFE63
+ 963 0010 00000000 		.4byte	.LFB64
+ 964 0014 18000000 		.4byte	.LFE64
+ 965 0018 00000000 		.4byte	.LFB66
+ 966 001c 02000000 		.4byte	.LFE66
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 21
+
+
+ 967 0020 00000000 		.4byte	.LFB67
+ 968 0024 02000000 		.4byte	.LFE67
+ 969 0028 00000000 		.4byte	.LFB68
+ 970 002c 02000000 		.4byte	.LFE68
+ 971 0030 00000000 		.4byte	.LFB69
+ 972 0034 02000000 		.4byte	.LFE69
+ 973 0038 00000000 		.4byte	.LFB71
+ 974 003c 34000000 		.4byte	.LFE71
+ 975 0040 00000000 		.4byte	.LFB65
+ 976 0044 08000000 		.4byte	.LFE65
+ 977 0048 00000000 		.4byte	0
+ 978 004c 00000000 		.4byte	0
+ 979              		.section	.debug_line,"",%progbits
+ 980              	.Ldebug_line0:
+ 981 0000 14020000 		.section	.debug_str,"MS",%progbits,1
+ 981      02005801 
+ 981      00000201 
+ 981      FB0E0D00 
+ 981      01010101 
+ 982              	.LASF33:
+ 983 0000 43795379 		.ascii	"CySysTickSetCallback\000"
+ 983      73546963 
+ 983      6B536574 
+ 983      43616C6C 
+ 983      6261636B 
+ 984              	.LASF20:
+ 985 0015 4755495F 		.ascii	"GUI_X_Systick_Intr\000"
+ 985      585F5379 
+ 985      73746963 
+ 985      6B5F496E 
+ 985      747200
+ 986              	.LASF11:
+ 987 0028 5F5F696E 		.ascii	"__int32_t\000"
+ 987      7433325F 
+ 987      7400
+ 988              	.LASF23:
+ 989 0032 4755495F 		.ascii	"GUI_X_Log\000"
+ 989      585F4C6F 
+ 989      6700
+ 990              	.LASF8:
+ 991 003c 73686F72 		.ascii	"short unsigned int\000"
+ 991      7420756E 
+ 991      7369676E 
+ 991      65642069 
+ 991      6E7400
+ 992              	.LASF4:
+ 993 004f 73686F72 		.ascii	"short int\000"
+ 993      7420696E 
+ 993      7400
+ 994              	.LASF28:
+ 995 0059 4755495F 		.ascii	"GUI_X_Init\000"
+ 995      585F496E 
+ 995      697400
+ 996              	.LASF18:
+ 997 0064 666C6F61 		.ascii	"float\000"
+ 997      7400
+ 998              	.LASF24:
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 22
+
+
+ 999 006a 4755495F 		.ascii	"GUI_X_Warn\000"
+ 999      585F5761 
+ 999      726E00
+ 1000              	.LASF13:
+ 1001 0075 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1001      206C6F6E 
+ 1001      6720756E 
+ 1001      7369676E 
+ 1001      65642069 
+ 1002              	.LASF6:
+ 1003 008c 756E7369 		.ascii	"unsigned char\000"
+ 1003      676E6564 
+ 1003      20636861 
+ 1003      7200
+ 1004              	.LASF35:
+ 1005 009a 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1005      43313120 
+ 1005      352E342E 
+ 1005      31203230 
+ 1005      31363036 
+ 1006 00cd 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1006      20726576 
+ 1006      6973696F 
+ 1006      6E203233 
+ 1006      37373135 
+ 1007 0100 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1007      66756E63 
+ 1007      74696F6E 
+ 1007      2D736563 
+ 1007      74696F6E 
+ 1008              	.LASF31:
+ 1009 0128 43795379 		.ascii	"CySysTickStart\000"
+ 1009      73546963 
+ 1009      6B537461 
+ 1009      727400
+ 1010              	.LASF3:
+ 1011 0137 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1011      20756E73 
+ 1011      69676E65 
+ 1011      6420696E 
+ 1011      7400
+ 1012              	.LASF16:
+ 1013 0149 75696E74 		.ascii	"uint8\000"
+ 1013      3800
+ 1014              	.LASF22:
+ 1015 014f 4755495F 		.ascii	"GUI_X_Delay\000"
+ 1015      585F4465 
+ 1015      6C617900 
+ 1016              	.LASF37:
+ 1017 015b 433A5C55 		.ascii	"C:\\Users\\simon\\OneDrive\\Documents\\PSoC Creator"
+ 1017      73657273 
+ 1017      5C73696D 
+ 1017      6F6E5C4F 
+ 1017      6E654472 
+ 1018 0189 5C46696E 		.ascii	"\\FinalProject\\Keys2NotewDisplay.cydsn\000"
+ 1018      616C5072 
+ 1018      6F6A6563 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 23
+
+
+ 1018      745C4B65 
+ 1018      7973324E 
+ 1019              	.LASF29:
+ 1020 01af 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1020      52784275 
+ 1020      66666572 
+ 1020      00
+ 1021              	.LASF19:
+ 1022 01bc 646F7562 		.ascii	"double\000"
+ 1022      6C6500
+ 1023              	.LASF12:
+ 1024 01c3 5F5F7569 		.ascii	"__uint32_t\000"
+ 1024      6E743332 
+ 1024      5F7400
+ 1025              	.LASF17:
+ 1026 01ce 75696E74 		.ascii	"uint32\000"
+ 1026      333200
+ 1027              	.LASF25:
+ 1028 01d5 4755495F 		.ascii	"GUI_X_ErrorOut\000"
+ 1028      585F4572 
+ 1028      726F724F 
+ 1028      757400
+ 1029              	.LASF0:
+ 1030 01e4 756E7369 		.ascii	"unsigned int\000"
+ 1030      676E6564 
+ 1030      20696E74 
+ 1030      00
+ 1031              	.LASF5:
+ 1032 01f1 63686172 		.ascii	"char\000"
+ 1032      00
+ 1033              	.LASF34:
+ 1034 01f6 43794861 		.ascii	"CyHalt\000"
+ 1034      6C7400
+ 1035              	.LASF30:
+ 1036 01fd 4F535F54 		.ascii	"OS_TimeMS\000"
+ 1036      696D654D 
+ 1036      5300
+ 1037              	.LASF14:
+ 1038 0207 696E7433 		.ascii	"int32_t\000"
+ 1038      325F7400 
+ 1039              	.LASF10:
+ 1040 020f 73697A65 		.ascii	"sizetype\000"
+ 1040      74797065 
+ 1040      00
+ 1041              	.LASF27:
+ 1042 0218 74456E64 		.ascii	"tEnd\000"
+ 1042      00
+ 1043              	.LASF1:
+ 1044 021d 6C6F6E67 		.ascii	"long long int\000"
+ 1044      206C6F6E 
+ 1044      6720696E 
+ 1044      7400
+ 1045              	.LASF36:
+ 1046 022b 4755495F 		.ascii	"GUI_X.c\000"
+ 1046      582E6300 
+ 1047              	.LASF26:
+ 1048 0233 4755495F 		.ascii	"GUI_X_Systick_Init\000"
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccnhtYw5.s 			page 24
+
+
+ 1048      585F5379 
+ 1048      73746963 
+ 1048      6B5F496E 
+ 1048      697400
+ 1049              	.LASF21:
+ 1050 0246 4755495F 		.ascii	"GUI_X_ExecIdle\000"
+ 1050      585F4578 
+ 1050      65634964 
+ 1050      6C6500
+ 1051              	.LASF38:
+ 1052 0255 4755495F 		.ascii	"GUI_X_GetTime\000"
+ 1052      585F4765 
+ 1052      7454696D 
+ 1052      6500
+ 1053              	.LASF32:
+ 1054 0263 43795379 		.ascii	"CySysTickGetCallback\000"
+ 1054      73546963 
+ 1054      6B476574 
+ 1054      43616C6C 
+ 1054      6261636B 
+ 1055              	.LASF15:
+ 1056 0278 75696E74 		.ascii	"uint32_t\000"
+ 1056      33325F74 
+ 1056      00
+ 1057              	.LASF7:
+ 1058 0281 6C6F6E67 		.ascii	"long int\000"
+ 1058      20696E74 
+ 1058      00
+ 1059              	.LASF2:
+ 1060 028a 6C6F6E67 		.ascii	"long double\000"
+ 1060      20646F75 
+ 1060      626C6500 
+ 1061              	.LASF9:
+ 1062 0296 7369676E 		.ascii	"signed char\000"
+ 1062      65642063 
+ 1062      68617200 
+ 1063              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

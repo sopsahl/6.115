@@ -1,0 +1,2800 @@
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"LCDConf.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._InitController,"ax",%progbits
+  20              		.align	2
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	_InitController, %function
+  24              	_InitController:
+  25              	.LFB63:
+  26              		.file 1 "LCDConf.c"
+   1:LCDConf.c     **** /*********************************************************************
+   2:LCDConf.c     **** *                SEGGER Microcontroller GmbH & Co. KG                *
+   3:LCDConf.c     **** *        Solutions for real time microcontroller applications        *
+   4:LCDConf.c     **** **********************************************************************
+   5:LCDConf.c     **** *                                                                    *
+   6:LCDConf.c     **** *        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
+   7:LCDConf.c     **** *                                                                    *
+   8:LCDConf.c     **** *        Internet: www.segger.com    Support:  support@segger.com    *
+   9:LCDConf.c     **** *                                                                    *
+  10:LCDConf.c     **** **********************************************************************
+  11:LCDConf.c     **** 
+  12:LCDConf.c     **** ** emWin V5.46 - Graphical user interface for embedded applications **
+  13:LCDConf.c     **** All  Intellectual Property rights  in the Software belongs to  SEGGER.
+  14:LCDConf.c     **** emWin is protected by  international copyright laws.  Knowledge of the
+  15:LCDConf.c     **** source code may not be used to write a similar product.  This file may
+  16:LCDConf.c     **** only be used in accordance with the following terms:
+  17:LCDConf.c     **** 
+  18:LCDConf.c     **** The software  has been licensed to  Cypress Semiconductor Corporation,
+  19:LCDConf.c     **** whose registered  office is situated  at 198 Champion Ct. San Jose, CA 
+  20:LCDConf.c     **** 95134 USA  solely for the  purposes of creating  libraries for Cypress
+  21:LCDConf.c     **** PSoC3 and  PSoC5 processor-based devices,  sublicensed and distributed
+  22:LCDConf.c     **** under  the  terms  and  conditions  of  the  Cypress  End User License
+  23:LCDConf.c     **** Agreement.
+  24:LCDConf.c     **** Full source code is available at: www.segger.com
+  25:LCDConf.c     **** 
+  26:LCDConf.c     **** We appreciate your understanding and fairness.
+  27:LCDConf.c     **** ----------------------------------------------------------------------
+  28:LCDConf.c     **** Licensing information
+  29:LCDConf.c     **** Licensor:                 SEGGER Microcontroller Systems LLC
+  30:LCDConf.c     **** Licensed to:              Cypress Semiconductor Corp, 198 Champion Ct., San Jose, CA 95134, USA
+  31:LCDConf.c     **** Licensed SEGGER software: emWin
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 2
+
+
+  32:LCDConf.c     **** License number:           GUI-00319
+  33:LCDConf.c     **** License model:            Services and License Agreement, signed June 10th, 2009
+  34:LCDConf.c     **** Licensed platform:        Any Cypress platform (Initial targets are: PSoC3, PSoC5)
+  35:LCDConf.c     **** ----------------------------------------------------------------------
+  36:LCDConf.c     **** Support and Update Agreement (SUA)
+  37:LCDConf.c     **** SUA period:               2009-06-12 - 2022-07-27
+  38:LCDConf.c     **** Contact to extend SUA:    sales@segger.com
+  39:LCDConf.c     **** ----------------------------------------------------------------------
+  40:LCDConf.c     **** File        : LCDConf.c
+  41:LCDConf.c     **** Purpose     : Display controller configuration (single layer)
+  42:LCDConf.c     **** ---------------------------END-OF-HEADER------------------------------
+  43:LCDConf.c     **** */
+  44:LCDConf.c     **** 
+  45:LCDConf.c     **** #include "project.h" 
+  46:LCDConf.c     **** 
+  47:LCDConf.c     **** #include "GUI.h"
+  48:LCDConf.c     **** #include "GUIDRV_FlexColor.h"
+  49:LCDConf.c     **** 
+  50:LCDConf.c     **** #include "tft.h"
+  51:LCDConf.c     **** 
+  52:LCDConf.c     **** /*********************************************************************
+  53:LCDConf.c     **** *
+  54:LCDConf.c     **** *       Layer configuration (to be modified)
+  55:LCDConf.c     **** *
+  56:LCDConf.c     **** **********************************************************************
+  57:LCDConf.c     **** */
+  58:LCDConf.c     **** //
+  59:LCDConf.c     **** // Physical display size
+  60:LCDConf.c     **** //   The display size should be adapted in order to match the size of
+  61:LCDConf.c     **** //   the target display.
+  62:LCDConf.c     **** //
+  63:LCDConf.c     **** #define XSIZE_PHYS 240
+  64:LCDConf.c     **** #define YSIZE_PHYS 320
+  65:LCDConf.c     **** #define LCD_CONTROLLER GUIDRV_FLEXCOLOR_F66709
+  66:LCDConf.c     **** 
+  67:LCDConf.c     **** 
+  68:LCDConf.c     **** 
+  69:LCDConf.c     **** //
+  70:LCDConf.c     **** // Color conversion
+  71:LCDConf.c     **** //   The color conversion functions should be selected according to
+  72:LCDConf.c     **** //   the color mode of the target display. Details can be found in
+  73:LCDConf.c     **** //   the chapter "Colors" in the emWin user manual.
+  74:LCDConf.c     **** //
+  75:LCDConf.c     **** #define COLOR_CONVERSION GUICC_M565
+  76:LCDConf.c     **** 
+  77:LCDConf.c     **** //
+  78:LCDConf.c     **** // Display driver
+  79:LCDConf.c     **** //
+  80:LCDConf.c     **** #define DISPLAY_DRIVER GUIDRV_FLEXCOLOR
+  81:LCDConf.c     **** 
+  82:LCDConf.c     **** /*********************************************************************
+  83:LCDConf.c     **** *
+  84:LCDConf.c     **** *       Configuration checking
+  85:LCDConf.c     **** *
+  86:LCDConf.c     **** **********************************************************************
+  87:LCDConf.c     **** */
+  88:LCDConf.c     **** #ifndef   VXSIZE_PHYS
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 3
+
+
+  89:LCDConf.c     ****   #define VXSIZE_PHYS XSIZE_PHYS
+  90:LCDConf.c     **** #endif
+  91:LCDConf.c     **** #ifndef   VYSIZE_PHYS
+  92:LCDConf.c     ****   #define VYSIZE_PHYS YSIZE_PHYS
+  93:LCDConf.c     **** #endif
+  94:LCDConf.c     **** #ifndef   XSIZE_PHYS
+  95:LCDConf.c     ****   #error Physical X size of display is not defined!
+  96:LCDConf.c     **** #endif
+  97:LCDConf.c     **** #ifndef   YSIZE_PHYS
+  98:LCDConf.c     ****   #error Physical Y size of display is not defined!
+  99:LCDConf.c     **** #endif
+ 100:LCDConf.c     **** #ifndef   COLOR_CONVERSION
+ 101:LCDConf.c     ****   #error Color conversion not defined!
+ 102:LCDConf.c     **** #endif
+ 103:LCDConf.c     **** #ifndef   DISPLAY_DRIVER
+ 104:LCDConf.c     ****   #error No display driver defined!
+ 105:LCDConf.c     **** #endif
+ 106:LCDConf.c     **** 
+ 107:LCDConf.c     **** /********************************************************************
+ 108:LCDConf.c     **** *
+ 109:LCDConf.c     **** *       _InitController
+ 110:LCDConf.c     **** *
+ 111:LCDConf.c     **** * Purpose:
+ 112:LCDConf.c     **** *   Initializes the LCD controller
+ 113:LCDConf.c     **** *
+ 114:LCDConf.c     **** */
+ 115:LCDConf.c     **** static void _InitController(void) {
+  27              		.loc 1 115 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+ 116:LCDConf.c     ****   /* Set up the display controller and put it into operation. If the 
+ 117:LCDConf.c     ****   *  display controller is not initialized by any external routine 
+ 118:LCDConf.c     ****   *  this needs to be adapted by the customer.
+ 119:LCDConf.c     ****   */
+ 120:LCDConf.c     ****     tftStart();
+  35              		.loc 1 120 0
+  36 0002 FFF7FEFF 		bl	tftStart
+  37              	.LVL0:
+  38 0006 08BD     		pop	{r3, pc}
+  39              		.cfi_endproc
+  40              	.LFE63:
+  41              		.size	_InitController, .-_InitController
+  42              		.section	.text.LCD_X_Config,"ax",%progbits
+  43              		.align	2
+  44              		.global	LCD_X_Config
+  45              		.thumb
+  46              		.thumb_func
+  47              		.type	LCD_X_Config, %function
+  48              	LCD_X_Config:
+  49              	.LFB64:
+ 121:LCDConf.c     **** }
+ 122:LCDConf.c     **** 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 4
+
+
+ 123:LCDConf.c     **** /*********************************************************************
+ 124:LCDConf.c     **** *
+ 125:LCDConf.c     **** *       Public code
+ 126:LCDConf.c     **** *
+ 127:LCDConf.c     **** **********************************************************************
+ 128:LCDConf.c     **** */
+ 129:LCDConf.c     **** /*********************************************************************
+ 130:LCDConf.c     **** *
+ 131:LCDConf.c     **** *       LCD_X_Config
+ 132:LCDConf.c     **** *
+ 133:LCDConf.c     **** * Function description
+ 134:LCDConf.c     **** *   Called during the initialization process in order to set up the
+ 135:LCDConf.c     **** *   display driver configuration.
+ 136:LCDConf.c     **** */
+ 137:LCDConf.c     **** void LCD_X_Config(void) {
+  50              		.loc 1 137 0
+  51              		.cfi_startproc
+  52              		@ args = 0, pretend = 0, frame = 128
+  53              		@ frame_needed = 0, uses_anonymous_args = 0
+  54 0000 30B5     		push	{r4, r5, lr}
+  55              		.cfi_def_cfa_offset 12
+  56              		.cfi_offset 4, -12
+  57              		.cfi_offset 5, -8
+  58              		.cfi_offset 14, -4
+  59 0002 A1B0     		sub	sp, sp, #132
+  60              		.cfi_def_cfa_offset 144
+ 138:LCDConf.c     ****   GUI_DEVICE * pDevice;
+ 139:LCDConf.c     ****   CONFIG_FLEXCOLOR Config = {0};
+  61              		.loc 1 139 0
+  62 0004 0024     		movs	r4, #0
+  63 0006 1B94     		str	r4, [sp, #108]
+  64 0008 1C94     		str	r4, [sp, #112]
+  65 000a 1D94     		str	r4, [sp, #116]
+  66 000c 1E94     		str	r4, [sp, #120]
+  67 000e 1F94     		str	r4, [sp, #124]
+ 140:LCDConf.c     ****   GUI_PORT_API PortAPI = {0};
+  68              		.loc 1 140 0
+  69 0010 6822     		movs	r2, #104
+  70 0012 2146     		mov	r1, r4
+  71 0014 01A8     		add	r0, sp, #4
+  72 0016 FFF7FEFF 		bl	memset
+  73              	.LVL1:
+ 141:LCDConf.c     ****   //
+ 142:LCDConf.c     ****   // Set the display driver and color conversion
+ 143:LCDConf.c     ****   //
+ 144:LCDConf.c     ****   pDevice = GUI_DEVICE_CreateAndLink(DISPLAY_DRIVER, COLOR_CONVERSION, 0, 0);
+  74              		.loc 1 144 0
+  75 001a 2346     		mov	r3, r4
+  76 001c 2246     		mov	r2, r4
+  77 001e 1449     		ldr	r1, .L5
+  78 0020 1448     		ldr	r0, .L5+4
+  79 0022 FFF7FEFF 		bl	GUI_DEVICE_CreateAndLink
+  80              	.LVL2:
+  81 0026 0546     		mov	r5, r0
+  82              	.LVL3:
+ 145:LCDConf.c     ****   //
+ 146:LCDConf.c     ****   // Display driver configuration
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 5
+
+
+ 147:LCDConf.c     ****   //
+ 148:LCDConf.c     ****   LCD_SetSizeEx    (0, XSIZE_PHYS,   YSIZE_PHYS);
+  83              		.loc 1 148 0
+  84 0028 4FF4A072 		mov	r2, #320
+  85 002c F021     		movs	r1, #240
+  86 002e 2046     		mov	r0, r4
+  87              	.LVL4:
+  88 0030 FFF7FEFF 		bl	LCD_SetSizeEx
+  89              	.LVL5:
+ 149:LCDConf.c     ****   LCD_SetVSizeEx   (0, VXSIZE_PHYS,  VYSIZE_PHYS);
+  90              		.loc 1 149 0
+  91 0034 4FF4A072 		mov	r2, #320
+  92 0038 F021     		movs	r1, #240
+  93 003a 2046     		mov	r0, r4
+  94 003c FFF7FEFF 		bl	LCD_SetVSizeEx
+  95              	.LVL6:
+ 150:LCDConf.c     ****   //
+ 151:LCDConf.c     ****   // Orientation
+ 152:LCDConf.c     ****   //
+ 153:LCDConf.c     ****   Config.Orientation = GUI_MIRROR_Y;
+  96              		.loc 1 153 0
+  97 0040 0223     		movs	r3, #2
+  98 0042 1D93     		str	r3, [sp, #116]
+ 154:LCDConf.c     **** 
+ 155:LCDConf.c     ****   GUIDRV_FlexColor_Config(pDevice, &Config);
+  99              		.loc 1 155 0
+ 100 0044 1BA9     		add	r1, sp, #108
+ 101 0046 2846     		mov	r0, r5
+ 102 0048 FFF7FEFF 		bl	GUIDRV_FlexColor_Config
+ 103              	.LVL7:
+ 156:LCDConf.c     ****   //
+ 157:LCDConf.c     ****   // Set controller and operation mode
+ 158:LCDConf.c     ****   //
+ 159:LCDConf.c     ****   PortAPI.pfWrite8_A0 = write8_a0;
+ 104              		.loc 1 159 0
+ 105 004c 0A4B     		ldr	r3, .L5+8
+ 106 004e 0193     		str	r3, [sp, #4]
+ 160:LCDConf.c     ****   PortAPI.pfWrite8_A1 = write8_a1;
+ 107              		.loc 1 160 0
+ 108 0050 0A4B     		ldr	r3, .L5+12
+ 109 0052 0293     		str	r3, [sp, #8]
+ 161:LCDConf.c     ****   PortAPI.pfWriteM8_A1 = writeM8_a1;
+ 110              		.loc 1 161 0
+ 111 0054 0A4B     		ldr	r3, .L5+16
+ 112 0056 0493     		str	r3, [sp, #16]
+ 162:LCDConf.c     ****   PortAPI.pfRead8_A1 = read8_a1;
+ 113              		.loc 1 162 0
+ 114 0058 0A4B     		ldr	r3, .L5+20
+ 115 005a 0693     		str	r3, [sp, #24]
+ 163:LCDConf.c     ****   PortAPI.pfReadM8_A1 = readM8_a1;
+ 116              		.loc 1 163 0
+ 117 005c 0A4B     		ldr	r3, .L5+24
+ 118 005e 0893     		str	r3, [sp, #32]
+ 164:LCDConf.c     ****   
+ 165:LCDConf.c     ****   GUIDRV_FlexColor_SetFunc(pDevice, &PortAPI, LCD_CONTROLLER, GUIDRV_FLEXCOLOR_M16C0B8);
+ 119              		.loc 1 165 0
+ 120 0060 0A4B     		ldr	r3, .L5+28
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 6
+
+
+ 121 0062 0B4A     		ldr	r2, .L5+32
+ 122 0064 01A9     		add	r1, sp, #4
+ 123 0066 2846     		mov	r0, r5
+ 124 0068 FFF7FEFF 		bl	GUIDRV_FlexColor_SetFunc
+ 125              	.LVL8:
+ 166:LCDConf.c     **** }
+ 126              		.loc 1 166 0
+ 127 006c 21B0     		add	sp, sp, #132
+ 128              		.cfi_def_cfa_offset 12
+ 129              		@ sp needed
+ 130 006e 30BD     		pop	{r4, r5, pc}
+ 131              	.LVL9:
+ 132              	.L6:
+ 133              		.align	2
+ 134              	.L5:
+ 135 0070 00000000 		.word	LCD_API_ColorConv_M565
+ 136 0074 00000000 		.word	GUIDRV_FlexColor_API
+ 137 0078 00000000 		.word	write8_a0
+ 138 007c 00000000 		.word	write8_a1
+ 139 0080 00000000 		.word	writeM8_a1
+ 140 0084 00000000 		.word	read8_a1
+ 141 0088 00000000 		.word	readM8_a1
+ 142 008c 00000000 		.word	GUIDRV_FlexColor_SetMode16bppC0B8
+ 143 0090 00000000 		.word	GUIDRV_FlexColor_SetFunc66709
+ 144              		.cfi_endproc
+ 145              	.LFE64:
+ 146              		.size	LCD_X_Config, .-LCD_X_Config
+ 147              		.section	.text.LCD_X_DisplayDriver,"ax",%progbits
+ 148              		.align	2
+ 149              		.global	LCD_X_DisplayDriver
+ 150              		.thumb
+ 151              		.thumb_func
+ 152              		.type	LCD_X_DisplayDriver, %function
+ 153              	LCD_X_DisplayDriver:
+ 154              	.LFB65:
+ 167:LCDConf.c     **** 
+ 168:LCDConf.c     **** /*********************************************************************
+ 169:LCDConf.c     **** *
+ 170:LCDConf.c     **** *       LCD_X_DisplayDriver
+ 171:LCDConf.c     **** *
+ 172:LCDConf.c     **** * Purpose:
+ 173:LCDConf.c     **** *   This function is called by the display driver for several purposes.
+ 174:LCDConf.c     **** *   To support the according task, the routine needs to be adapted to
+ 175:LCDConf.c     **** *   the display controller. Note that the commands marked
+ 176:LCDConf.c     **** *   "optional" are not cogently required and should only be adapted if 
+ 177:LCDConf.c     **** *   the display controller supports these features.
+ 178:LCDConf.c     **** *
+ 179:LCDConf.c     **** * Parameter:
+ 180:LCDConf.c     **** *   LayerIndex - Zero based layer index
+ 181:LCDConf.c     **** *   Cmd        - Command to be executed
+ 182:LCDConf.c     **** *   pData      - Pointer to a data structure.
+ 183:LCDConf.c     **** * 
+ 184:LCDConf.c     **** * Return Value:
+ 185:LCDConf.c     **** *   < -1 - Error
+ 186:LCDConf.c     **** *     -1 - The command is not handled.
+ 187:LCDConf.c     **** *      0 - OK.
+ 188:LCDConf.c     **** */
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 7
+
+
+ 189:LCDConf.c     **** int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
+ 155              		.loc 1 189 0
+ 156              		.cfi_startproc
+ 157              		@ args = 0, pretend = 0, frame = 0
+ 158              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159              	.LVL10:
+ 190:LCDConf.c     ****   int r;
+ 191:LCDConf.c     ****   
+ 192:LCDConf.c     ****   GUI_USE_PARA(LayerIndex);
+ 193:LCDConf.c     ****   GUI_USE_PARA(pData);
+ 194:LCDConf.c     ****   
+ 195:LCDConf.c     ****   switch (Cmd) {
+ 160              		.loc 1 195 0
+ 161 0000 0129     		cmp	r1, #1
+ 162 0002 04D1     		bne	.L11
+ 189:LCDConf.c     ****   int r;
+ 163              		.loc 1 189 0
+ 164 0004 08B5     		push	{r3, lr}
+ 165              		.cfi_def_cfa_offset 8
+ 166              		.cfi_offset 3, -8
+ 167              		.cfi_offset 14, -4
+ 196:LCDConf.c     ****   case LCD_X_INITCONTROLLER: {
+ 197:LCDConf.c     ****     //
+ 198:LCDConf.c     ****     // Called during the initialization process in order to set up the
+ 199:LCDConf.c     ****     // display controller and put it into operation. If the display
+ 200:LCDConf.c     ****     // controller is not initialized by any external routine, this needs
+ 201:LCDConf.c     ****     // to be adapted by the customer...
+ 202:LCDConf.c     ****     //
+ 203:LCDConf.c     ****     // ...
+ 204:LCDConf.c     ****     _InitController();
+ 168              		.loc 1 204 0
+ 169 0006 FFF7FEFF 		bl	_InitController
+ 170              	.LVL11:
+ 205:LCDConf.c     ****     return 0;
+ 171              		.loc 1 205 0
+ 172 000a 0020     		movs	r0, #0
+ 173 000c 08BD     		pop	{r3, pc}
+ 174              	.LVL12:
+ 175              	.L11:
+ 176              		.cfi_def_cfa_offset 0
+ 177              		.cfi_restore 3
+ 178              		.cfi_restore 14
+ 206:LCDConf.c     ****   }
+ 207:LCDConf.c     ****   default:
+ 208:LCDConf.c     ****     r = -1;
+ 209:LCDConf.c     ****   }
+ 210:LCDConf.c     ****   return r;
+ 179              		.loc 1 210 0
+ 180 000e 4FF0FF30 		mov	r0, #-1
+ 181              	.LVL13:
+ 182 0012 7047     		bx	lr
+ 183              		.cfi_endproc
+ 184              	.LFE65:
+ 185              		.size	LCD_X_DisplayDriver, .-LCD_X_DisplayDriver
+ 186              		.text
+ 187              	.Letext0:
+ 188              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 8
+
+
+ 189              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 190              		.file 4 "..\\..\\emWinGraphics_v5_46\\Code\\Include\\PSoC4_5/LCD.h"
+ 191              		.file 5 "..\\..\\emWinGraphics_v5_46\\Code\\Include\\PSoC4_5/GUI.h"
+ 192              		.file 6 "..\\..\\emWinGraphics_v5_46\\Code\\Include\\PSoC4_5/GUI_Type.h"
+ 193              		.file 7 "GUIDRV_FlexColor.h"
+ 194              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
+ 195              		.file 9 "tft.h"
+ 196              		.section	.debug_info,"",%progbits
+ 197              	.Ldebug_info0:
+ 198 0000 F9080000 		.4byte	0x8f9
+ 199 0004 0400     		.2byte	0x4
+ 200 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 201 000a 04       		.byte	0x4
+ 202 000b 01       		.uleb128 0x1
+ 203 000c 65050000 		.4byte	.LASF99
+ 204 0010 0C       		.byte	0xc
+ 205 0011 B2020000 		.4byte	.LASF100
+ 206 0015 A1010000 		.4byte	.LASF101
+ 207 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 208 001d 00000000 		.4byte	0
+ 209 0021 00000000 		.4byte	.Ldebug_line0
+ 210 0025 02       		.uleb128 0x2
+ 211 0026 01       		.byte	0x1
+ 212 0027 06       		.byte	0x6
+ 213 0028 D3020000 		.4byte	.LASF0
+ 214 002c 02       		.uleb128 0x2
+ 215 002d 01       		.byte	0x1
+ 216 002e 08       		.byte	0x8
+ 217 002f C5020000 		.4byte	.LASF1
+ 218 0033 02       		.uleb128 0x2
+ 219 0034 02       		.byte	0x2
+ 220 0035 05       		.byte	0x5
+ 221 0036 6F000000 		.4byte	.LASF2
+ 222 003a 02       		.uleb128 0x2
+ 223 003b 02       		.byte	0x2
+ 224 003c 07       		.byte	0x7
+ 225 003d 1F040000 		.4byte	.LASF3
+ 226 0041 03       		.uleb128 0x3
+ 227 0042 C9040000 		.4byte	.LASF9
+ 228 0046 02       		.byte	0x2
+ 229 0047 3F       		.byte	0x3f
+ 230 0048 4C000000 		.4byte	0x4c
+ 231 004c 02       		.uleb128 0x2
+ 232 004d 04       		.byte	0x4
+ 233 004e 05       		.byte	0x5
+ 234 004f 17020000 		.4byte	.LASF4
+ 235 0053 02       		.uleb128 0x2
+ 236 0054 04       		.byte	0x4
+ 237 0055 07       		.byte	0x7
+ 238 0056 4C040000 		.4byte	.LASF5
+ 239 005a 02       		.uleb128 0x2
+ 240 005b 08       		.byte	0x8
+ 241 005c 05       		.byte	0x5
+ 242 005d 93010000 		.4byte	.LASF6
+ 243 0061 02       		.uleb128 0x2
+ 244 0062 08       		.byte	0x8
+ 245 0063 07       		.byte	0x7
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 9
+
+
+ 246 0064 DF020000 		.4byte	.LASF7
+ 247 0068 04       		.uleb128 0x4
+ 248 0069 04       		.byte	0x4
+ 249 006a 05       		.byte	0x5
+ 250 006b 696E7400 		.ascii	"int\000"
+ 251 006f 02       		.uleb128 0x2
+ 252 0070 04       		.byte	0x4
+ 253 0071 07       		.byte	0x7
+ 254 0072 28030000 		.4byte	.LASF8
+ 255 0076 03       		.uleb128 0x3
+ 256 0077 B2030000 		.4byte	.LASF10
+ 257 007b 03       		.byte	0x3
+ 258 007c 2C       		.byte	0x2c
+ 259 007d 41000000 		.4byte	0x41
+ 260 0081 02       		.uleb128 0x2
+ 261 0082 04       		.byte	0x4
+ 262 0083 04       		.byte	0x4
+ 263 0084 7A010000 		.4byte	.LASF11
+ 264 0088 02       		.uleb128 0x2
+ 265 0089 08       		.byte	0x8
+ 266 008a 04       		.byte	0x4
+ 267 008b 5E040000 		.4byte	.LASF12
+ 268 008f 02       		.uleb128 0x2
+ 269 0090 01       		.byte	0x1
+ 270 0091 08       		.byte	0x8
+ 271 0092 8D030000 		.4byte	.LASF13
+ 272 0096 05       		.uleb128 0x5
+ 273 0097 04       		.byte	0x4
+ 274 0098 9C000000 		.4byte	0x9c
+ 275 009c 06       		.uleb128 0x6
+ 276 009d 02       		.uleb128 0x2
+ 277 009e 08       		.byte	0x8
+ 278 009f 04       		.byte	0x4
+ 279 00a0 C9000000 		.4byte	.LASF14
+ 280 00a4 02       		.uleb128 0x2
+ 281 00a5 04       		.byte	0x4
+ 282 00a6 07       		.byte	0x7
+ 283 00a7 79000000 		.4byte	.LASF15
+ 284 00ab 07       		.uleb128 0x7
+ 285 00ac 04       		.byte	0x4
+ 286 00ad 05       		.uleb128 0x5
+ 287 00ae 04       		.byte	0x4
+ 288 00af 2C000000 		.4byte	0x2c
+ 289 00b3 03       		.uleb128 0x3
+ 290 00b4 06010000 		.4byte	.LASF16
+ 291 00b8 04       		.byte	0x4
+ 292 00b9 6A       		.byte	0x6a
+ 293 00ba 53000000 		.4byte	0x53
+ 294 00be 08       		.uleb128 0x8
+ 295 00bf 08       		.byte	0x8
+ 296 00c0 04       		.byte	0x4
+ 297 00c1 71       		.byte	0x71
+ 298 00c2 F3000000 		.4byte	0xf3
+ 299 00c6 09       		.uleb128 0x9
+ 300 00c7 783000   		.ascii	"x0\000"
+ 301 00ca 04       		.byte	0x4
+ 302 00cb 71       		.byte	0x71
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 10
+
+
+ 303 00cc 33000000 		.4byte	0x33
+ 304 00d0 00       		.byte	0
+ 305 00d1 09       		.uleb128 0x9
+ 306 00d2 793000   		.ascii	"y0\000"
+ 307 00d5 04       		.byte	0x4
+ 308 00d6 71       		.byte	0x71
+ 309 00d7 33000000 		.4byte	0x33
+ 310 00db 02       		.byte	0x2
+ 311 00dc 09       		.uleb128 0x9
+ 312 00dd 783100   		.ascii	"x1\000"
+ 313 00e0 04       		.byte	0x4
+ 314 00e1 71       		.byte	0x71
+ 315 00e2 33000000 		.4byte	0x33
+ 316 00e6 04       		.byte	0x4
+ 317 00e7 09       		.uleb128 0x9
+ 318 00e8 793100   		.ascii	"y1\000"
+ 319 00eb 04       		.byte	0x4
+ 320 00ec 71       		.byte	0x71
+ 321 00ed 33000000 		.4byte	0x33
+ 322 00f1 06       		.byte	0x6
+ 323 00f2 00       		.byte	0
+ 324 00f3 03       		.uleb128 0x3
+ 325 00f4 BC020000 		.4byte	.LASF17
+ 326 00f8 04       		.byte	0x4
+ 327 00f9 71       		.byte	0x71
+ 328 00fa BE000000 		.4byte	0xbe
+ 329 00fe 03       		.uleb128 0x3
+ 330 00ff 3B050000 		.4byte	.LASF18
+ 331 0103 04       		.byte	0x4
+ 332 0104 88       		.byte	0x88
+ 333 0105 09010000 		.4byte	0x109
+ 334 0109 0A       		.uleb128 0xa
+ 335 010a B3000000 		.4byte	0xb3
+ 336 010e 18010000 		.4byte	0x118
+ 337 0112 0B       		.uleb128 0xb
+ 338 0113 53000000 		.4byte	0x53
+ 339 0117 00       		.byte	0
+ 340 0118 03       		.uleb128 0x3
+ 341 0119 22060000 		.4byte	.LASF19
+ 342 011d 04       		.byte	0x4
+ 343 011e 89       		.byte	0x89
+ 344 011f 23010000 		.4byte	0x123
+ 345 0123 0A       		.uleb128 0xa
+ 346 0124 53000000 		.4byte	0x53
+ 347 0128 32010000 		.4byte	0x132
+ 348 012c 0B       		.uleb128 0xb
+ 349 012d B3000000 		.4byte	0xb3
+ 350 0131 00       		.byte	0
+ 351 0132 03       		.uleb128 0x3
+ 352 0133 02020000 		.4byte	.LASF20
+ 353 0137 04       		.byte	0x4
+ 354 0138 8A       		.byte	0x8a
+ 355 0139 3D010000 		.4byte	0x13d
+ 356 013d 0C       		.uleb128 0xc
+ 357 013e 53000000 		.4byte	0x53
+ 358 0142 03       		.uleb128 0x3
+ 359 0143 23050000 		.4byte	.LASF21
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 11
+
+
+ 360 0147 04       		.byte	0x4
+ 361 0148 8C       		.byte	0x8c
+ 362 0149 4D010000 		.4byte	0x14d
+ 363 014d 0D       		.uleb128 0xd
+ 364 014e 67010000 		.4byte	0x167
+ 365 0152 0B       		.uleb128 0xb
+ 366 0153 AB000000 		.4byte	0xab
+ 367 0157 0B       		.uleb128 0xb
+ 368 0158 67010000 		.4byte	0x167
+ 369 015c 0B       		.uleb128 0xb
+ 370 015d 53000000 		.4byte	0x53
+ 371 0161 0B       		.uleb128 0xb
+ 372 0162 2C000000 		.4byte	0x2c
+ 373 0166 00       		.byte	0
+ 374 0167 05       		.uleb128 0x5
+ 375 0168 04       		.byte	0x4
+ 376 0169 B3000000 		.4byte	0xb3
+ 377 016d 03       		.uleb128 0x3
+ 378 016e 75030000 		.4byte	.LASF22
+ 379 0172 04       		.byte	0x4
+ 380 0173 8D       		.byte	0x8d
+ 381 0174 78010000 		.4byte	0x178
+ 382 0178 0D       		.uleb128 0xd
+ 383 0179 92010000 		.4byte	0x192
+ 384 017d 0B       		.uleb128 0xb
+ 385 017e 67010000 		.4byte	0x167
+ 386 0182 0B       		.uleb128 0xb
+ 387 0183 AB000000 		.4byte	0xab
+ 388 0187 0B       		.uleb128 0xb
+ 389 0188 53000000 		.4byte	0x53
+ 390 018c 0B       		.uleb128 0xb
+ 391 018d 2C000000 		.4byte	0x2c
+ 392 0191 00       		.byte	0
+ 393 0192 08       		.uleb128 0x8
+ 394 0193 18       		.byte	0x18
+ 395 0194 04       		.byte	0x4
+ 396 0195 93       		.byte	0x93
+ 397 0196 E3010000 		.4byte	0x1e3
+ 398 019a 0E       		.uleb128 0xe
+ 399 019b 5A030000 		.4byte	.LASF23
+ 400 019f 04       		.byte	0x4
+ 401 01a0 94       		.byte	0x94
+ 402 01a1 E3010000 		.4byte	0x1e3
+ 403 01a5 00       		.byte	0
+ 404 01a6 0E       		.uleb128 0xe
+ 405 01a7 1A030000 		.4byte	.LASF24
+ 406 01ab 04       		.byte	0x4
+ 407 01ac 95       		.byte	0x95
+ 408 01ad E9010000 		.4byte	0x1e9
+ 409 01b1 04       		.byte	0x4
+ 410 01b2 0E       		.uleb128 0xe
+ 411 01b3 1D010000 		.4byte	.LASF25
+ 412 01b7 04       		.byte	0x4
+ 413 01b8 96       		.byte	0x96
+ 414 01b9 EF010000 		.4byte	0x1ef
+ 415 01bd 08       		.byte	0x8
+ 416 01be 0E       		.uleb128 0xe
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 12
+
+
+ 417 01bf 12030000 		.4byte	.LASF26
+ 418 01c3 04       		.byte	0x4
+ 419 01c4 97       		.byte	0x97
+ 420 01c5 68000000 		.4byte	0x68
+ 421 01c9 0C       		.byte	0xc
+ 422 01ca 0E       		.uleb128 0xe
+ 423 01cb 2C010000 		.4byte	.LASF27
+ 424 01cf 04       		.byte	0x4
+ 425 01d0 98       		.byte	0x98
+ 426 01d1 F5010000 		.4byte	0x1f5
+ 427 01d5 10       		.byte	0x10
+ 428 01d6 0E       		.uleb128 0xe
+ 429 01d7 D1030000 		.4byte	.LASF28
+ 430 01db 04       		.byte	0x4
+ 431 01dc 99       		.byte	0x99
+ 432 01dd FB010000 		.4byte	0x1fb
+ 433 01e1 14       		.byte	0x14
+ 434 01e2 00       		.byte	0
+ 435 01e3 05       		.uleb128 0x5
+ 436 01e4 04       		.byte	0x4
+ 437 01e5 18010000 		.4byte	0x118
+ 438 01e9 05       		.uleb128 0x5
+ 439 01ea 04       		.byte	0x4
+ 440 01eb FE000000 		.4byte	0xfe
+ 441 01ef 05       		.uleb128 0x5
+ 442 01f0 04       		.byte	0x4
+ 443 01f1 32010000 		.4byte	0x132
+ 444 01f5 05       		.uleb128 0x5
+ 445 01f6 04       		.byte	0x4
+ 446 01f7 6D010000 		.4byte	0x16d
+ 447 01fb 05       		.uleb128 0x5
+ 448 01fc 04       		.byte	0x4
+ 449 01fd 42010000 		.4byte	0x142
+ 450 0201 03       		.uleb128 0x3
+ 451 0202 30020000 		.4byte	.LASF29
+ 452 0206 04       		.byte	0x4
+ 453 0207 9A       		.byte	0x9a
+ 454 0208 92010000 		.4byte	0x192
+ 455 020c 05       		.uleb128 0x5
+ 456 020d 04       		.byte	0x4
+ 457 020e F3000000 		.4byte	0xf3
+ 458 0212 0F       		.uleb128 0xf
+ 459 0213 C6030000 		.4byte	.LASF30
+ 460 0217 04       		.byte	0x4
+ 461 0218 4301     		.2byte	0x143
+ 462 021a 1E020000 		.4byte	0x21e
+ 463 021e 10       		.uleb128 0x10
+ 464 021f C6030000 		.4byte	.LASF30
+ 465 0223 1C       		.byte	0x1c
+ 466 0224 05       		.byte	0x5
+ 467 0225 B0       		.byte	0xb0
+ 468 0226 7D020000 		.4byte	0x27d
+ 469 022a 0E       		.uleb128 0xe
+ 470 022b F5010000 		.4byte	.LASF31
+ 471 022f 05       		.byte	0x5
+ 472 0230 B4       		.byte	0xb4
+ 473 0231 85050000 		.4byte	0x585
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 13
+
+
+ 474 0235 00       		.byte	0
+ 475 0236 0E       		.uleb128 0xe
+ 476 0237 7C020000 		.4byte	.LASF32
+ 477 023b 05       		.byte	0x5
+ 478 023c B5       		.byte	0xb5
+ 479 023d 85050000 		.4byte	0x585
+ 480 0241 04       		.byte	0x4
+ 481 0242 09       		.uleb128 0x9
+ 482 0243 7500     		.ascii	"u\000"
+ 483 0245 05       		.byte	0x5
+ 484 0246 BC       		.byte	0xbc
+ 485 0247 A5060000 		.4byte	0x6a5
+ 486 024b 08       		.byte	0x8
+ 487 024c 0E       		.uleb128 0xe
+ 488 024d DF000000 		.4byte	.LASF33
+ 489 0251 05       		.byte	0x5
+ 490 0252 C0       		.byte	0xc0
+ 491 0253 C4060000 		.4byte	0x6c4
+ 492 0257 0C       		.byte	0xc
+ 493 0258 0E       		.uleb128 0xe
+ 494 0259 00000000 		.4byte	.LASF34
+ 495 025d 05       		.byte	0x5
+ 496 025e C1       		.byte	0xc1
+ 497 025f 4E030000 		.4byte	0x34e
+ 498 0263 10       		.byte	0x10
+ 499 0264 0E       		.uleb128 0xe
+ 500 0265 74010000 		.4byte	.LASF35
+ 501 0269 05       		.byte	0x5
+ 502 026a C2       		.byte	0xc2
+ 503 026b 3A000000 		.4byte	0x3a
+ 504 026f 14       		.byte	0x14
+ 505 0270 0E       		.uleb128 0xe
+ 506 0271 88010000 		.4byte	.LASF36
+ 507 0275 05       		.byte	0x5
+ 508 0276 C3       		.byte	0xc3
+ 509 0277 68000000 		.4byte	0x68
+ 510 027b 18       		.byte	0x18
+ 511 027c 00       		.byte	0
+ 512 027d 0F       		.uleb128 0xf
+ 513 027e F7000000 		.4byte	.LASF37
+ 514 0282 04       		.byte	0x4
+ 515 0283 4401     		.2byte	0x144
+ 516 0285 89020000 		.4byte	0x289
+ 517 0289 10       		.uleb128 0x10
+ 518 028a F7000000 		.4byte	.LASF37
+ 519 028e 34       		.byte	0x34
+ 520 028f 05       		.byte	0x5
+ 521 0290 6A       		.byte	0x6a
+ 522 0291 32030000 		.4byte	0x332
+ 523 0295 0E       		.uleb128 0xe
+ 524 0296 A1030000 		.4byte	.LASF38
+ 525 029a 05       		.byte	0x5
+ 526 029b 6E       		.byte	0x6e
+ 527 029c 68000000 		.4byte	0x68
+ 528 02a0 00       		.byte	0
+ 529 02a1 0E       		.uleb128 0xe
+ 530 02a2 12040000 		.4byte	.LASF39
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 14
+
+
+ 531 02a6 05       		.byte	0x5
+ 532 02a7 72       		.byte	0x72
+ 533 02a8 96050000 		.4byte	0x596
+ 534 02ac 04       		.byte	0x4
+ 535 02ad 0E       		.uleb128 0xe
+ 536 02ae 68010000 		.4byte	.LASF40
+ 537 02b2 05       		.byte	0x5
+ 538 02b3 73       		.byte	0x73
+ 539 02b4 B6050000 		.4byte	0x5b6
+ 540 02b8 08       		.byte	0x8
+ 541 02b9 0E       		.uleb128 0xe
+ 542 02ba AF000000 		.4byte	.LASF41
+ 543 02be 05       		.byte	0x5
+ 544 02bf 74       		.byte	0x74
+ 545 02c0 B6050000 		.4byte	0x5b6
+ 546 02c4 0C       		.byte	0xc
+ 547 02c5 0E       		.uleb128 0xe
+ 548 02c6 3D000000 		.4byte	.LASF42
+ 549 02ca 05       		.byte	0x5
+ 550 02cb 75       		.byte	0x75
+ 551 02cc DB050000 		.4byte	0x5db
+ 552 02d0 10       		.byte	0x10
+ 553 02d1 0E       		.uleb128 0xe
+ 554 02d2 20020000 		.4byte	.LASF43
+ 555 02d6 05       		.byte	0x5
+ 556 02d7 76       		.byte	0x76
+ 557 02d8 FA050000 		.4byte	0x5fa
+ 558 02dc 14       		.byte	0x14
+ 559 02dd 0E       		.uleb128 0xe
+ 560 02de 35030000 		.4byte	.LASF44
+ 561 02e2 05       		.byte	0x5
+ 562 02e3 77       		.byte	0x77
+ 563 02e4 1A060000 		.4byte	0x61a
+ 564 02e8 18       		.byte	0x18
+ 565 02e9 0E       		.uleb128 0xe
+ 566 02ea E9040000 		.4byte	.LASF45
+ 567 02ee 05       		.byte	0x5
+ 568 02ef 78       		.byte	0x78
+ 569 02f0 35060000 		.4byte	0x635
+ 570 02f4 1C       		.byte	0x1c
+ 571 02f5 0E       		.uleb128 0xe
+ 572 02f6 00050000 		.4byte	.LASF46
+ 573 02fa 05       		.byte	0x5
+ 574 02fb 7C       		.byte	0x7c
+ 575 02fc 35060000 		.4byte	0x635
+ 576 0300 20       		.byte	0x20
+ 577 0301 0E       		.uleb128 0xe
+ 578 0302 32040000 		.4byte	.LASF47
+ 579 0306 05       		.byte	0x5
+ 580 0307 80       		.byte	0x80
+ 581 0308 55060000 		.4byte	0x655
+ 582 030c 24       		.byte	0x24
+ 583 030d 0E       		.uleb128 0xe
+ 584 030e 15060000 		.4byte	.LASF48
+ 585 0312 05       		.byte	0x5
+ 586 0313 81       		.byte	0x81
+ 587 0314 6F060000 		.4byte	0x66f
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 15
+
+
+ 588 0318 28       		.byte	0x28
+ 589 0319 0E       		.uleb128 0xe
+ 590 031a 82000000 		.4byte	.LASF49
+ 591 031e 05       		.byte	0x5
+ 592 031f 82       		.byte	0x82
+ 593 0320 89060000 		.4byte	0x689
+ 594 0324 2C       		.byte	0x2c
+ 595 0325 0E       		.uleb128 0xe
+ 596 0326 D5000000 		.4byte	.LASF50
+ 597 032a 05       		.byte	0x5
+ 598 032b 83       		.byte	0x83
+ 599 032c 9F060000 		.4byte	0x69f
+ 600 0330 30       		.byte	0x30
+ 601 0331 00       		.byte	0
+ 602 0332 05       		.uleb128 0x5
+ 603 0333 04       		.byte	0x4
+ 604 0334 38030000 		.4byte	0x338
+ 605 0338 11       		.uleb128 0x11
+ 606 0339 2C000000 		.4byte	0x2c
+ 607 033d 0D       		.uleb128 0xd
+ 608 033e 48030000 		.4byte	0x348
+ 609 0342 0B       		.uleb128 0xb
+ 610 0343 53000000 		.4byte	0x53
+ 611 0347 00       		.byte	0
+ 612 0348 05       		.uleb128 0x5
+ 613 0349 04       		.byte	0x4
+ 614 034a 3D030000 		.4byte	0x33d
+ 615 034e 05       		.uleb128 0x5
+ 616 034f 04       		.byte	0x4
+ 617 0350 54030000 		.4byte	0x354
+ 618 0354 11       		.uleb128 0x11
+ 619 0355 01020000 		.4byte	0x201
+ 620 0359 0D       		.uleb128 0xd
+ 621 035a 64030000 		.4byte	0x364
+ 622 035e 0B       		.uleb128 0xb
+ 623 035f 3A000000 		.4byte	0x3a
+ 624 0363 00       		.byte	0
+ 625 0364 12       		.uleb128 0x12
+ 626 0365 68       		.byte	0x68
+ 627 0366 06       		.byte	0x6
+ 628 0367 7102     		.2byte	0x271
+ 629 0369 C0040000 		.4byte	0x4c0
+ 630 036d 13       		.uleb128 0x13
+ 631 036e 65040000 		.4byte	.LASF51
+ 632 0372 06       		.byte	0x6
+ 633 0373 7502     		.2byte	0x275
+ 634 0375 CB040000 		.4byte	0x4cb
+ 635 0379 00       		.byte	0
+ 636 037a 13       		.uleb128 0x13
+ 637 037b 71040000 		.4byte	.LASF52
+ 638 037f 06       		.byte	0x6
+ 639 0380 7602     		.2byte	0x276
+ 640 0382 CB040000 		.4byte	0x4cb
+ 641 0386 04       		.byte	0x4
+ 642 0387 13       		.uleb128 0x13
+ 643 0388 FC030000 		.4byte	.LASF53
+ 644 038c 06       		.byte	0x6
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 16
+
+
+ 645 038d 7702     		.2byte	0x277
+ 646 038f E1040000 		.4byte	0x4e1
+ 647 0393 08       		.byte	0x8
+ 648 0394 13       		.uleb128 0x13
+ 649 0395 10010000 		.4byte	.LASF54
+ 650 0399 06       		.byte	0x6
+ 651 039a 7802     		.2byte	0x278
+ 652 039c E1040000 		.4byte	0x4e1
+ 653 03a0 0C       		.byte	0xc
+ 654 03a1 13       		.uleb128 0x13
+ 655 03a2 D3040000 		.4byte	.LASF55
+ 656 03a6 06       		.byte	0x6
+ 657 03a7 7902     		.2byte	0x279
+ 658 03a9 EC040000 		.4byte	0x4ec
+ 659 03ad 10       		.byte	0x10
+ 660 03ae 13       		.uleb128 0x13
+ 661 03af DE040000 		.4byte	.LASF56
+ 662 03b3 06       		.byte	0x6
+ 663 03b4 7A02     		.2byte	0x27a
+ 664 03b6 EC040000 		.4byte	0x4ec
+ 665 03ba 14       		.byte	0x14
+ 666 03bb 13       		.uleb128 0x13
+ 667 03bc E3030000 		.4byte	.LASF57
+ 668 03c0 06       		.byte	0x6
+ 669 03c1 7B02     		.2byte	0x27b
+ 670 03c3 E1040000 		.4byte	0x4e1
+ 671 03c7 18       		.byte	0x18
+ 672 03c8 13       		.uleb128 0x13
+ 673 03c9 F4040000 		.4byte	.LASF58
+ 674 03cd 06       		.byte	0x6
+ 675 03ce 7C02     		.2byte	0x27c
+ 676 03d0 E1040000 		.4byte	0x4e1
+ 677 03d4 1C       		.byte	0x1c
+ 678 03d5 13       		.uleb128 0x13
+ 679 03d6 09050000 		.4byte	.LASF59
+ 680 03da 06       		.byte	0x6
+ 681 03db 8002     		.2byte	0x280
+ 682 03dd F2040000 		.4byte	0x4f2
+ 683 03e1 20       		.byte	0x20
+ 684 03e2 13       		.uleb128 0x13
+ 685 03e3 16050000 		.4byte	.LASF60
+ 686 03e7 06       		.byte	0x6
+ 687 03e8 8102     		.2byte	0x281
+ 688 03ea F2040000 		.4byte	0x4f2
+ 689 03ee 24       		.byte	0x24
+ 690 03ef 13       		.uleb128 0x13
+ 691 03f0 F6020000 		.4byte	.LASF61
+ 692 03f4 06       		.byte	0x6
+ 693 03f5 8202     		.2byte	0x282
+ 694 03f7 0E050000 		.4byte	0x50e
+ 695 03fb 28       		.byte	0x28
+ 696 03fc 13       		.uleb128 0x13
+ 697 03fd 04030000 		.4byte	.LASF62
+ 698 0401 06       		.byte	0x6
+ 699 0402 8302     		.2byte	0x283
+ 700 0404 0E050000 		.4byte	0x50e
+ 701 0408 2C       		.byte	0x2c
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 17
+
+
+ 702 0409 13       		.uleb128 0x13
+ 703 040a 97000000 		.4byte	.LASF63
+ 704 040e 06       		.byte	0x6
+ 705 040f 8402     		.2byte	0x284
+ 706 0411 19050000 		.4byte	0x519
+ 707 0415 30       		.byte	0x30
+ 708 0416 13       		.uleb128 0x13
+ 709 0417 A3000000 		.4byte	.LASF64
+ 710 041b 06       		.byte	0x6
+ 711 041c 8502     		.2byte	0x285
+ 712 041e 19050000 		.4byte	0x519
+ 713 0422 34       		.byte	0x34
+ 714 0423 13       		.uleb128 0x13
+ 715 0424 68030000 		.4byte	.LASF65
+ 716 0428 06       		.byte	0x6
+ 717 0429 8602     		.2byte	0x286
+ 718 042b 0E050000 		.4byte	0x50e
+ 719 042f 38       		.byte	0x38
+ 720 0430 13       		.uleb128 0x13
+ 721 0431 A2040000 		.4byte	.LASF66
+ 722 0435 06       		.byte	0x6
+ 723 0436 8702     		.2byte	0x287
+ 724 0438 0E050000 		.4byte	0x50e
+ 725 043c 3C       		.byte	0x3c
+ 726 043d 13       		.uleb128 0x13
+ 727 043e EF030000 		.4byte	.LASF67
+ 728 0442 06       		.byte	0x6
+ 729 0443 8B02     		.2byte	0x28b
+ 730 0445 48030000 		.4byte	0x348
+ 731 0449 40       		.byte	0x40
+ 732 044a 13       		.uleb128 0x13
+ 733 044b 7D040000 		.4byte	.LASF68
+ 734 044f 06       		.byte	0x6
+ 735 0450 8C02     		.2byte	0x28c
+ 736 0452 48030000 		.4byte	0x348
+ 737 0456 44       		.byte	0x44
+ 738 0457 13       		.uleb128 0x13
+ 739 0458 61000000 		.4byte	.LASF69
+ 740 045c 06       		.byte	0x6
+ 741 045d 8D02     		.2byte	0x28d
+ 742 045f 35050000 		.4byte	0x535
+ 743 0463 48       		.byte	0x48
+ 744 0464 13       		.uleb128 0x13
+ 745 0465 BB000000 		.4byte	.LASF70
+ 746 0469 06       		.byte	0x6
+ 747 046a 8E02     		.2byte	0x28e
+ 748 046c 35050000 		.4byte	0x535
+ 749 0470 4C       		.byte	0x4c
+ 750 0471 13       		.uleb128 0x13
+ 751 0472 89020000 		.4byte	.LASF71
+ 752 0476 06       		.byte	0x6
+ 753 0477 8F02     		.2byte	0x28f
+ 754 0479 3B050000 		.4byte	0x53b
+ 755 047d 50       		.byte	0x50
+ 756 047e 13       		.uleb128 0x13
+ 757 047f AF040000 		.4byte	.LASF72
+ 758 0483 06       		.byte	0x6
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 18
+
+
+ 759 0484 9002     		.2byte	0x290
+ 760 0486 3B050000 		.4byte	0x53b
+ 761 048a 54       		.byte	0x54
+ 762 048b 13       		.uleb128 0x13
+ 763 048c 4E010000 		.4byte	.LASF73
+ 764 0490 06       		.byte	0x6
+ 765 0491 9102     		.2byte	0x291
+ 766 0493 35050000 		.4byte	0x535
+ 767 0497 58       		.byte	0x58
+ 768 0498 13       		.uleb128 0x13
+ 769 0499 5B010000 		.4byte	.LASF74
+ 770 049d 06       		.byte	0x6
+ 771 049e 9202     		.2byte	0x292
+ 772 04a0 35050000 		.4byte	0x535
+ 773 04a4 5C       		.byte	0x5c
+ 774 04a5 13       		.uleb128 0x13
+ 775 04a6 8F000000 		.4byte	.LASF75
+ 776 04aa 06       		.byte	0x6
+ 777 04ab 9602     		.2byte	0x296
+ 778 04ad CB040000 		.4byte	0x4cb
+ 779 04b1 60       		.byte	0x60
+ 780 04b2 13       		.uleb128 0x13
+ 781 04b3 BB040000 		.4byte	.LASF76
+ 782 04b7 06       		.byte	0x6
+ 783 04b8 9A02     		.2byte	0x29a
+ 784 04ba 96000000 		.4byte	0x96
+ 785 04be 64       		.byte	0x64
+ 786 04bf 00       		.byte	0
+ 787 04c0 0D       		.uleb128 0xd
+ 788 04c1 CB040000 		.4byte	0x4cb
+ 789 04c5 0B       		.uleb128 0xb
+ 790 04c6 2C000000 		.4byte	0x2c
+ 791 04ca 00       		.byte	0
+ 792 04cb 05       		.uleb128 0x5
+ 793 04cc 04       		.byte	0x4
+ 794 04cd C0040000 		.4byte	0x4c0
+ 795 04d1 0D       		.uleb128 0xd
+ 796 04d2 E1040000 		.4byte	0x4e1
+ 797 04d6 0B       		.uleb128 0xb
+ 798 04d7 AD000000 		.4byte	0xad
+ 799 04db 0B       		.uleb128 0xb
+ 800 04dc 68000000 		.4byte	0x68
+ 801 04e0 00       		.byte	0
+ 802 04e1 05       		.uleb128 0x5
+ 803 04e2 04       		.byte	0x4
+ 804 04e3 D1040000 		.4byte	0x4d1
+ 805 04e7 0C       		.uleb128 0xc
+ 806 04e8 2C000000 		.4byte	0x2c
+ 807 04ec 05       		.uleb128 0x5
+ 808 04ed 04       		.byte	0x4
+ 809 04ee E7040000 		.4byte	0x4e7
+ 810 04f2 05       		.uleb128 0x5
+ 811 04f3 04       		.byte	0x4
+ 812 04f4 59030000 		.4byte	0x359
+ 813 04f8 0D       		.uleb128 0xd
+ 814 04f9 08050000 		.4byte	0x508
+ 815 04fd 0B       		.uleb128 0xb
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 19
+
+
+ 816 04fe 08050000 		.4byte	0x508
+ 817 0502 0B       		.uleb128 0xb
+ 818 0503 68000000 		.4byte	0x68
+ 819 0507 00       		.byte	0
+ 820 0508 05       		.uleb128 0x5
+ 821 0509 04       		.byte	0x4
+ 822 050a 3A000000 		.4byte	0x3a
+ 823 050e 05       		.uleb128 0x5
+ 824 050f 04       		.byte	0x4
+ 825 0510 F8040000 		.4byte	0x4f8
+ 826 0514 0C       		.uleb128 0xc
+ 827 0515 3A000000 		.4byte	0x3a
+ 828 0519 05       		.uleb128 0x5
+ 829 051a 04       		.byte	0x4
+ 830 051b 14050000 		.4byte	0x514
+ 831 051f 0D       		.uleb128 0xd
+ 832 0520 2F050000 		.4byte	0x52f
+ 833 0524 0B       		.uleb128 0xb
+ 834 0525 2F050000 		.4byte	0x52f
+ 835 0529 0B       		.uleb128 0xb
+ 836 052a 68000000 		.4byte	0x68
+ 837 052e 00       		.byte	0
+ 838 052f 05       		.uleb128 0x5
+ 839 0530 04       		.byte	0x4
+ 840 0531 53000000 		.4byte	0x53
+ 841 0535 05       		.uleb128 0x5
+ 842 0536 04       		.byte	0x4
+ 843 0537 1F050000 		.4byte	0x51f
+ 844 053b 05       		.uleb128 0x5
+ 845 053c 04       		.byte	0x4
+ 846 053d 3D010000 		.4byte	0x13d
+ 847 0541 0F       		.uleb128 0xf
+ 848 0542 3F040000 		.4byte	.LASF77
+ 849 0546 06       		.byte	0x6
+ 850 0547 9B02     		.2byte	0x29b
+ 851 0549 64030000 		.4byte	0x364
+ 852 054d 0D       		.uleb128 0xd
+ 853 054e 85050000 		.4byte	0x585
+ 854 0552 0B       		.uleb128 0xb
+ 855 0553 85050000 		.4byte	0x585
+ 856 0557 0B       		.uleb128 0xb
+ 857 0558 68000000 		.4byte	0x68
+ 858 055c 0B       		.uleb128 0xb
+ 859 055d 68000000 		.4byte	0x68
+ 860 0561 0B       		.uleb128 0xb
+ 861 0562 68000000 		.4byte	0x68
+ 862 0566 0B       		.uleb128 0xb
+ 863 0567 68000000 		.4byte	0x68
+ 864 056b 0B       		.uleb128 0xb
+ 865 056c 68000000 		.4byte	0x68
+ 866 0570 0B       		.uleb128 0xb
+ 867 0571 68000000 		.4byte	0x68
+ 868 0575 0B       		.uleb128 0xb
+ 869 0576 32030000 		.4byte	0x332
+ 870 057a 0B       		.uleb128 0xb
+ 871 057b 68000000 		.4byte	0x68
+ 872 057f 0B       		.uleb128 0xb
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 20
+
+
+ 873 0580 8B050000 		.4byte	0x58b
+ 874 0584 00       		.byte	0
+ 875 0585 05       		.uleb128 0x5
+ 876 0586 04       		.byte	0x4
+ 877 0587 12020000 		.4byte	0x212
+ 878 058b 05       		.uleb128 0x5
+ 879 058c 04       		.byte	0x4
+ 880 058d 91050000 		.4byte	0x591
+ 881 0591 11       		.uleb128 0x11
+ 882 0592 53000000 		.4byte	0x53
+ 883 0596 05       		.uleb128 0x5
+ 884 0597 04       		.byte	0x4
+ 885 0598 4D050000 		.4byte	0x54d
+ 886 059c 0D       		.uleb128 0xd
+ 887 059d B6050000 		.4byte	0x5b6
+ 888 05a1 0B       		.uleb128 0xb
+ 889 05a2 85050000 		.4byte	0x585
+ 890 05a6 0B       		.uleb128 0xb
+ 891 05a7 68000000 		.4byte	0x68
+ 892 05ab 0B       		.uleb128 0xb
+ 893 05ac 68000000 		.4byte	0x68
+ 894 05b0 0B       		.uleb128 0xb
+ 895 05b1 68000000 		.4byte	0x68
+ 896 05b5 00       		.byte	0
+ 897 05b6 05       		.uleb128 0x5
+ 898 05b7 04       		.byte	0x4
+ 899 05b8 9C050000 		.4byte	0x59c
+ 900 05bc 0D       		.uleb128 0xd
+ 901 05bd DB050000 		.4byte	0x5db
+ 902 05c1 0B       		.uleb128 0xb
+ 903 05c2 85050000 		.4byte	0x585
+ 904 05c6 0B       		.uleb128 0xb
+ 905 05c7 68000000 		.4byte	0x68
+ 906 05cb 0B       		.uleb128 0xb
+ 907 05cc 68000000 		.4byte	0x68
+ 908 05d0 0B       		.uleb128 0xb
+ 909 05d1 68000000 		.4byte	0x68
+ 910 05d5 0B       		.uleb128 0xb
+ 911 05d6 68000000 		.4byte	0x68
+ 912 05da 00       		.byte	0
+ 913 05db 05       		.uleb128 0x5
+ 914 05dc 04       		.byte	0x4
+ 915 05dd BC050000 		.4byte	0x5bc
+ 916 05e1 0A       		.uleb128 0xa
+ 917 05e2 53000000 		.4byte	0x53
+ 918 05e6 FA050000 		.4byte	0x5fa
+ 919 05ea 0B       		.uleb128 0xb
+ 920 05eb 85050000 		.4byte	0x585
+ 921 05ef 0B       		.uleb128 0xb
+ 922 05f0 68000000 		.4byte	0x68
+ 923 05f4 0B       		.uleb128 0xb
+ 924 05f5 68000000 		.4byte	0x68
+ 925 05f9 00       		.byte	0
+ 926 05fa 05       		.uleb128 0x5
+ 927 05fb 04       		.byte	0x4
+ 928 05fc E1050000 		.4byte	0x5e1
+ 929 0600 0D       		.uleb128 0xd
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 21
+
+
+ 930 0601 1A060000 		.4byte	0x61a
+ 931 0605 0B       		.uleb128 0xb
+ 932 0606 85050000 		.4byte	0x585
+ 933 060a 0B       		.uleb128 0xb
+ 934 060b 68000000 		.4byte	0x68
+ 935 060f 0B       		.uleb128 0xb
+ 936 0610 68000000 		.4byte	0x68
+ 937 0614 0B       		.uleb128 0xb
+ 938 0615 53000000 		.4byte	0x53
+ 939 0619 00       		.byte	0
+ 940 061a 05       		.uleb128 0x5
+ 941 061b 04       		.byte	0x4
+ 942 061c 00060000 		.4byte	0x600
+ 943 0620 0D       		.uleb128 0xd
+ 944 0621 35060000 		.4byte	0x635
+ 945 0625 0B       		.uleb128 0xb
+ 946 0626 85050000 		.4byte	0x585
+ 947 062a 0B       		.uleb128 0xb
+ 948 062b 68000000 		.4byte	0x68
+ 949 062f 0B       		.uleb128 0xb
+ 950 0630 68000000 		.4byte	0x68
+ 951 0634 00       		.byte	0
+ 952 0635 05       		.uleb128 0x5
+ 953 0636 04       		.byte	0x4
+ 954 0637 20060000 		.4byte	0x620
+ 955 063b 0A       		.uleb128 0xa
+ 956 063c 96000000 		.4byte	0x96
+ 957 0640 4F060000 		.4byte	0x64f
+ 958 0644 0B       		.uleb128 0xb
+ 959 0645 4F060000 		.4byte	0x64f
+ 960 0649 0B       		.uleb128 0xb
+ 961 064a 68000000 		.4byte	0x68
+ 962 064e 00       		.byte	0
+ 963 064f 05       		.uleb128 0x5
+ 964 0650 04       		.byte	0x4
+ 965 0651 85050000 		.4byte	0x585
+ 966 0655 05       		.uleb128 0x5
+ 967 0656 04       		.byte	0x4
+ 968 0657 3B060000 		.4byte	0x63b
+ 969 065b 0A       		.uleb128 0xa
+ 970 065c 4C000000 		.4byte	0x4c
+ 971 0660 6F060000 		.4byte	0x66f
+ 972 0664 0B       		.uleb128 0xb
+ 973 0665 85050000 		.4byte	0x585
+ 974 0669 0B       		.uleb128 0xb
+ 975 066a 68000000 		.4byte	0x68
+ 976 066e 00       		.byte	0
+ 977 066f 05       		.uleb128 0x5
+ 978 0670 04       		.byte	0x4
+ 979 0671 5B060000 		.4byte	0x65b
+ 980 0675 0A       		.uleb128 0xa
+ 981 0676 AB000000 		.4byte	0xab
+ 982 067a 89060000 		.4byte	0x689
+ 983 067e 0B       		.uleb128 0xb
+ 984 067f 85050000 		.4byte	0x585
+ 985 0683 0B       		.uleb128 0xb
+ 986 0684 68000000 		.4byte	0x68
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 22
+
+
+ 987 0688 00       		.byte	0
+ 988 0689 05       		.uleb128 0x5
+ 989 068a 04       		.byte	0x4
+ 990 068b 75060000 		.4byte	0x675
+ 991 068f 0D       		.uleb128 0xd
+ 992 0690 9F060000 		.4byte	0x69f
+ 993 0694 0B       		.uleb128 0xb
+ 994 0695 85050000 		.4byte	0x585
+ 995 0699 0B       		.uleb128 0xb
+ 996 069a 0C020000 		.4byte	0x20c
+ 997 069e 00       		.byte	0
+ 998 069f 05       		.uleb128 0x5
+ 999 06a0 04       		.byte	0x4
+ 1000 06a1 8F060000 		.4byte	0x68f
+ 1001 06a5 14       		.uleb128 0x14
+ 1002 06a6 04       		.byte	0x4
+ 1003 06a7 05       		.byte	0x5
+ 1004 06a8 B9       		.byte	0xb9
+ 1005 06a9 C4060000 		.4byte	0x6c4
+ 1006 06ad 15       		.uleb128 0x15
+ 1007 06ae 95020000 		.4byte	.LASF78
+ 1008 06b2 05       		.byte	0x5
+ 1009 06b3 BA       		.byte	0xba
+ 1010 06b4 4C000000 		.4byte	0x4c
+ 1011 06b8 15       		.uleb128 0x15
+ 1012 06b9 09040000 		.4byte	.LASF79
+ 1013 06bd 05       		.byte	0x5
+ 1014 06be BB       		.byte	0xbb
+ 1015 06bf AB000000 		.4byte	0xab
+ 1016 06c3 00       		.byte	0
+ 1017 06c4 05       		.uleb128 0x5
+ 1018 06c5 04       		.byte	0x4
+ 1019 06c6 CA060000 		.4byte	0x6ca
+ 1020 06ca 11       		.uleb128 0x11
+ 1021 06cb 7D020000 		.4byte	0x27d
+ 1022 06cf 08       		.uleb128 0x8
+ 1023 06d0 14       		.byte	0x14
+ 1024 06d1 07       		.byte	0x7
+ 1025 06d2 72       		.byte	0x72
+ 1026 06d3 14070000 		.4byte	0x714
+ 1027 06d7 0E       		.uleb128 0xe
+ 1028 06d8 73020000 		.4byte	.LASF80
+ 1029 06dc 07       		.byte	0x7
+ 1030 06dd 76       		.byte	0x76
+ 1031 06de 68000000 		.4byte	0x68
+ 1032 06e2 00       		.byte	0
+ 1033 06e3 0E       		.uleb128 0xe
+ 1034 06e4 F3050000 		.4byte	.LASF81
+ 1035 06e8 07       		.byte	0x7
+ 1036 06e9 77       		.byte	0x77
+ 1037 06ea 68000000 		.4byte	0x68
+ 1038 06ee 04       		.byte	0x4
+ 1039 06ef 0E       		.uleb128 0xe
+ 1040 06f0 BA030000 		.4byte	.LASF82
+ 1041 06f4 07       		.byte	0x7
+ 1042 06f5 78       		.byte	0x78
+ 1043 06f6 68000000 		.4byte	0x68
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 23
+
+
+ 1044 06fa 08       		.byte	0x8
+ 1045 06fb 0E       		.uleb128 0xe
+ 1046 06fc EA000000 		.4byte	.LASF83
+ 1047 0700 07       		.byte	0x7
+ 1048 0701 79       		.byte	0x79
+ 1049 0702 3A000000 		.4byte	0x3a
+ 1050 0706 0C       		.byte	0xc
+ 1051 0707 0E       		.uleb128 0xe
+ 1052 0708 2F000000 		.4byte	.LASF84
+ 1053 070c 07       		.byte	0x7
+ 1054 070d 7A       		.byte	0x7a
+ 1055 070e 68000000 		.4byte	0x68
+ 1056 0712 10       		.byte	0x10
+ 1057 0713 00       		.byte	0
+ 1058 0714 03       		.uleb128 0x3
+ 1059 0715 FC050000 		.4byte	.LASF85
+ 1060 0719 07       		.byte	0x7
+ 1061 071a 7B       		.byte	0x7b
+ 1062 071b CF060000 		.4byte	0x6cf
+ 1063 071f 16       		.uleb128 0x16
+ 1064 0720 3E010000 		.4byte	.LASF102
+ 1065 0724 01       		.byte	0x1
+ 1066 0725 73       		.byte	0x73
+ 1067 0726 00000000 		.4byte	.LFB63
+ 1068 072a 08000000 		.4byte	.LFE63-.LFB63
+ 1069 072e 01       		.uleb128 0x1
+ 1070 072f 9C       		.byte	0x9c
+ 1071 0730 3E070000 		.4byte	0x73e
+ 1072 0734 17       		.uleb128 0x17
+ 1073 0735 06000000 		.4byte	.LVL0
+ 1074 0739 AE080000 		.4byte	0x8ae
+ 1075 073d 00       		.byte	0
+ 1076 073e 18       		.uleb128 0x18
+ 1077 073f 1C000000 		.4byte	.LASF103
+ 1078 0743 01       		.byte	0x1
+ 1079 0744 89       		.byte	0x89
+ 1080 0745 00000000 		.4byte	.LFB64
+ 1081 0749 94000000 		.4byte	.LFE64-.LFB64
+ 1082 074d 01       		.uleb128 0x1
+ 1083 074e 9C       		.byte	0x9c
+ 1084 074f 2E080000 		.4byte	0x82e
+ 1085 0753 19       		.uleb128 0x19
+ 1086 0754 0D060000 		.4byte	.LASF86
+ 1087 0758 01       		.byte	0x1
+ 1088 0759 8A       		.byte	0x8a
+ 1089 075a 85050000 		.4byte	0x585
+ 1090 075e 00000000 		.4byte	.LLST0
+ 1091 0762 1A       		.uleb128 0x1a
+ 1092 0763 82020000 		.4byte	.LASF87
+ 1093 0767 01       		.byte	0x1
+ 1094 0768 8B       		.byte	0x8b
+ 1095 0769 14070000 		.4byte	0x714
+ 1096 076d 02       		.uleb128 0x2
+ 1097 076e 91       		.byte	0x91
+ 1098 076f 5C       		.sleb128 -36
+ 1099 0770 1A       		.uleb128 0x1a
+ 1100 0771 80010000 		.4byte	.LASF88
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 24
+
+
+ 1101 0775 01       		.byte	0x1
+ 1102 0776 8C       		.byte	0x8c
+ 1103 0777 41050000 		.4byte	0x541
+ 1104 077b 03       		.uleb128 0x3
+ 1105 077c 91       		.byte	0x91
+ 1106 077d F47E     		.sleb128 -140
+ 1107 077f 1B       		.uleb128 0x1b
+ 1108 0780 1A000000 		.4byte	.LVL1
+ 1109 0784 B9080000 		.4byte	0x8b9
+ 1110 0788 A0070000 		.4byte	0x7a0
+ 1111 078c 1C       		.uleb128 0x1c
+ 1112 078d 01       		.uleb128 0x1
+ 1113 078e 50       		.byte	0x50
+ 1114 078f 03       		.uleb128 0x3
+ 1115 0790 91       		.byte	0x91
+ 1116 0791 F47E     		.sleb128 -140
+ 1117 0793 1C       		.uleb128 0x1c
+ 1118 0794 01       		.uleb128 0x1
+ 1119 0795 51       		.byte	0x51
+ 1120 0796 02       		.uleb128 0x2
+ 1121 0797 74       		.byte	0x74
+ 1122 0798 00       		.sleb128 0
+ 1123 0799 1C       		.uleb128 0x1c
+ 1124 079a 01       		.uleb128 0x1
+ 1125 079b 52       		.byte	0x52
+ 1126 079c 02       		.uleb128 0x2
+ 1127 079d 08       		.byte	0x8
+ 1128 079e 68       		.byte	0x68
+ 1129 079f 00       		.byte	0
+ 1130 07a0 1B       		.uleb128 0x1b
+ 1131 07a1 26000000 		.4byte	.LVL2
+ 1132 07a5 C2080000 		.4byte	0x8c2
+ 1133 07a9 BA070000 		.4byte	0x7ba
+ 1134 07ad 1C       		.uleb128 0x1c
+ 1135 07ae 01       		.uleb128 0x1
+ 1136 07af 52       		.byte	0x52
+ 1137 07b0 02       		.uleb128 0x2
+ 1138 07b1 74       		.byte	0x74
+ 1139 07b2 00       		.sleb128 0
+ 1140 07b3 1C       		.uleb128 0x1c
+ 1141 07b4 01       		.uleb128 0x1
+ 1142 07b5 53       		.byte	0x53
+ 1143 07b6 02       		.uleb128 0x2
+ 1144 07b7 74       		.byte	0x74
+ 1145 07b8 00       		.sleb128 0
+ 1146 07b9 00       		.byte	0
+ 1147 07ba 1B       		.uleb128 0x1b
+ 1148 07bb 34000000 		.4byte	.LVL5
+ 1149 07bf CE080000 		.4byte	0x8ce
+ 1150 07c3 DB070000 		.4byte	0x7db
+ 1151 07c7 1C       		.uleb128 0x1c
+ 1152 07c8 01       		.uleb128 0x1
+ 1153 07c9 50       		.byte	0x50
+ 1154 07ca 02       		.uleb128 0x2
+ 1155 07cb 74       		.byte	0x74
+ 1156 07cc 00       		.sleb128 0
+ 1157 07cd 1C       		.uleb128 0x1c
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 25
+
+
+ 1158 07ce 01       		.uleb128 0x1
+ 1159 07cf 51       		.byte	0x51
+ 1160 07d0 02       		.uleb128 0x2
+ 1161 07d1 08       		.byte	0x8
+ 1162 07d2 F0       		.byte	0xf0
+ 1163 07d3 1C       		.uleb128 0x1c
+ 1164 07d4 01       		.uleb128 0x1
+ 1165 07d5 52       		.byte	0x52
+ 1166 07d6 03       		.uleb128 0x3
+ 1167 07d7 0A       		.byte	0xa
+ 1168 07d8 4001     		.2byte	0x140
+ 1169 07da 00       		.byte	0
+ 1170 07db 1B       		.uleb128 0x1b
+ 1171 07dc 40000000 		.4byte	.LVL6
+ 1172 07e0 DA080000 		.4byte	0x8da
+ 1173 07e4 FC070000 		.4byte	0x7fc
+ 1174 07e8 1C       		.uleb128 0x1c
+ 1175 07e9 01       		.uleb128 0x1
+ 1176 07ea 50       		.byte	0x50
+ 1177 07eb 02       		.uleb128 0x2
+ 1178 07ec 74       		.byte	0x74
+ 1179 07ed 00       		.sleb128 0
+ 1180 07ee 1C       		.uleb128 0x1c
+ 1181 07ef 01       		.uleb128 0x1
+ 1182 07f0 51       		.byte	0x51
+ 1183 07f1 02       		.uleb128 0x2
+ 1184 07f2 08       		.byte	0x8
+ 1185 07f3 F0       		.byte	0xf0
+ 1186 07f4 1C       		.uleb128 0x1c
+ 1187 07f5 01       		.uleb128 0x1
+ 1188 07f6 52       		.byte	0x52
+ 1189 07f7 03       		.uleb128 0x3
+ 1190 07f8 0A       		.byte	0xa
+ 1191 07f9 4001     		.2byte	0x140
+ 1192 07fb 00       		.byte	0
+ 1193 07fc 1B       		.uleb128 0x1b
+ 1194 07fd 4C000000 		.4byte	.LVL7
+ 1195 0801 E6080000 		.4byte	0x8e6
+ 1196 0805 16080000 		.4byte	0x816
+ 1197 0809 1C       		.uleb128 0x1c
+ 1198 080a 01       		.uleb128 0x1
+ 1199 080b 50       		.byte	0x50
+ 1200 080c 02       		.uleb128 0x2
+ 1201 080d 75       		.byte	0x75
+ 1202 080e 00       		.sleb128 0
+ 1203 080f 1C       		.uleb128 0x1c
+ 1204 0810 01       		.uleb128 0x1
+ 1205 0811 51       		.byte	0x51
+ 1206 0812 02       		.uleb128 0x2
+ 1207 0813 91       		.byte	0x91
+ 1208 0814 5C       		.sleb128 -36
+ 1209 0815 00       		.byte	0
+ 1210 0816 1D       		.uleb128 0x1d
+ 1211 0817 6C000000 		.4byte	.LVL8
+ 1212 081b F1080000 		.4byte	0x8f1
+ 1213 081f 1C       		.uleb128 0x1c
+ 1214 0820 01       		.uleb128 0x1
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 26
+
+
+ 1215 0821 50       		.byte	0x50
+ 1216 0822 02       		.uleb128 0x2
+ 1217 0823 75       		.byte	0x75
+ 1218 0824 00       		.sleb128 0
+ 1219 0825 1C       		.uleb128 0x1c
+ 1220 0826 01       		.uleb128 0x1
+ 1221 0827 51       		.byte	0x51
+ 1222 0828 03       		.uleb128 0x3
+ 1223 0829 91       		.byte	0x91
+ 1224 082a F47E     		.sleb128 -140
+ 1225 082c 00       		.byte	0
+ 1226 082d 00       		.byte	0
+ 1227 082e 1E       		.uleb128 0x1e
+ 1228 082f 9E020000 		.4byte	.LASF104
+ 1229 0833 01       		.byte	0x1
+ 1230 0834 BD       		.byte	0xbd
+ 1231 0835 68000000 		.4byte	0x68
+ 1232 0839 00000000 		.4byte	.LFB65
+ 1233 083d 14000000 		.4byte	.LFE65-.LFB65
+ 1234 0841 01       		.uleb128 0x1
+ 1235 0842 9C       		.byte	0x9c
+ 1236 0843 87080000 		.4byte	0x887
+ 1237 0847 1F       		.uleb128 0x1f
+ 1238 0848 88010000 		.4byte	.LASF36
+ 1239 084c 01       		.byte	0x1
+ 1240 084d BD       		.byte	0xbd
+ 1241 084e 6F000000 		.4byte	0x6f
+ 1242 0852 1E000000 		.4byte	.LLST1
+ 1243 0856 20       		.uleb128 0x20
+ 1244 0857 436D6400 		.ascii	"Cmd\000"
+ 1245 085b 01       		.byte	0x1
+ 1246 085c BD       		.byte	0xbd
+ 1247 085d 6F000000 		.4byte	0x6f
+ 1248 0861 58000000 		.4byte	.LLST2
+ 1249 0865 1F       		.uleb128 0x1f
+ 1250 0866 29000000 		.4byte	.LASF89
+ 1251 086a 01       		.byte	0x1
+ 1252 086b BD       		.byte	0xbd
+ 1253 086c AB000000 		.4byte	0xab
+ 1254 0870 84000000 		.4byte	.LLST3
+ 1255 0874 21       		.uleb128 0x21
+ 1256 0875 7200     		.ascii	"r\000"
+ 1257 0877 01       		.byte	0x1
+ 1258 0878 BE       		.byte	0xbe
+ 1259 0879 68000000 		.4byte	0x68
+ 1260 087d 17       		.uleb128 0x17
+ 1261 087e 0A000000 		.4byte	.LVL11
+ 1262 0882 1F070000 		.4byte	0x71f
+ 1263 0886 00       		.byte	0
+ 1264 0887 22       		.uleb128 0x22
+ 1265 0888 58050000 		.4byte	.LASF90
+ 1266 088c 08       		.byte	0x8
+ 1267 088d 1207     		.2byte	0x712
+ 1268 088f 93080000 		.4byte	0x893
+ 1269 0893 23       		.uleb128 0x23
+ 1270 0894 76000000 		.4byte	0x76
+ 1271 0898 24       		.uleb128 0x24
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 27
+
+
+ 1272 0899 43020000 		.4byte	.LASF91
+ 1273 089d 04       		.byte	0x4
+ 1274 089e CB       		.byte	0xcb
+ 1275 089f 54030000 		.4byte	0x354
+ 1276 08a3 24       		.uleb128 0x24
+ 1277 08a4 45030000 		.4byte	.LASF92
+ 1278 08a8 07       		.byte	0x7
+ 1279 08a9 86       		.byte	0x86
+ 1280 08aa CA060000 		.4byte	0x6ca
+ 1281 08ae 25       		.uleb128 0x25
+ 1282 08af 4F050000 		.4byte	.LASF93
+ 1283 08b3 4F050000 		.4byte	.LASF93
+ 1284 08b7 09       		.byte	0x9
+ 1285 08b8 13       		.byte	0x13
+ 1286 08b9 26       		.uleb128 0x26
+ 1287 08ba FB010000 		.4byte	.LASF105
+ 1288 08be FB010000 		.4byte	.LASF105
+ 1289 08c2 27       		.uleb128 0x27
+ 1290 08c3 5A020000 		.4byte	.LASF94
+ 1291 08c7 5A020000 		.4byte	.LASF94
+ 1292 08cb 05       		.byte	0x5
+ 1293 08cc 2201     		.2byte	0x122
+ 1294 08ce 27       		.uleb128 0x27
+ 1295 08cf 0E000000 		.4byte	.LASF95
+ 1296 08d3 0E000000 		.4byte	.LASF95
+ 1297 08d7 04       		.byte	0x4
+ 1298 08d8 4902     		.2byte	0x249
+ 1299 08da 27       		.uleb128 0x27
+ 1300 08db 92030000 		.4byte	.LASF96
+ 1301 08df 92030000 		.4byte	.LASF96
+ 1302 08e3 04       		.byte	0x4
+ 1303 08e4 4C02     		.2byte	0x24c
+ 1304 08e6 25       		.uleb128 0x25
+ 1305 08e7 8A040000 		.4byte	.LASF97
+ 1306 08eb 8A040000 		.4byte	.LASF97
+ 1307 08ef 07       		.byte	0x7
+ 1308 08f0 C6       		.byte	0xc6
+ 1309 08f1 25       		.uleb128 0x25
+ 1310 08f2 48000000 		.4byte	.LASF98
+ 1311 08f6 48000000 		.4byte	.LASF98
+ 1312 08fa 07       		.byte	0x7
+ 1313 08fb C5       		.byte	0xc5
+ 1314 08fc 00       		.byte	0
+ 1315              		.section	.debug_abbrev,"",%progbits
+ 1316              	.Ldebug_abbrev0:
+ 1317 0000 01       		.uleb128 0x1
+ 1318 0001 11       		.uleb128 0x11
+ 1319 0002 01       		.byte	0x1
+ 1320 0003 25       		.uleb128 0x25
+ 1321 0004 0E       		.uleb128 0xe
+ 1322 0005 13       		.uleb128 0x13
+ 1323 0006 0B       		.uleb128 0xb
+ 1324 0007 03       		.uleb128 0x3
+ 1325 0008 0E       		.uleb128 0xe
+ 1326 0009 1B       		.uleb128 0x1b
+ 1327 000a 0E       		.uleb128 0xe
+ 1328 000b 55       		.uleb128 0x55
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 28
+
+
+ 1329 000c 17       		.uleb128 0x17
+ 1330 000d 11       		.uleb128 0x11
+ 1331 000e 01       		.uleb128 0x1
+ 1332 000f 10       		.uleb128 0x10
+ 1333 0010 17       		.uleb128 0x17
+ 1334 0011 00       		.byte	0
+ 1335 0012 00       		.byte	0
+ 1336 0013 02       		.uleb128 0x2
+ 1337 0014 24       		.uleb128 0x24
+ 1338 0015 00       		.byte	0
+ 1339 0016 0B       		.uleb128 0xb
+ 1340 0017 0B       		.uleb128 0xb
+ 1341 0018 3E       		.uleb128 0x3e
+ 1342 0019 0B       		.uleb128 0xb
+ 1343 001a 03       		.uleb128 0x3
+ 1344 001b 0E       		.uleb128 0xe
+ 1345 001c 00       		.byte	0
+ 1346 001d 00       		.byte	0
+ 1347 001e 03       		.uleb128 0x3
+ 1348 001f 16       		.uleb128 0x16
+ 1349 0020 00       		.byte	0
+ 1350 0021 03       		.uleb128 0x3
+ 1351 0022 0E       		.uleb128 0xe
+ 1352 0023 3A       		.uleb128 0x3a
+ 1353 0024 0B       		.uleb128 0xb
+ 1354 0025 3B       		.uleb128 0x3b
+ 1355 0026 0B       		.uleb128 0xb
+ 1356 0027 49       		.uleb128 0x49
+ 1357 0028 13       		.uleb128 0x13
+ 1358 0029 00       		.byte	0
+ 1359 002a 00       		.byte	0
+ 1360 002b 04       		.uleb128 0x4
+ 1361 002c 24       		.uleb128 0x24
+ 1362 002d 00       		.byte	0
+ 1363 002e 0B       		.uleb128 0xb
+ 1364 002f 0B       		.uleb128 0xb
+ 1365 0030 3E       		.uleb128 0x3e
+ 1366 0031 0B       		.uleb128 0xb
+ 1367 0032 03       		.uleb128 0x3
+ 1368 0033 08       		.uleb128 0x8
+ 1369 0034 00       		.byte	0
+ 1370 0035 00       		.byte	0
+ 1371 0036 05       		.uleb128 0x5
+ 1372 0037 0F       		.uleb128 0xf
+ 1373 0038 00       		.byte	0
+ 1374 0039 0B       		.uleb128 0xb
+ 1375 003a 0B       		.uleb128 0xb
+ 1376 003b 49       		.uleb128 0x49
+ 1377 003c 13       		.uleb128 0x13
+ 1378 003d 00       		.byte	0
+ 1379 003e 00       		.byte	0
+ 1380 003f 06       		.uleb128 0x6
+ 1381 0040 15       		.uleb128 0x15
+ 1382 0041 00       		.byte	0
+ 1383 0042 27       		.uleb128 0x27
+ 1384 0043 19       		.uleb128 0x19
+ 1385 0044 00       		.byte	0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 29
+
+
+ 1386 0045 00       		.byte	0
+ 1387 0046 07       		.uleb128 0x7
+ 1388 0047 0F       		.uleb128 0xf
+ 1389 0048 00       		.byte	0
+ 1390 0049 0B       		.uleb128 0xb
+ 1391 004a 0B       		.uleb128 0xb
+ 1392 004b 00       		.byte	0
+ 1393 004c 00       		.byte	0
+ 1394 004d 08       		.uleb128 0x8
+ 1395 004e 13       		.uleb128 0x13
+ 1396 004f 01       		.byte	0x1
+ 1397 0050 0B       		.uleb128 0xb
+ 1398 0051 0B       		.uleb128 0xb
+ 1399 0052 3A       		.uleb128 0x3a
+ 1400 0053 0B       		.uleb128 0xb
+ 1401 0054 3B       		.uleb128 0x3b
+ 1402 0055 0B       		.uleb128 0xb
+ 1403 0056 01       		.uleb128 0x1
+ 1404 0057 13       		.uleb128 0x13
+ 1405 0058 00       		.byte	0
+ 1406 0059 00       		.byte	0
+ 1407 005a 09       		.uleb128 0x9
+ 1408 005b 0D       		.uleb128 0xd
+ 1409 005c 00       		.byte	0
+ 1410 005d 03       		.uleb128 0x3
+ 1411 005e 08       		.uleb128 0x8
+ 1412 005f 3A       		.uleb128 0x3a
+ 1413 0060 0B       		.uleb128 0xb
+ 1414 0061 3B       		.uleb128 0x3b
+ 1415 0062 0B       		.uleb128 0xb
+ 1416 0063 49       		.uleb128 0x49
+ 1417 0064 13       		.uleb128 0x13
+ 1418 0065 38       		.uleb128 0x38
+ 1419 0066 0B       		.uleb128 0xb
+ 1420 0067 00       		.byte	0
+ 1421 0068 00       		.byte	0
+ 1422 0069 0A       		.uleb128 0xa
+ 1423 006a 15       		.uleb128 0x15
+ 1424 006b 01       		.byte	0x1
+ 1425 006c 27       		.uleb128 0x27
+ 1426 006d 19       		.uleb128 0x19
+ 1427 006e 49       		.uleb128 0x49
+ 1428 006f 13       		.uleb128 0x13
+ 1429 0070 01       		.uleb128 0x1
+ 1430 0071 13       		.uleb128 0x13
+ 1431 0072 00       		.byte	0
+ 1432 0073 00       		.byte	0
+ 1433 0074 0B       		.uleb128 0xb
+ 1434 0075 05       		.uleb128 0x5
+ 1435 0076 00       		.byte	0
+ 1436 0077 49       		.uleb128 0x49
+ 1437 0078 13       		.uleb128 0x13
+ 1438 0079 00       		.byte	0
+ 1439 007a 00       		.byte	0
+ 1440 007b 0C       		.uleb128 0xc
+ 1441 007c 15       		.uleb128 0x15
+ 1442 007d 00       		.byte	0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 30
+
+
+ 1443 007e 27       		.uleb128 0x27
+ 1444 007f 19       		.uleb128 0x19
+ 1445 0080 49       		.uleb128 0x49
+ 1446 0081 13       		.uleb128 0x13
+ 1447 0082 00       		.byte	0
+ 1448 0083 00       		.byte	0
+ 1449 0084 0D       		.uleb128 0xd
+ 1450 0085 15       		.uleb128 0x15
+ 1451 0086 01       		.byte	0x1
+ 1452 0087 27       		.uleb128 0x27
+ 1453 0088 19       		.uleb128 0x19
+ 1454 0089 01       		.uleb128 0x1
+ 1455 008a 13       		.uleb128 0x13
+ 1456 008b 00       		.byte	0
+ 1457 008c 00       		.byte	0
+ 1458 008d 0E       		.uleb128 0xe
+ 1459 008e 0D       		.uleb128 0xd
+ 1460 008f 00       		.byte	0
+ 1461 0090 03       		.uleb128 0x3
+ 1462 0091 0E       		.uleb128 0xe
+ 1463 0092 3A       		.uleb128 0x3a
+ 1464 0093 0B       		.uleb128 0xb
+ 1465 0094 3B       		.uleb128 0x3b
+ 1466 0095 0B       		.uleb128 0xb
+ 1467 0096 49       		.uleb128 0x49
+ 1468 0097 13       		.uleb128 0x13
+ 1469 0098 38       		.uleb128 0x38
+ 1470 0099 0B       		.uleb128 0xb
+ 1471 009a 00       		.byte	0
+ 1472 009b 00       		.byte	0
+ 1473 009c 0F       		.uleb128 0xf
+ 1474 009d 16       		.uleb128 0x16
+ 1475 009e 00       		.byte	0
+ 1476 009f 03       		.uleb128 0x3
+ 1477 00a0 0E       		.uleb128 0xe
+ 1478 00a1 3A       		.uleb128 0x3a
+ 1479 00a2 0B       		.uleb128 0xb
+ 1480 00a3 3B       		.uleb128 0x3b
+ 1481 00a4 05       		.uleb128 0x5
+ 1482 00a5 49       		.uleb128 0x49
+ 1483 00a6 13       		.uleb128 0x13
+ 1484 00a7 00       		.byte	0
+ 1485 00a8 00       		.byte	0
+ 1486 00a9 10       		.uleb128 0x10
+ 1487 00aa 13       		.uleb128 0x13
+ 1488 00ab 01       		.byte	0x1
+ 1489 00ac 03       		.uleb128 0x3
+ 1490 00ad 0E       		.uleb128 0xe
+ 1491 00ae 0B       		.uleb128 0xb
+ 1492 00af 0B       		.uleb128 0xb
+ 1493 00b0 3A       		.uleb128 0x3a
+ 1494 00b1 0B       		.uleb128 0xb
+ 1495 00b2 3B       		.uleb128 0x3b
+ 1496 00b3 0B       		.uleb128 0xb
+ 1497 00b4 01       		.uleb128 0x1
+ 1498 00b5 13       		.uleb128 0x13
+ 1499 00b6 00       		.byte	0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 31
+
+
+ 1500 00b7 00       		.byte	0
+ 1501 00b8 11       		.uleb128 0x11
+ 1502 00b9 26       		.uleb128 0x26
+ 1503 00ba 00       		.byte	0
+ 1504 00bb 49       		.uleb128 0x49
+ 1505 00bc 13       		.uleb128 0x13
+ 1506 00bd 00       		.byte	0
+ 1507 00be 00       		.byte	0
+ 1508 00bf 12       		.uleb128 0x12
+ 1509 00c0 13       		.uleb128 0x13
+ 1510 00c1 01       		.byte	0x1
+ 1511 00c2 0B       		.uleb128 0xb
+ 1512 00c3 0B       		.uleb128 0xb
+ 1513 00c4 3A       		.uleb128 0x3a
+ 1514 00c5 0B       		.uleb128 0xb
+ 1515 00c6 3B       		.uleb128 0x3b
+ 1516 00c7 05       		.uleb128 0x5
+ 1517 00c8 01       		.uleb128 0x1
+ 1518 00c9 13       		.uleb128 0x13
+ 1519 00ca 00       		.byte	0
+ 1520 00cb 00       		.byte	0
+ 1521 00cc 13       		.uleb128 0x13
+ 1522 00cd 0D       		.uleb128 0xd
+ 1523 00ce 00       		.byte	0
+ 1524 00cf 03       		.uleb128 0x3
+ 1525 00d0 0E       		.uleb128 0xe
+ 1526 00d1 3A       		.uleb128 0x3a
+ 1527 00d2 0B       		.uleb128 0xb
+ 1528 00d3 3B       		.uleb128 0x3b
+ 1529 00d4 05       		.uleb128 0x5
+ 1530 00d5 49       		.uleb128 0x49
+ 1531 00d6 13       		.uleb128 0x13
+ 1532 00d7 38       		.uleb128 0x38
+ 1533 00d8 0B       		.uleb128 0xb
+ 1534 00d9 00       		.byte	0
+ 1535 00da 00       		.byte	0
+ 1536 00db 14       		.uleb128 0x14
+ 1537 00dc 17       		.uleb128 0x17
+ 1538 00dd 01       		.byte	0x1
+ 1539 00de 0B       		.uleb128 0xb
+ 1540 00df 0B       		.uleb128 0xb
+ 1541 00e0 3A       		.uleb128 0x3a
+ 1542 00e1 0B       		.uleb128 0xb
+ 1543 00e2 3B       		.uleb128 0x3b
+ 1544 00e3 0B       		.uleb128 0xb
+ 1545 00e4 01       		.uleb128 0x1
+ 1546 00e5 13       		.uleb128 0x13
+ 1547 00e6 00       		.byte	0
+ 1548 00e7 00       		.byte	0
+ 1549 00e8 15       		.uleb128 0x15
+ 1550 00e9 0D       		.uleb128 0xd
+ 1551 00ea 00       		.byte	0
+ 1552 00eb 03       		.uleb128 0x3
+ 1553 00ec 0E       		.uleb128 0xe
+ 1554 00ed 3A       		.uleb128 0x3a
+ 1555 00ee 0B       		.uleb128 0xb
+ 1556 00ef 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 32
+
+
+ 1557 00f0 0B       		.uleb128 0xb
+ 1558 00f1 49       		.uleb128 0x49
+ 1559 00f2 13       		.uleb128 0x13
+ 1560 00f3 00       		.byte	0
+ 1561 00f4 00       		.byte	0
+ 1562 00f5 16       		.uleb128 0x16
+ 1563 00f6 2E       		.uleb128 0x2e
+ 1564 00f7 01       		.byte	0x1
+ 1565 00f8 03       		.uleb128 0x3
+ 1566 00f9 0E       		.uleb128 0xe
+ 1567 00fa 3A       		.uleb128 0x3a
+ 1568 00fb 0B       		.uleb128 0xb
+ 1569 00fc 3B       		.uleb128 0x3b
+ 1570 00fd 0B       		.uleb128 0xb
+ 1571 00fe 27       		.uleb128 0x27
+ 1572 00ff 19       		.uleb128 0x19
+ 1573 0100 11       		.uleb128 0x11
+ 1574 0101 01       		.uleb128 0x1
+ 1575 0102 12       		.uleb128 0x12
+ 1576 0103 06       		.uleb128 0x6
+ 1577 0104 40       		.uleb128 0x40
+ 1578 0105 18       		.uleb128 0x18
+ 1579 0106 9742     		.uleb128 0x2117
+ 1580 0108 19       		.uleb128 0x19
+ 1581 0109 01       		.uleb128 0x1
+ 1582 010a 13       		.uleb128 0x13
+ 1583 010b 00       		.byte	0
+ 1584 010c 00       		.byte	0
+ 1585 010d 17       		.uleb128 0x17
+ 1586 010e 898201   		.uleb128 0x4109
+ 1587 0111 00       		.byte	0
+ 1588 0112 11       		.uleb128 0x11
+ 1589 0113 01       		.uleb128 0x1
+ 1590 0114 31       		.uleb128 0x31
+ 1591 0115 13       		.uleb128 0x13
+ 1592 0116 00       		.byte	0
+ 1593 0117 00       		.byte	0
+ 1594 0118 18       		.uleb128 0x18
+ 1595 0119 2E       		.uleb128 0x2e
+ 1596 011a 01       		.byte	0x1
+ 1597 011b 3F       		.uleb128 0x3f
+ 1598 011c 19       		.uleb128 0x19
+ 1599 011d 03       		.uleb128 0x3
+ 1600 011e 0E       		.uleb128 0xe
+ 1601 011f 3A       		.uleb128 0x3a
+ 1602 0120 0B       		.uleb128 0xb
+ 1603 0121 3B       		.uleb128 0x3b
+ 1604 0122 0B       		.uleb128 0xb
+ 1605 0123 27       		.uleb128 0x27
+ 1606 0124 19       		.uleb128 0x19
+ 1607 0125 11       		.uleb128 0x11
+ 1608 0126 01       		.uleb128 0x1
+ 1609 0127 12       		.uleb128 0x12
+ 1610 0128 06       		.uleb128 0x6
+ 1611 0129 40       		.uleb128 0x40
+ 1612 012a 18       		.uleb128 0x18
+ 1613 012b 9742     		.uleb128 0x2117
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 33
+
+
+ 1614 012d 19       		.uleb128 0x19
+ 1615 012e 01       		.uleb128 0x1
+ 1616 012f 13       		.uleb128 0x13
+ 1617 0130 00       		.byte	0
+ 1618 0131 00       		.byte	0
+ 1619 0132 19       		.uleb128 0x19
+ 1620 0133 34       		.uleb128 0x34
+ 1621 0134 00       		.byte	0
+ 1622 0135 03       		.uleb128 0x3
+ 1623 0136 0E       		.uleb128 0xe
+ 1624 0137 3A       		.uleb128 0x3a
+ 1625 0138 0B       		.uleb128 0xb
+ 1626 0139 3B       		.uleb128 0x3b
+ 1627 013a 0B       		.uleb128 0xb
+ 1628 013b 49       		.uleb128 0x49
+ 1629 013c 13       		.uleb128 0x13
+ 1630 013d 02       		.uleb128 0x2
+ 1631 013e 17       		.uleb128 0x17
+ 1632 013f 00       		.byte	0
+ 1633 0140 00       		.byte	0
+ 1634 0141 1A       		.uleb128 0x1a
+ 1635 0142 34       		.uleb128 0x34
+ 1636 0143 00       		.byte	0
+ 1637 0144 03       		.uleb128 0x3
+ 1638 0145 0E       		.uleb128 0xe
+ 1639 0146 3A       		.uleb128 0x3a
+ 1640 0147 0B       		.uleb128 0xb
+ 1641 0148 3B       		.uleb128 0x3b
+ 1642 0149 0B       		.uleb128 0xb
+ 1643 014a 49       		.uleb128 0x49
+ 1644 014b 13       		.uleb128 0x13
+ 1645 014c 02       		.uleb128 0x2
+ 1646 014d 18       		.uleb128 0x18
+ 1647 014e 00       		.byte	0
+ 1648 014f 00       		.byte	0
+ 1649 0150 1B       		.uleb128 0x1b
+ 1650 0151 898201   		.uleb128 0x4109
+ 1651 0154 01       		.byte	0x1
+ 1652 0155 11       		.uleb128 0x11
+ 1653 0156 01       		.uleb128 0x1
+ 1654 0157 31       		.uleb128 0x31
+ 1655 0158 13       		.uleb128 0x13
+ 1656 0159 01       		.uleb128 0x1
+ 1657 015a 13       		.uleb128 0x13
+ 1658 015b 00       		.byte	0
+ 1659 015c 00       		.byte	0
+ 1660 015d 1C       		.uleb128 0x1c
+ 1661 015e 8A8201   		.uleb128 0x410a
+ 1662 0161 00       		.byte	0
+ 1663 0162 02       		.uleb128 0x2
+ 1664 0163 18       		.uleb128 0x18
+ 1665 0164 9142     		.uleb128 0x2111
+ 1666 0166 18       		.uleb128 0x18
+ 1667 0167 00       		.byte	0
+ 1668 0168 00       		.byte	0
+ 1669 0169 1D       		.uleb128 0x1d
+ 1670 016a 898201   		.uleb128 0x4109
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 34
+
+
+ 1671 016d 01       		.byte	0x1
+ 1672 016e 11       		.uleb128 0x11
+ 1673 016f 01       		.uleb128 0x1
+ 1674 0170 31       		.uleb128 0x31
+ 1675 0171 13       		.uleb128 0x13
+ 1676 0172 00       		.byte	0
+ 1677 0173 00       		.byte	0
+ 1678 0174 1E       		.uleb128 0x1e
+ 1679 0175 2E       		.uleb128 0x2e
+ 1680 0176 01       		.byte	0x1
+ 1681 0177 3F       		.uleb128 0x3f
+ 1682 0178 19       		.uleb128 0x19
+ 1683 0179 03       		.uleb128 0x3
+ 1684 017a 0E       		.uleb128 0xe
+ 1685 017b 3A       		.uleb128 0x3a
+ 1686 017c 0B       		.uleb128 0xb
+ 1687 017d 3B       		.uleb128 0x3b
+ 1688 017e 0B       		.uleb128 0xb
+ 1689 017f 27       		.uleb128 0x27
+ 1690 0180 19       		.uleb128 0x19
+ 1691 0181 49       		.uleb128 0x49
+ 1692 0182 13       		.uleb128 0x13
+ 1693 0183 11       		.uleb128 0x11
+ 1694 0184 01       		.uleb128 0x1
+ 1695 0185 12       		.uleb128 0x12
+ 1696 0186 06       		.uleb128 0x6
+ 1697 0187 40       		.uleb128 0x40
+ 1698 0188 18       		.uleb128 0x18
+ 1699 0189 9742     		.uleb128 0x2117
+ 1700 018b 19       		.uleb128 0x19
+ 1701 018c 01       		.uleb128 0x1
+ 1702 018d 13       		.uleb128 0x13
+ 1703 018e 00       		.byte	0
+ 1704 018f 00       		.byte	0
+ 1705 0190 1F       		.uleb128 0x1f
+ 1706 0191 05       		.uleb128 0x5
+ 1707 0192 00       		.byte	0
+ 1708 0193 03       		.uleb128 0x3
+ 1709 0194 0E       		.uleb128 0xe
+ 1710 0195 3A       		.uleb128 0x3a
+ 1711 0196 0B       		.uleb128 0xb
+ 1712 0197 3B       		.uleb128 0x3b
+ 1713 0198 0B       		.uleb128 0xb
+ 1714 0199 49       		.uleb128 0x49
+ 1715 019a 13       		.uleb128 0x13
+ 1716 019b 02       		.uleb128 0x2
+ 1717 019c 17       		.uleb128 0x17
+ 1718 019d 00       		.byte	0
+ 1719 019e 00       		.byte	0
+ 1720 019f 20       		.uleb128 0x20
+ 1721 01a0 05       		.uleb128 0x5
+ 1722 01a1 00       		.byte	0
+ 1723 01a2 03       		.uleb128 0x3
+ 1724 01a3 08       		.uleb128 0x8
+ 1725 01a4 3A       		.uleb128 0x3a
+ 1726 01a5 0B       		.uleb128 0xb
+ 1727 01a6 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 35
+
+
+ 1728 01a7 0B       		.uleb128 0xb
+ 1729 01a8 49       		.uleb128 0x49
+ 1730 01a9 13       		.uleb128 0x13
+ 1731 01aa 02       		.uleb128 0x2
+ 1732 01ab 17       		.uleb128 0x17
+ 1733 01ac 00       		.byte	0
+ 1734 01ad 00       		.byte	0
+ 1735 01ae 21       		.uleb128 0x21
+ 1736 01af 34       		.uleb128 0x34
+ 1737 01b0 00       		.byte	0
+ 1738 01b1 03       		.uleb128 0x3
+ 1739 01b2 08       		.uleb128 0x8
+ 1740 01b3 3A       		.uleb128 0x3a
+ 1741 01b4 0B       		.uleb128 0xb
+ 1742 01b5 3B       		.uleb128 0x3b
+ 1743 01b6 0B       		.uleb128 0xb
+ 1744 01b7 49       		.uleb128 0x49
+ 1745 01b8 13       		.uleb128 0x13
+ 1746 01b9 00       		.byte	0
+ 1747 01ba 00       		.byte	0
+ 1748 01bb 22       		.uleb128 0x22
+ 1749 01bc 34       		.uleb128 0x34
+ 1750 01bd 00       		.byte	0
+ 1751 01be 03       		.uleb128 0x3
+ 1752 01bf 0E       		.uleb128 0xe
+ 1753 01c0 3A       		.uleb128 0x3a
+ 1754 01c1 0B       		.uleb128 0xb
+ 1755 01c2 3B       		.uleb128 0x3b
+ 1756 01c3 05       		.uleb128 0x5
+ 1757 01c4 49       		.uleb128 0x49
+ 1758 01c5 13       		.uleb128 0x13
+ 1759 01c6 3F       		.uleb128 0x3f
+ 1760 01c7 19       		.uleb128 0x19
+ 1761 01c8 3C       		.uleb128 0x3c
+ 1762 01c9 19       		.uleb128 0x19
+ 1763 01ca 00       		.byte	0
+ 1764 01cb 00       		.byte	0
+ 1765 01cc 23       		.uleb128 0x23
+ 1766 01cd 35       		.uleb128 0x35
+ 1767 01ce 00       		.byte	0
+ 1768 01cf 49       		.uleb128 0x49
+ 1769 01d0 13       		.uleb128 0x13
+ 1770 01d1 00       		.byte	0
+ 1771 01d2 00       		.byte	0
+ 1772 01d3 24       		.uleb128 0x24
+ 1773 01d4 34       		.uleb128 0x34
+ 1774 01d5 00       		.byte	0
+ 1775 01d6 03       		.uleb128 0x3
+ 1776 01d7 0E       		.uleb128 0xe
+ 1777 01d8 3A       		.uleb128 0x3a
+ 1778 01d9 0B       		.uleb128 0xb
+ 1779 01da 3B       		.uleb128 0x3b
+ 1780 01db 0B       		.uleb128 0xb
+ 1781 01dc 49       		.uleb128 0x49
+ 1782 01dd 13       		.uleb128 0x13
+ 1783 01de 3F       		.uleb128 0x3f
+ 1784 01df 19       		.uleb128 0x19
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 36
+
+
+ 1785 01e0 3C       		.uleb128 0x3c
+ 1786 01e1 19       		.uleb128 0x19
+ 1787 01e2 00       		.byte	0
+ 1788 01e3 00       		.byte	0
+ 1789 01e4 25       		.uleb128 0x25
+ 1790 01e5 2E       		.uleb128 0x2e
+ 1791 01e6 00       		.byte	0
+ 1792 01e7 3F       		.uleb128 0x3f
+ 1793 01e8 19       		.uleb128 0x19
+ 1794 01e9 3C       		.uleb128 0x3c
+ 1795 01ea 19       		.uleb128 0x19
+ 1796 01eb 6E       		.uleb128 0x6e
+ 1797 01ec 0E       		.uleb128 0xe
+ 1798 01ed 03       		.uleb128 0x3
+ 1799 01ee 0E       		.uleb128 0xe
+ 1800 01ef 3A       		.uleb128 0x3a
+ 1801 01f0 0B       		.uleb128 0xb
+ 1802 01f1 3B       		.uleb128 0x3b
+ 1803 01f2 0B       		.uleb128 0xb
+ 1804 01f3 00       		.byte	0
+ 1805 01f4 00       		.byte	0
+ 1806 01f5 26       		.uleb128 0x26
+ 1807 01f6 2E       		.uleb128 0x2e
+ 1808 01f7 00       		.byte	0
+ 1809 01f8 3F       		.uleb128 0x3f
+ 1810 01f9 19       		.uleb128 0x19
+ 1811 01fa 3C       		.uleb128 0x3c
+ 1812 01fb 19       		.uleb128 0x19
+ 1813 01fc 6E       		.uleb128 0x6e
+ 1814 01fd 0E       		.uleb128 0xe
+ 1815 01fe 03       		.uleb128 0x3
+ 1816 01ff 0E       		.uleb128 0xe
+ 1817 0200 00       		.byte	0
+ 1818 0201 00       		.byte	0
+ 1819 0202 27       		.uleb128 0x27
+ 1820 0203 2E       		.uleb128 0x2e
+ 1821 0204 00       		.byte	0
+ 1822 0205 3F       		.uleb128 0x3f
+ 1823 0206 19       		.uleb128 0x19
+ 1824 0207 3C       		.uleb128 0x3c
+ 1825 0208 19       		.uleb128 0x19
+ 1826 0209 6E       		.uleb128 0x6e
+ 1827 020a 0E       		.uleb128 0xe
+ 1828 020b 03       		.uleb128 0x3
+ 1829 020c 0E       		.uleb128 0xe
+ 1830 020d 3A       		.uleb128 0x3a
+ 1831 020e 0B       		.uleb128 0xb
+ 1832 020f 3B       		.uleb128 0x3b
+ 1833 0210 05       		.uleb128 0x5
+ 1834 0211 00       		.byte	0
+ 1835 0212 00       		.byte	0
+ 1836 0213 00       		.byte	0
+ 1837              		.section	.debug_loc,"",%progbits
+ 1838              	.Ldebug_loc0:
+ 1839              	.LLST0:
+ 1840 0000 28000000 		.4byte	.LVL3
+ 1841 0004 30000000 		.4byte	.LVL4
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 37
+
+
+ 1842 0008 0100     		.2byte	0x1
+ 1843 000a 50       		.byte	0x50
+ 1844 000b 30000000 		.4byte	.LVL4
+ 1845 000f 70000000 		.4byte	.LVL9
+ 1846 0013 0100     		.2byte	0x1
+ 1847 0015 55       		.byte	0x55
+ 1848 0016 00000000 		.4byte	0
+ 1849 001a 00000000 		.4byte	0
+ 1850              	.LLST1:
+ 1851 001e 00000000 		.4byte	.LVL10
+ 1852 0022 09000000 		.4byte	.LVL11-1
+ 1853 0026 0100     		.2byte	0x1
+ 1854 0028 50       		.byte	0x50
+ 1855 0029 09000000 		.4byte	.LVL11-1
+ 1856 002d 0E000000 		.4byte	.LVL12
+ 1857 0031 0400     		.2byte	0x4
+ 1858 0033 F3       		.byte	0xf3
+ 1859 0034 01       		.uleb128 0x1
+ 1860 0035 50       		.byte	0x50
+ 1861 0036 9F       		.byte	0x9f
+ 1862 0037 0E000000 		.4byte	.LVL12
+ 1863 003b 12000000 		.4byte	.LVL13
+ 1864 003f 0100     		.2byte	0x1
+ 1865 0041 50       		.byte	0x50
+ 1866 0042 12000000 		.4byte	.LVL13
+ 1867 0046 14000000 		.4byte	.LFE65
+ 1868 004a 0400     		.2byte	0x4
+ 1869 004c F3       		.byte	0xf3
+ 1870 004d 01       		.uleb128 0x1
+ 1871 004e 50       		.byte	0x50
+ 1872 004f 9F       		.byte	0x9f
+ 1873 0050 00000000 		.4byte	0
+ 1874 0054 00000000 		.4byte	0
+ 1875              	.LLST2:
+ 1876 0058 00000000 		.4byte	.LVL10
+ 1877 005c 09000000 		.4byte	.LVL11-1
+ 1878 0060 0100     		.2byte	0x1
+ 1879 0062 51       		.byte	0x51
+ 1880 0063 09000000 		.4byte	.LVL11-1
+ 1881 0067 0E000000 		.4byte	.LVL12
+ 1882 006b 0400     		.2byte	0x4
+ 1883 006d F3       		.byte	0xf3
+ 1884 006e 01       		.uleb128 0x1
+ 1885 006f 51       		.byte	0x51
+ 1886 0070 9F       		.byte	0x9f
+ 1887 0071 0E000000 		.4byte	.LVL12
+ 1888 0075 14000000 		.4byte	.LFE65
+ 1889 0079 0100     		.2byte	0x1
+ 1890 007b 51       		.byte	0x51
+ 1891 007c 00000000 		.4byte	0
+ 1892 0080 00000000 		.4byte	0
+ 1893              	.LLST3:
+ 1894 0084 00000000 		.4byte	.LVL10
+ 1895 0088 09000000 		.4byte	.LVL11-1
+ 1896 008c 0100     		.2byte	0x1
+ 1897 008e 52       		.byte	0x52
+ 1898 008f 09000000 		.4byte	.LVL11-1
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 38
+
+
+ 1899 0093 0E000000 		.4byte	.LVL12
+ 1900 0097 0400     		.2byte	0x4
+ 1901 0099 F3       		.byte	0xf3
+ 1902 009a 01       		.uleb128 0x1
+ 1903 009b 52       		.byte	0x52
+ 1904 009c 9F       		.byte	0x9f
+ 1905 009d 0E000000 		.4byte	.LVL12
+ 1906 00a1 14000000 		.4byte	.LFE65
+ 1907 00a5 0100     		.2byte	0x1
+ 1908 00a7 52       		.byte	0x52
+ 1909 00a8 00000000 		.4byte	0
+ 1910 00ac 00000000 		.4byte	0
+ 1911              		.section	.debug_aranges,"",%progbits
+ 1912 0000 2C000000 		.4byte	0x2c
+ 1913 0004 0200     		.2byte	0x2
+ 1914 0006 00000000 		.4byte	.Ldebug_info0
+ 1915 000a 04       		.byte	0x4
+ 1916 000b 00       		.byte	0
+ 1917 000c 0000     		.2byte	0
+ 1918 000e 0000     		.2byte	0
+ 1919 0010 00000000 		.4byte	.LFB63
+ 1920 0014 08000000 		.4byte	.LFE63-.LFB63
+ 1921 0018 00000000 		.4byte	.LFB64
+ 1922 001c 94000000 		.4byte	.LFE64-.LFB64
+ 1923 0020 00000000 		.4byte	.LFB65
+ 1924 0024 14000000 		.4byte	.LFE65-.LFB65
+ 1925 0028 00000000 		.4byte	0
+ 1926 002c 00000000 		.4byte	0
+ 1927              		.section	.debug_ranges,"",%progbits
+ 1928              	.Ldebug_ranges0:
+ 1929 0000 00000000 		.4byte	.LFB63
+ 1930 0004 08000000 		.4byte	.LFE63
+ 1931 0008 00000000 		.4byte	.LFB64
+ 1932 000c 94000000 		.4byte	.LFE64
+ 1933 0010 00000000 		.4byte	.LFB65
+ 1934 0014 14000000 		.4byte	.LFE65
+ 1935 0018 00000000 		.4byte	0
+ 1936 001c 00000000 		.4byte	0
+ 1937              		.section	.debug_line,"",%progbits
+ 1938              	.Ldebug_line0:
+ 1939 0000 FE010000 		.section	.debug_str,"MS",%progbits,1
+ 1939      0200B001 
+ 1939      00000201 
+ 1939      FB0E0D00 
+ 1939      01010101 
+ 1940              	.LASF34:
+ 1941 0000 70436F6C 		.ascii	"pColorConvAPI\000"
+ 1941      6F72436F 
+ 1941      6E764150 
+ 1941      4900
+ 1942              	.LASF95:
+ 1943 000e 4C43445F 		.ascii	"LCD_SetSizeEx\000"
+ 1943      53657453 
+ 1943      697A6545 
+ 1943      7800
+ 1944              	.LASF103:
+ 1945 001c 4C43445F 		.ascii	"LCD_X_Config\000"
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 39
+
+
+ 1945      585F436F 
+ 1945      6E666967 
+ 1945      00
+ 1946              	.LASF89:
+ 1947 0029 70446174 		.ascii	"pData\000"
+ 1947      6100
+ 1948              	.LASF84:
+ 1949 002f 4E756D44 		.ascii	"NumDummyReads\000"
+ 1949      756D6D79 
+ 1949      52656164 
+ 1949      7300
+ 1950              	.LASF42:
+ 1951 003d 70664669 		.ascii	"pfFillRect\000"
+ 1951      6C6C5265 
+ 1951      637400
+ 1952              	.LASF98:
+ 1953 0048 47554944 		.ascii	"GUIDRV_FlexColor_SetFunc\000"
+ 1953      52565F46 
+ 1953      6C657843 
+ 1953      6F6C6F72 
+ 1953      5F536574 
+ 1954              	.LASF69:
+ 1955 0061 70665772 		.ascii	"pfWriteM32_A0\000"
+ 1955      6974654D 
+ 1955      33325F41 
+ 1955      3000
+ 1956              	.LASF2:
+ 1957 006f 73686F72 		.ascii	"short int\000"
+ 1957      7420696E 
+ 1957      7400
+ 1958              	.LASF15:
+ 1959 0079 73697A65 		.ascii	"sizetype\000"
+ 1959      74797065 
+ 1959      00
+ 1960              	.LASF49:
+ 1961 0082 70664765 		.ascii	"pfGetDevData\000"
+ 1961      74446576 
+ 1961      44617461 
+ 1961      00
+ 1962              	.LASF75:
+ 1963 008f 70665365 		.ascii	"pfSetCS\000"
+ 1963      74435300 
+ 1964              	.LASF63:
+ 1965 0097 70665265 		.ascii	"pfRead16_A0\000"
+ 1965      61643136 
+ 1965      5F413000 
+ 1966              	.LASF64:
+ 1967 00a3 70665265 		.ascii	"pfRead16_A1\000"
+ 1967      61643136 
+ 1967      5F413100 
+ 1968              	.LASF41:
+ 1969 00af 70664472 		.ascii	"pfDrawVLine\000"
+ 1969      6177564C 
+ 1969      696E6500 
+ 1970              	.LASF70:
+ 1971 00bb 70665772 		.ascii	"pfWriteM32_A1\000"
+ 1971      6974654D 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 40
+
+
+ 1971      33325F41 
+ 1971      3100
+ 1972              	.LASF14:
+ 1973 00c9 6C6F6E67 		.ascii	"long double\000"
+ 1973      20646F75 
+ 1973      626C6500 
+ 1974              	.LASF50:
+ 1975 00d5 70664765 		.ascii	"pfGetRect\000"
+ 1975      74526563 
+ 1975      7400
+ 1976              	.LASF33:
+ 1977 00df 70446576 		.ascii	"pDeviceAPI\000"
+ 1977      69636541 
+ 1977      504900
+ 1978              	.LASF83:
+ 1979 00ea 52656745 		.ascii	"RegEntryMode\000"
+ 1979      6E747279 
+ 1979      4D6F6465 
+ 1979      00
+ 1980              	.LASF37:
+ 1981 00f7 4755495F 		.ascii	"GUI_DEVICE_API\000"
+ 1981      44455649 
+ 1981      43455F41 
+ 1981      504900
+ 1982              	.LASF16:
+ 1983 0106 4C43445F 		.ascii	"LCD_COLOR\000"
+ 1983      434F4C4F 
+ 1983      5200
+ 1984              	.LASF54:
+ 1985 0110 70665772 		.ascii	"pfWriteM8_A1\000"
+ 1985      6974654D 
+ 1985      385F4131 
+ 1985      00
+ 1986              	.LASF25:
+ 1987 011d 70664765 		.ascii	"pfGetIndexMask\000"
+ 1987      74496E64 
+ 1987      65784D61 
+ 1987      736B00
+ 1988              	.LASF27:
+ 1989 012c 7066436F 		.ascii	"pfColor2IndexBulk\000"
+ 1989      6C6F7232 
+ 1989      496E6465 
+ 1989      7842756C 
+ 1989      6B00
+ 1990              	.LASF102:
+ 1991 013e 5F496E69 		.ascii	"_InitController\000"
+ 1991      74436F6E 
+ 1991      74726F6C 
+ 1991      6C657200 
+ 1992              	.LASF73:
+ 1993 014e 70665265 		.ascii	"pfReadM32_A0\000"
+ 1993      61644D33 
+ 1993      325F4130 
+ 1993      00
+ 1994              	.LASF74:
+ 1995 015b 70665265 		.ascii	"pfReadM32_A1\000"
+ 1995      61644D33 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 41
+
+
+ 1995      325F4131 
+ 1995      00
+ 1996              	.LASF40:
+ 1997 0168 70664472 		.ascii	"pfDrawHLine\000"
+ 1997      6177484C 
+ 1997      696E6500 
+ 1998              	.LASF35:
+ 1999 0174 466C6167 		.ascii	"Flags\000"
+ 1999      7300
+ 2000              	.LASF11:
+ 2001 017a 666C6F61 		.ascii	"float\000"
+ 2001      7400
+ 2002              	.LASF88:
+ 2003 0180 506F7274 		.ascii	"PortAPI\000"
+ 2003      41504900 
+ 2004              	.LASF36:
+ 2005 0188 4C617965 		.ascii	"LayerIndex\000"
+ 2005      72496E64 
+ 2005      657800
+ 2006              	.LASF6:
+ 2007 0193 6C6F6E67 		.ascii	"long long int\000"
+ 2007      206C6F6E 
+ 2007      6720696E 
+ 2007      7400
+ 2008              	.LASF101:
+ 2009 01a1 433A5C55 		.ascii	"C:\\Users\\simon\\OneDrive\\Documents\\PSoC Creator"
+ 2009      73657273 
+ 2009      5C73696D 
+ 2009      6F6E5C4F 
+ 2009      6E654472 
+ 2010 01cf 5C46696E 		.ascii	"\\FinalProject\\Keys2NotewDisplay.cydsn\000"
+ 2010      616C5072 
+ 2010      6F6A6563 
+ 2010      745C4B65 
+ 2010      7973324E 
+ 2011              	.LASF31:
+ 2012 01f5 704E6578 		.ascii	"pNext\000"
+ 2012      7400
+ 2013              	.LASF105:
+ 2014 01fb 6D656D73 		.ascii	"memset\000"
+ 2014      657400
+ 2015              	.LASF20:
+ 2016 0202 744C4344 		.ascii	"tLCDDEV_GetIndexMask\000"
+ 2016      4445565F 
+ 2016      47657449 
+ 2016      6E646578 
+ 2016      4D61736B 
+ 2017              	.LASF4:
+ 2018 0217 6C6F6E67 		.ascii	"long int\000"
+ 2018      20696E74 
+ 2018      00
+ 2019              	.LASF43:
+ 2020 0220 70664765 		.ascii	"pfGetPixelIndex\000"
+ 2020      74506978 
+ 2020      656C496E 
+ 2020      64657800 
+ 2021              	.LASF29:
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 42
+
+
+ 2022 0230 4C43445F 		.ascii	"LCD_API_COLOR_CONV\000"
+ 2022      4150495F 
+ 2022      434F4C4F 
+ 2022      525F434F 
+ 2022      4E5600
+ 2023              	.LASF91:
+ 2024 0243 4C43445F 		.ascii	"LCD_API_ColorConv_M565\000"
+ 2024      4150495F 
+ 2024      436F6C6F 
+ 2024      72436F6E 
+ 2024      765F4D35 
+ 2025              	.LASF94:
+ 2026 025a 4755495F 		.ascii	"GUI_DEVICE_CreateAndLink\000"
+ 2026      44455649 
+ 2026      43455F43 
+ 2026      72656174 
+ 2026      65416E64 
+ 2027              	.LASF80:
+ 2028 0273 46697273 		.ascii	"FirstSEG\000"
+ 2028      74534547 
+ 2028      00
+ 2029              	.LASF32:
+ 2030 027c 70507265 		.ascii	"pPrev\000"
+ 2030      7600
+ 2031              	.LASF87:
+ 2032 0282 436F6E66 		.ascii	"Config\000"
+ 2032      696700
+ 2033              	.LASF71:
+ 2034 0289 70665265 		.ascii	"pfRead32_A0\000"
+ 2034      61643332 
+ 2034      5F413000 
+ 2035              	.LASF78:
+ 2036 0295 68436F6E 		.ascii	"hContext\000"
+ 2036      74657874 
+ 2036      00
+ 2037              	.LASF104:
+ 2038 029e 4C43445F 		.ascii	"LCD_X_DisplayDriver\000"
+ 2038      585F4469 
+ 2038      73706C61 
+ 2038      79447269 
+ 2038      76657200 
+ 2039              	.LASF100:
+ 2040 02b2 4C434443 		.ascii	"LCDConf.c\000"
+ 2040      6F6E662E 
+ 2040      6300
+ 2041              	.LASF17:
+ 2042 02bc 4C43445F 		.ascii	"LCD_RECT\000"
+ 2042      52454354 
+ 2042      00
+ 2043              	.LASF1:
+ 2044 02c5 756E7369 		.ascii	"unsigned char\000"
+ 2044      676E6564 
+ 2044      20636861 
+ 2044      7200
+ 2045              	.LASF0:
+ 2046 02d3 7369676E 		.ascii	"signed char\000"
+ 2046      65642063 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 43
+
+
+ 2046      68617200 
+ 2047              	.LASF7:
+ 2048 02df 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2048      206C6F6E 
+ 2048      6720756E 
+ 2048      7369676E 
+ 2048      65642069 
+ 2049              	.LASF61:
+ 2050 02f6 70665772 		.ascii	"pfWriteM16_A0\000"
+ 2050      6974654D 
+ 2050      31365F41 
+ 2050      3000
+ 2051              	.LASF62:
+ 2052 0304 70665772 		.ascii	"pfWriteM16_A1\000"
+ 2052      6974654D 
+ 2052      31365F41 
+ 2052      3100
+ 2053              	.LASF26:
+ 2054 0312 4E6F416C 		.ascii	"NoAlpha\000"
+ 2054      70686100 
+ 2055              	.LASF24:
+ 2056 031a 7066496E 		.ascii	"pfIndex2Color\000"
+ 2056      64657832 
+ 2056      436F6C6F 
+ 2056      7200
+ 2057              	.LASF8:
+ 2058 0328 756E7369 		.ascii	"unsigned int\000"
+ 2058      676E6564 
+ 2058      20696E74 
+ 2058      00
+ 2059              	.LASF44:
+ 2060 0335 70665365 		.ascii	"pfSetPixelIndex\000"
+ 2060      74506978 
+ 2060      656C496E 
+ 2060      64657800 
+ 2061              	.LASF92:
+ 2062 0345 47554944 		.ascii	"GUIDRV_FlexColor_API\000"
+ 2062      52565F46 
+ 2062      6C657843 
+ 2062      6F6C6F72 
+ 2062      5F415049 
+ 2063              	.LASF23:
+ 2064 035a 7066436F 		.ascii	"pfColor2Index\000"
+ 2064      6C6F7232 
+ 2064      496E6465 
+ 2064      7800
+ 2065              	.LASF65:
+ 2066 0368 70665265 		.ascii	"pfReadM16_A0\000"
+ 2066      61644D31 
+ 2066      365F4130 
+ 2066      00
+ 2067              	.LASF22:
+ 2068 0375 744C4344 		.ascii	"tLCDDEV_Color2IndexBulk\000"
+ 2068      4445565F 
+ 2068      436F6C6F 
+ 2068      7232496E 
+ 2068      64657842 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 44
+
+
+ 2069              	.LASF13:
+ 2070 038d 63686172 		.ascii	"char\000"
+ 2070      00
+ 2071              	.LASF96:
+ 2072 0392 4C43445F 		.ascii	"LCD_SetVSizeEx\000"
+ 2072      53657456 
+ 2072      53697A65 
+ 2072      457800
+ 2073              	.LASF38:
+ 2074 03a1 44657669 		.ascii	"DeviceClassIndex\000"
+ 2074      6365436C 
+ 2074      61737349 
+ 2074      6E646578 
+ 2074      00
+ 2075              	.LASF10:
+ 2076 03b2 696E7433 		.ascii	"int32_t\000"
+ 2076      325F7400 
+ 2077              	.LASF82:
+ 2078 03ba 4F726965 		.ascii	"Orientation\000"
+ 2078      6E746174 
+ 2078      696F6E00 
+ 2079              	.LASF30:
+ 2080 03c6 4755495F 		.ascii	"GUI_DEVICE\000"
+ 2080      44455649 
+ 2080      434500
+ 2081              	.LASF28:
+ 2082 03d1 7066496E 		.ascii	"pfIndex2ColorBulk\000"
+ 2082      64657832 
+ 2082      436F6C6F 
+ 2082      7242756C 
+ 2082      6B00
+ 2083              	.LASF57:
+ 2084 03e3 70665265 		.ascii	"pfReadM8_A0\000"
+ 2084      61644D38 
+ 2084      5F413000 
+ 2085              	.LASF67:
+ 2086 03ef 70665772 		.ascii	"pfWrite32_A0\000"
+ 2086      69746533 
+ 2086      325F4130 
+ 2086      00
+ 2087              	.LASF53:
+ 2088 03fc 70665772 		.ascii	"pfWriteM8_A0\000"
+ 2088      6974654D 
+ 2088      385F4130 
+ 2088      00
+ 2089              	.LASF79:
+ 2090 0409 70436F6E 		.ascii	"pContext\000"
+ 2090      74657874 
+ 2090      00
+ 2091              	.LASF39:
+ 2092 0412 70664472 		.ascii	"pfDrawBitmap\000"
+ 2092      61774269 
+ 2092      746D6170 
+ 2092      00
+ 2093              	.LASF3:
+ 2094 041f 73686F72 		.ascii	"short unsigned int\000"
+ 2094      7420756E 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 45
+
+
+ 2094      7369676E 
+ 2094      65642069 
+ 2094      6E7400
+ 2095              	.LASF47:
+ 2096 0432 70664765 		.ascii	"pfGetDevFunc\000"
+ 2096      74446576 
+ 2096      46756E63 
+ 2096      00
+ 2097              	.LASF77:
+ 2098 043f 4755495F 		.ascii	"GUI_PORT_API\000"
+ 2098      504F5254 
+ 2098      5F415049 
+ 2098      00
+ 2099              	.LASF5:
+ 2100 044c 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2100      20756E73 
+ 2100      69676E65 
+ 2100      6420696E 
+ 2100      7400
+ 2101              	.LASF12:
+ 2102 045e 646F7562 		.ascii	"double\000"
+ 2102      6C6500
+ 2103              	.LASF51:
+ 2104 0465 70665772 		.ascii	"pfWrite8_A0\000"
+ 2104      69746538 
+ 2104      5F413000 
+ 2105              	.LASF52:
+ 2106 0471 70665772 		.ascii	"pfWrite8_A1\000"
+ 2106      69746538 
+ 2106      5F413100 
+ 2107              	.LASF68:
+ 2108 047d 70665772 		.ascii	"pfWrite32_A1\000"
+ 2108      69746533 
+ 2108      325F4131 
+ 2108      00
+ 2109              	.LASF97:
+ 2110 048a 47554944 		.ascii	"GUIDRV_FlexColor_Config\000"
+ 2110      52565F46 
+ 2110      6C657843 
+ 2110      6F6C6F72 
+ 2110      5F436F6E 
+ 2111              	.LASF66:
+ 2112 04a2 70665265 		.ascii	"pfReadM16_A1\000"
+ 2112      61644D31 
+ 2112      365F4131 
+ 2112      00
+ 2113              	.LASF72:
+ 2114 04af 70665265 		.ascii	"pfRead32_A1\000"
+ 2114      61643332 
+ 2114      5F413100 
+ 2115              	.LASF76:
+ 2116 04bb 7066466C 		.ascii	"pfFlushBuffer\000"
+ 2116      75736842 
+ 2116      75666665 
+ 2116      7200
+ 2117              	.LASF9:
+ 2118 04c9 5F5F696E 		.ascii	"__int32_t\000"
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 46
+
+
+ 2118      7433325F 
+ 2118      7400
+ 2119              	.LASF55:
+ 2120 04d3 70665265 		.ascii	"pfRead8_A0\000"
+ 2120      6164385F 
+ 2120      413000
+ 2121              	.LASF56:
+ 2122 04de 70665265 		.ascii	"pfRead8_A1\000"
+ 2122      6164385F 
+ 2122      413100
+ 2123              	.LASF45:
+ 2124 04e9 7066586F 		.ascii	"pfXorPixel\000"
+ 2124      72506978 
+ 2124      656C00
+ 2125              	.LASF58:
+ 2126 04f4 70665265 		.ascii	"pfReadM8_A1\000"
+ 2126      61644D38 
+ 2126      5F413100 
+ 2127              	.LASF46:
+ 2128 0500 70665365 		.ascii	"pfSetOrg\000"
+ 2128      744F7267 
+ 2128      00
+ 2129              	.LASF59:
+ 2130 0509 70665772 		.ascii	"pfWrite16_A0\000"
+ 2130      69746531 
+ 2130      365F4130 
+ 2130      00
+ 2131              	.LASF60:
+ 2132 0516 70665772 		.ascii	"pfWrite16_A1\000"
+ 2132      69746531 
+ 2132      365F4131 
+ 2132      00
+ 2133              	.LASF21:
+ 2134 0523 744C4344 		.ascii	"tLCDDEV_Index2ColorBulk\000"
+ 2134      4445565F 
+ 2134      496E6465 
+ 2134      7832436F 
+ 2134      6C6F7242 
+ 2135              	.LASF18:
+ 2136 053b 744C4344 		.ascii	"tLCDDEV_Index2Color\000"
+ 2136      4445565F 
+ 2136      496E6465 
+ 2136      7832436F 
+ 2136      6C6F7200 
+ 2137              	.LASF93:
+ 2138 054f 74667453 		.ascii	"tftStart\000"
+ 2138      74617274 
+ 2138      00
+ 2139              	.LASF90:
+ 2140 0558 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2140      52784275 
+ 2140      66666572 
+ 2140      00
+ 2141              	.LASF99:
+ 2142 0565 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2142      43313120 
+ 2142      352E342E 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccNM3IaN.s 			page 47
+
+
+ 2142      31203230 
+ 2142      31363036 
+ 2143 0598 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2143      20726576 
+ 2143      6973696F 
+ 2143      6E203233 
+ 2143      37373135 
+ 2144 05cb 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2144      66756E63 
+ 2144      74696F6E 
+ 2144      2D736563 
+ 2144      74696F6E 
+ 2145              	.LASF81:
+ 2146 05f3 46697273 		.ascii	"FirstCOM\000"
+ 2146      74434F4D 
+ 2146      00
+ 2147              	.LASF85:
+ 2148 05fc 434F4E46 		.ascii	"CONFIG_FLEXCOLOR\000"
+ 2148      49475F46 
+ 2148      4C455843 
+ 2148      4F4C4F52 
+ 2148      00
+ 2149              	.LASF86:
+ 2150 060d 70446576 		.ascii	"pDevice\000"
+ 2150      69636500 
+ 2151              	.LASF48:
+ 2152 0615 70664765 		.ascii	"pfGetDevProp\000"
+ 2152      74446576 
+ 2152      50726F70 
+ 2152      00
+ 2153              	.LASF19:
+ 2154 0622 744C4344 		.ascii	"tLCDDEV_Color2Index\000"
+ 2154      4445565F 
+ 2154      436F6C6F 
+ 2154      7232496E 
+ 2154      64657800 
+ 2155              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

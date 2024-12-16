@@ -1,0 +1,35 @@
+0000: 78 19                 mov R0, #19h
+0002: 79 E6        mov R1, #0E6h
+                   
+                   main: 
+                            
+0004: E8                    mov A, R0 ; moves 0.5 V into the Accumulator
+                   
+0005: C0 00                 push 00h
+0007: C0 01                 push 01h ; store the registers before a function ca
+0009: 12 00 1E              lcall dacme
+000C: D0 01                 pop 01h ; restore the register values
+000E: D0 00                 pop 00h
+                   
+0010: E9                    mov A, R1 ; moves 4.5 V into the Accumulator
+                   
+0011: C0 00                 push 00h
+0013: C0 01                 push 01h ; store the registers before a function ca
+0015: 12 00 1E              lcall dacme 
+0018: D0 01                 pop 01h ; restore the register values
+001A: D0 00                 pop 00h
+                   
+001C: 80 E6                 sjmp main
+                            
+                   
+                   dacme:
+001E: F5 90                 mov P1, A ; moves the accumulator to the DAC
+0020: 78 64                 mov R0, #100d ; Arbitrary number of cycles for each
+                            innerloop:
+0022: D2 87                         setb P0.7
+0024: C2 87                         clr P0.7
+0026: D8 FA                         djnz R0, innerloop ; cycles 100 times befor
+0028: 22                    ret
+                   
+                   
+                   

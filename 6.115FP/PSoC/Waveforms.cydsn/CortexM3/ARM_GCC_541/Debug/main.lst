@@ -1,0 +1,1485 @@
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.Waveform_ISR,"ax",%progbits
+  20              		.align	2
+  21              		.global	Waveform_ISR
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	Waveform_ISR, %function
+  25              	Waveform_ISR:
+  26              	.LFB63:
+  27              		.file 1 "main.c"
+   1:main.c        **** /* ========================================
+   2:main.c        ****  *
+   3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
+   4:main.c        ****  * All Rights Reserved
+   5:main.c        ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:main.c        ****  *
+   7:main.c        ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:main.c        ****  * WHICH IS THE PROPERTY OF your company.
+   9:main.c        ****  *
+  10:main.c        ****  * ========================================
+  11:main.c        **** */
+  12:main.c        **** #include <project.h>
+  13:main.c        **** #include "waveforms.h"
+  14:main.c        **** 
+  15:main.c        **** volatile uint32_t waveformIndex = 0;
+  16:main.c        **** volatile uint16_t waveVal = 0;
+  17:main.c        **** volatile uint8_t volume = 10;
+  18:main.c        **** volatile enum Waveform waveform_select = Beginning;
+  19:main.c        **** uint16_t* waveforms[4] = {beginning_waveform, repeat_waveform, end_waveform, default_waveform};
+  20:main.c        **** 
+  21:main.c        **** CY_ISR(Waveform_ISR)
+  22:main.c        **** {
+  28              		.loc 1 22 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 10B5     		push	{r4, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 2
+
+
+  23:main.c        ****     // Toggle the digital pin
+  24:main.c        ****     Fs_Write(~Fs_Read());
+  36              		.loc 1 24 0
+  37 0002 FFF7FEFF 		bl	Fs_Read
+  38              	.LVL0:
+  39 0006 C043     		mvns	r0, r0
+  40 0008 C0B2     		uxtb	r0, r0
+  41 000a FFF7FEFF 		bl	Fs_Write
+  42              	.LVL1:
+  25:main.c        ****     
+  26:main.c        ****     // Update DAC output with the next value from the waveform
+  27:main.c        ****     waveVal = (waveforms[waveform_select][waveformIndex]*volume) + 2048;
+  43              		.loc 1 27 0
+  44 000e 174C     		ldr	r4, .L5
+  45 0010 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+  46 0012 174A     		ldr	r2, .L5+4
+  47 0014 52F82330 		ldr	r3, [r2, r3, lsl #2]
+  48 0018 6168     		ldr	r1, [r4, #4]
+  49 001a 33F81110 		ldrh	r1, [r3, r1, lsl #1]
+  50 001e 137C     		ldrb	r3, [r2, #16]	@ zero_extendqisi2
+  51 0020 03FB01F3 		mul	r3, r3, r1
+  52 0024 03F50063 		add	r3, r3, #2048
+  53 0028 9BB2     		uxth	r3, r3
+  54 002a 2381     		strh	r3, [r4, #8]	@ movhi
+  28:main.c        ****     Wave_Out_SetValue(waveVal);
+  55              		.loc 1 28 0
+  56 002c 2089     		ldrh	r0, [r4, #8]
+  57 002e 80B2     		uxth	r0, r0
+  58 0030 FFF7FEFF 		bl	Wave_Out_SetValue
+  59              	.LVL2:
+  29:main.c        ****     // Increment waveform index for the next interrupt
+  30:main.c        ****     waveformIndex++;
+  60              		.loc 1 30 0
+  61 0034 6368     		ldr	r3, [r4, #4]
+  62 0036 0133     		adds	r3, r3, #1
+  63 0038 6360     		str	r3, [r4, #4]
+  31:main.c        ****     
+  32:main.c        ****     // Update the waveform counter
+  33:main.c        ****     if (waveformIndex >= waveform_sizes[waveform_select]) {
+  64              		.loc 1 33 0
+  65 003a 2278     		ldrb	r2, [r4]	@ zero_extendqisi2
+  66 003c 0D4B     		ldr	r3, .L5+8
+  67 003e 53F82220 		ldr	r2, [r3, r2, lsl #2]
+  68 0042 6368     		ldr	r3, [r4, #4]
+  69 0044 9A42     		cmp	r2, r3
+  70 0046 0DD8     		bhi	.L2
+  34:main.c        ****         // Reset the counter
+  35:main.c        ****         waveformIndex = 0;
+  71              		.loc 1 35 0
+  72 0048 0022     		movs	r2, #0
+  73 004a 6260     		str	r2, [r4, #4]
+  36:main.c        ****         waveform_select = (waveform_select + 1)%4;
+  74              		.loc 1 36 0
+  75 004c 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+  76 004e 0133     		adds	r3, r3, #1
+  77 0050 094A     		ldr	r2, .L5+12
+  78 0052 1340     		ands	r3, r3, r2
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 3
+
+
+  79 0054 03D5     		bpl	.L3
+  80 0056 013B     		subs	r3, r3, #1
+  81 0058 63F00303 		orn	r3, r3, #3
+  82 005c 0133     		adds	r3, r3, #1
+  83              	.L3:
+  84 005e DBB2     		uxtb	r3, r3
+  85 0060 024A     		ldr	r2, .L5
+  86 0062 1370     		strb	r3, [r2]
+  87              	.L2:
+  37:main.c        ****     }
+  38:main.c        ****     
+  39:main.c        ****     // Resets the TC flag
+  40:main.c        ****     Waveform_Send_ReadStatusRegister();
+  88              		.loc 1 40 0
+  89 0064 FFF7FEFF 		bl	Waveform_Send_ReadStatusRegister
+  90              	.LVL3:
+  91 0068 10BD     		pop	{r4, pc}
+  92              	.L6:
+  93 006a 00BF     		.align	2
+  94              	.L5:
+  95 006c 00000000 		.word	.LANCHOR0
+  96 0070 00000000 		.word	.LANCHOR1
+  97 0074 00000000 		.word	waveform_sizes
+  98 0078 03000080 		.word	-2147483645
+  99              		.cfi_endproc
+ 100              	.LFE63:
+ 101              		.size	Waveform_ISR, .-Waveform_ISR
+ 102              		.section	.text.main,"ax",%progbits
+ 103              		.align	2
+ 104              		.global	main
+ 105              		.thumb
+ 106              		.thumb_func
+ 107              		.type	main, %function
+ 108              	main:
+ 109              	.LFB64:
+  41:main.c        **** }
+  42:main.c        **** 
+  43:main.c        **** 
+  44:main.c        **** int main(void)
+  45:main.c        **** {
+ 110              		.loc 1 45 0
+ 111              		.cfi_startproc
+ 112              		@ args = 0, pretend = 0, frame = 56
+ 113              		@ frame_needed = 0, uses_anonymous_args = 0
+ 114 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 115              		.cfi_def_cfa_offset 20
+ 116              		.cfi_offset 4, -20
+ 117              		.cfi_offset 5, -16
+ 118              		.cfi_offset 6, -12
+ 119              		.cfi_offset 7, -8
+ 120              		.cfi_offset 14, -4
+ 121 0002 8FB0     		sub	sp, sp, #60
+ 122              		.cfi_def_cfa_offset 80
+  46:main.c        ****     
+  47:main.c        ****     CyGlobalIntEnable; // Enable global interrupts
+ 123              		.loc 1 47 0
+ 124              		.syntax unified
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 4
+
+
+ 125              	@ 47 "main.c" 1
+ 126 0004 62B6     		CPSIE   i
+ 127              	@ 0 "" 2
+  48:main.c        ****     
+  49:main.c        ****     // Different sampling periods of different notes
+  50:main.c        ****     uint16 periods[28] = {4110, 3879, 3662, 3455, 3262, 3078, 2906, 2742, 2589, 2444, 2306, 2177, 2
+ 128              		.loc 1 50 0
+ 129              		.thumb
+ 130              		.syntax unified
+ 131 0006 154C     		ldr	r4, .L13
+ 132 0008 6D46     		mov	r5, sp
+ 133 000a 04F13007 		add	r7, r4, #48
+ 134              	.L8:
+ 135 000e 2E46     		mov	r6, r5
+ 136 0010 2068     		ldr	r0, [r4]	@ unaligned
+ 137 0012 6168     		ldr	r1, [r4, #4]	@ unaligned
+ 138 0014 A268     		ldr	r2, [r4, #8]	@ unaligned
+ 139 0016 E368     		ldr	r3, [r4, #12]	@ unaligned
+ 140 0018 0FC6     		stmia	r6!, {r0, r1, r2, r3}
+ 141 001a 1034     		adds	r4, r4, #16
+ 142 001c 3546     		mov	r5, r6
+ 143 001e BC42     		cmp	r4, r7
+ 144 0020 F5D1     		bne	.L8
+ 145 0022 2068     		ldr	r0, [r4]	@ unaligned
+ 146 0024 6168     		ldr	r1, [r4, #4]	@ unaligned
+ 147 0026 03C5     		stmia	r5!, {r0, r1}
+  51:main.c        ****     
+  52:main.c        ****     // Initialize components
+  53:main.c        ****     Waveform_ISR_StartEx(Waveform_ISR); // Initialize the ISR
+ 148              		.loc 1 53 0
+ 149 0028 0D48     		ldr	r0, .L13+4
+ 150 002a FFF7FEFF 		bl	Waveform_ISR_StartEx
+ 151              	.LVL4:
+  54:main.c        ****     Waveform_Send_Start(); // Start the timer
+ 152              		.loc 1 54 0
+ 153 002e FFF7FEFF 		bl	Waveform_Send_Start
+ 154              	.LVL5:
+  55:main.c        ****     Wave_Out_Start(); // Start the DAC
+ 155              		.loc 1 55 0
+ 156 0032 FFF7FEFF 		bl	Wave_Out_Start
+ 157              	.LVL6:
+  56:main.c        ****     DACBuffer_Start(); // Start the OpAmp
+ 158              		.loc 1 56 0
+ 159 0036 FFF7FEFF 		bl	DACBuffer_Start
+ 160              	.LVL7:
+ 161              	.L11:
+ 162              	.LBB2:
+  57:main.c        ****     
+  58:main.c        ****     
+  59:main.c        ****     
+  60:main.c        ****     for(;;)
+  61:main.c        ****     {
+  62:main.c        ****         for (int i = 0; i < 28; i++){
+ 163              		.loc 1 62 0
+ 164 003a 0024     		movs	r4, #0
+ 165 003c 0BE0     		b	.L9
+ 166              	.LVL8:
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 5
+
+
+ 167              	.L10:
+  63:main.c        ****             Waveform_Send_WritePeriod(periods[i]);
+ 168              		.loc 1 63 0 discriminator 3
+ 169 003e 0EAB     		add	r3, sp, #56
+ 170 0040 03EB4403 		add	r3, r3, r4, lsl #1
+ 171 0044 33F8380C 		ldrh	r0, [r3, #-56]
+ 172 0048 FFF7FEFF 		bl	Waveform_Send_WritePeriod
+ 173              	.LVL9:
+  64:main.c        ****             CyDelay(1000);
+ 174              		.loc 1 64 0 discriminator 3
+ 175 004c 4FF47A70 		mov	r0, #1000
+ 176 0050 FFF7FEFF 		bl	CyDelay
+ 177              	.LVL10:
+  62:main.c        ****             Waveform_Send_WritePeriod(periods[i]);
+ 178              		.loc 1 62 0 discriminator 3
+ 179 0054 0134     		adds	r4, r4, #1
+ 180              	.LVL11:
+ 181              	.L9:
+  62:main.c        ****             Waveform_Send_WritePeriod(periods[i]);
+ 182              		.loc 1 62 0 is_stmt 0 discriminator 1
+ 183 0056 1B2C     		cmp	r4, #27
+ 184 0058 F1DD     		ble	.L10
+ 185 005a EEE7     		b	.L11
+ 186              	.L14:
+ 187              		.align	2
+ 188              	.L13:
+ 189 005c 00000000 		.word	.LANCHOR2
+ 190 0060 00000000 		.word	Waveform_ISR
+ 191              	.LBE2:
+ 192              		.cfi_endproc
+ 193              	.LFE64:
+ 194              		.size	main, .-main
+ 195              		.global	waveforms
+ 196              		.global	waveform_select
+ 197              		.global	volume
+ 198              		.global	waveVal
+ 199              		.global	waveformIndex
+ 200              		.section	.rodata
+ 201              		.align	2
+ 202              		.set	.LANCHOR2,. + 0
+ 203              	.LC0:
+ 204 0000 0E10     		.short	4110
+ 205 0002 270F     		.short	3879
+ 206 0004 4E0E     		.short	3662
+ 207 0006 7F0D     		.short	3455
+ 208 0008 BE0C     		.short	3262
+ 209 000a 060C     		.short	3078
+ 210 000c 5A0B     		.short	2906
+ 211 000e B60A     		.short	2742
+ 212 0010 1D0A     		.short	2589
+ 213 0012 8C09     		.short	2444
+ 214 0014 0209     		.short	2306
+ 215 0016 8108     		.short	2177
+ 216 0018 0608     		.short	2054
+ 217 001a 9307     		.short	1939
+ 218 001c 2607     		.short	1830
+ 219 001e C006     		.short	1728
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 6
+
+
+ 220 0020 5F06     		.short	1631
+ 221 0022 0306     		.short	1539
+ 222 0024 AD05     		.short	1453
+ 223 0026 5B05     		.short	1371
+ 224 0028 0E05     		.short	1294
+ 225 002a C604     		.short	1222
+ 226 002c 8104     		.short	1153
+ 227 002e 4004     		.short	1088
+ 228 0030 0304     		.short	1027
+ 229 0032 CA03     		.short	970
+ 230 0034 9303     		.short	915
+ 231 0036 6003     		.short	864
+ 232              		.data
+ 233              		.align	2
+ 234              		.set	.LANCHOR1,. + 0
+ 235              		.type	waveforms, %object
+ 236              		.size	waveforms, 16
+ 237              	waveforms:
+ 238 0000 00000000 		.word	beginning_waveform
+ 239 0004 00000000 		.word	repeat_waveform
+ 240 0008 00000000 		.word	end_waveform
+ 241 000c 00000000 		.word	default_waveform
+ 242              		.type	volume, %object
+ 243              		.size	volume, 1
+ 244              	volume:
+ 245 0010 0A       		.byte	10
+ 246              		.bss
+ 247              		.align	2
+ 248              		.set	.LANCHOR0,. + 0
+ 249              		.type	waveform_select, %object
+ 250              		.size	waveform_select, 1
+ 251              	waveform_select:
+ 252 0000 00       		.space	1
+ 253 0001 000000   		.space	3
+ 254              		.type	waveformIndex, %object
+ 255              		.size	waveformIndex, 4
+ 256              	waveformIndex:
+ 257 0004 00000000 		.space	4
+ 258              		.type	waveVal, %object
+ 259              		.size	waveVal, 2
+ 260              	waveVal:
+ 261 0008 0000     		.space	2
+ 262              		.text
+ 263              	.Letext0:
+ 264              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 265              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 266              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 267              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 268              		.file 6 "waveforms.h"
+ 269              		.file 7 "Generated_Source\\PSoC5/Fs.h"
+ 270              		.file 8 "Generated_Source\\PSoC5/Wave_Out.h"
+ 271              		.file 9 "Generated_Source\\PSoC5/Waveform_Send.h"
+ 272              		.file 10 "Generated_Source\\PSoC5/CyLib.h"
+ 273              		.file 11 "Generated_Source\\PSoC5/Waveform_ISR.h"
+ 274              		.file 12 "Generated_Source\\PSoC5/DACBuffer.h"
+ 275              		.section	.debug_info,"",%progbits
+ 276              	.Ldebug_info0:
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 7
+
+
+ 277 0000 8E030000 		.4byte	0x38e
+ 278 0004 0400     		.2byte	0x4
+ 279 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 280 000a 04       		.byte	0x4
+ 281 000b 01       		.uleb128 0x1
+ 282 000c 0E010000 		.4byte	.LASF48
+ 283 0010 0C       		.byte	0xc
+ 284 0011 9C020000 		.4byte	.LASF49
+ 285 0015 A7000000 		.4byte	.LASF50
+ 286 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 287 001d 00000000 		.4byte	0
+ 288 0021 00000000 		.4byte	.Ldebug_line0
+ 289 0025 02       		.uleb128 0x2
+ 290 0026 01       		.byte	0x1
+ 291 0027 06       		.byte	0x6
+ 292 0028 27030000 		.4byte	.LASF0
+ 293 002c 03       		.uleb128 0x3
+ 294 002d 0E000000 		.4byte	.LASF3
+ 295 0031 02       		.byte	0x2
+ 296 0032 1D       		.byte	0x1d
+ 297 0033 37000000 		.4byte	0x37
+ 298 0037 02       		.uleb128 0x2
+ 299 0038 01       		.byte	0x1
+ 300 0039 08       		.byte	0x8
+ 301 003a 00010000 		.4byte	.LASF1
+ 302 003e 02       		.uleb128 0x2
+ 303 003f 02       		.byte	0x2
+ 304 0040 05       		.byte	0x5
+ 305 0041 C6020000 		.4byte	.LASF2
+ 306 0045 03       		.uleb128 0x3
+ 307 0046 EC010000 		.4byte	.LASF4
+ 308 004a 02       		.byte	0x2
+ 309 004b 2B       		.byte	0x2b
+ 310 004c 50000000 		.4byte	0x50
+ 311 0050 02       		.uleb128 0x2
+ 312 0051 02       		.byte	0x2
+ 313 0052 07       		.byte	0x7
+ 314 0053 CC010000 		.4byte	.LASF5
+ 315 0057 03       		.uleb128 0x3
+ 316 0058 4D000000 		.4byte	.LASF6
+ 317 005c 02       		.byte	0x2
+ 318 005d 3F       		.byte	0x3f
+ 319 005e 62000000 		.4byte	0x62
+ 320 0062 02       		.uleb128 0x2
+ 321 0063 04       		.byte	0x4
+ 322 0064 05       		.byte	0x5
+ 323 0065 12030000 		.4byte	.LASF7
+ 324 0069 03       		.uleb128 0x3
+ 325 006a 1A020000 		.4byte	.LASF8
+ 326 006e 02       		.byte	0x2
+ 327 006f 41       		.byte	0x41
+ 328 0070 74000000 		.4byte	0x74
+ 329 0074 02       		.uleb128 0x2
+ 330 0075 04       		.byte	0x4
+ 331 0076 07       		.byte	0x7
+ 332 0077 B2010000 		.4byte	.LASF9
+ 333 007b 02       		.uleb128 0x2
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 8
+
+
+ 334 007c 08       		.byte	0x8
+ 335 007d 05       		.byte	0x5
+ 336 007e 00000000 		.4byte	.LASF10
+ 337 0082 02       		.uleb128 0x2
+ 338 0083 08       		.byte	0x8
+ 339 0084 07       		.byte	0x7
+ 340 0085 45020000 		.4byte	.LASF11
+ 341 0089 04       		.uleb128 0x4
+ 342 008a 04       		.byte	0x4
+ 343 008b 05       		.byte	0x5
+ 344 008c 696E7400 		.ascii	"int\000"
+ 345 0090 02       		.uleb128 0x2
+ 346 0091 04       		.byte	0x4
+ 347 0092 07       		.byte	0x7
+ 348 0093 38020000 		.4byte	.LASF12
+ 349 0097 03       		.uleb128 0x3
+ 350 0098 5C020000 		.4byte	.LASF13
+ 351 009c 03       		.byte	0x3
+ 352 009d 18       		.byte	0x18
+ 353 009e 2C000000 		.4byte	0x2c
+ 354 00a2 03       		.uleb128 0x3
+ 355 00a3 BD020000 		.4byte	.LASF14
+ 356 00a7 03       		.byte	0x3
+ 357 00a8 24       		.byte	0x24
+ 358 00a9 45000000 		.4byte	0x45
+ 359 00ad 03       		.uleb128 0x3
+ 360 00ae 7A020000 		.4byte	.LASF15
+ 361 00b2 03       		.byte	0x3
+ 362 00b3 2C       		.byte	0x2c
+ 363 00b4 57000000 		.4byte	0x57
+ 364 00b8 03       		.uleb128 0x3
+ 365 00b9 09030000 		.4byte	.LASF16
+ 366 00bd 03       		.byte	0x3
+ 367 00be 30       		.byte	0x30
+ 368 00bf 69000000 		.4byte	0x69
+ 369 00c3 05       		.uleb128 0x5
+ 370 00c4 25020000 		.4byte	.LASF17
+ 371 00c8 04       		.byte	0x4
+ 372 00c9 EA01     		.2byte	0x1ea
+ 373 00cb 50000000 		.4byte	0x50
+ 374 00cf 02       		.uleb128 0x2
+ 375 00d0 04       		.byte	0x4
+ 376 00d1 04       		.byte	0x4
+ 377 00d2 F3000000 		.4byte	.LASF18
+ 378 00d6 02       		.uleb128 0x2
+ 379 00d7 08       		.byte	0x8
+ 380 00d8 04       		.byte	0x4
+ 381 00d9 8D000000 		.4byte	.LASF19
+ 382 00dd 02       		.uleb128 0x2
+ 383 00de 01       		.byte	0x1
+ 384 00df 08       		.byte	0x8
+ 385 00e0 A3020000 		.4byte	.LASF20
+ 386 00e4 02       		.uleb128 0x2
+ 387 00e5 08       		.byte	0x8
+ 388 00e6 04       		.byte	0x4
+ 389 00e7 1B030000 		.4byte	.LASF21
+ 390 00eb 02       		.uleb128 0x2
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 9
+
+
+ 391 00ec 04       		.byte	0x4
+ 392 00ed 07       		.byte	0x7
+ 393 00ee 82020000 		.4byte	.LASF22
+ 394 00f2 06       		.uleb128 0x6
+ 395 00f3 B8000000 		.4byte	0xb8
+ 396 00f7 06       		.uleb128 0x6
+ 397 00f8 97000000 		.4byte	0x97
+ 398 00fc 06       		.uleb128 0x6
+ 399 00fd A2000000 		.4byte	0xa2
+ 400 0101 07       		.uleb128 0x7
+ 401 0102 71020000 		.4byte	.LASF51
+ 402 0106 01       		.byte	0x1
+ 403 0107 37000000 		.4byte	0x37
+ 404 010b 06       		.byte	0x6
+ 405 010c 19       		.byte	0x19
+ 406 010d 2A010000 		.4byte	0x12a
+ 407 0111 08       		.uleb128 0x8
+ 408 0112 53030000 		.4byte	.LASF23
+ 409 0116 00       		.byte	0
+ 410 0117 08       		.uleb128 0x8
+ 411 0118 31020000 		.4byte	.LASF24
+ 412 011c 01       		.byte	0x1
+ 413 011d 09       		.uleb128 0x9
+ 414 011e 456E6400 		.ascii	"End\000"
+ 415 0122 02       		.byte	0x2
+ 416 0123 08       		.uleb128 0x8
+ 417 0124 43030000 		.4byte	.LASF25
+ 418 0128 03       		.byte	0x3
+ 419 0129 00       		.byte	0
+ 420 012a 0A       		.uleb128 0xa
+ 421 012b 64020000 		.4byte	.LASF52
+ 422 012f 01       		.byte	0x1
+ 423 0130 15       		.byte	0x15
+ 424 0131 00000000 		.4byte	.LFB63
+ 425 0135 7C000000 		.4byte	.LFE63-.LFB63
+ 426 0139 01       		.uleb128 0x1
+ 427 013a 9C       		.byte	0x9c
+ 428 013b 64010000 		.4byte	0x164
+ 429 013f 0B       		.uleb128 0xb
+ 430 0140 06000000 		.4byte	.LVL0
+ 431 0144 23030000 		.4byte	0x323
+ 432 0148 0B       		.uleb128 0xb
+ 433 0149 0E000000 		.4byte	.LVL1
+ 434 014d 2E030000 		.4byte	0x32e
+ 435 0151 0B       		.uleb128 0xb
+ 436 0152 34000000 		.4byte	.LVL2
+ 437 0156 39030000 		.4byte	0x339
+ 438 015a 0B       		.uleb128 0xb
+ 439 015b 68000000 		.4byte	.LVL3
+ 440 015f 44030000 		.4byte	0x344
+ 441 0163 00       		.byte	0
+ 442 0164 0C       		.uleb128 0xc
+ 443 0165 2C020000 		.4byte	.LASF53
+ 444 0169 01       		.byte	0x1
+ 445 016a 2C       		.byte	0x2c
+ 446 016b 89000000 		.4byte	0x89
+ 447 016f 00000000 		.4byte	.LFB64
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 10
+
+
+ 448 0173 64000000 		.4byte	.LFE64-.LFB64
+ 449 0177 01       		.uleb128 0x1
+ 450 0178 9C       		.byte	0x9c
+ 451 0179 09020000 		.4byte	0x209
+ 452 017d 0D       		.uleb128 0xd
+ 453 017e 78000000 		.4byte	.LASF26
+ 454 0182 01       		.byte	0x1
+ 455 0183 32       		.byte	0x32
+ 456 0184 09020000 		.4byte	0x209
+ 457 0188 03       		.uleb128 0x3
+ 458 0189 91       		.byte	0x91
+ 459 018a B07F     		.sleb128 -80
+ 460 018c 0E       		.uleb128 0xe
+ 461 018d 3A000000 		.4byte	.LBB2
+ 462 0191 2A000000 		.4byte	.LBE2-.LBB2
+ 463 0195 D6010000 		.4byte	0x1d6
+ 464 0199 0F       		.uleb128 0xf
+ 465 019a 6900     		.ascii	"i\000"
+ 466 019c 01       		.byte	0x1
+ 467 019d 3E       		.byte	0x3e
+ 468 019e 89000000 		.4byte	0x89
+ 469 01a2 00000000 		.4byte	.LLST0
+ 470 01a6 10       		.uleb128 0x10
+ 471 01a7 4C000000 		.4byte	.LVL9
+ 472 01ab 4F030000 		.4byte	0x34f
+ 473 01af C4010000 		.4byte	0x1c4
+ 474 01b3 11       		.uleb128 0x11
+ 475 01b4 01       		.uleb128 0x1
+ 476 01b5 50       		.byte	0x50
+ 477 01b6 0C       		.uleb128 0xc
+ 478 01b7 74       		.byte	0x74
+ 479 01b8 00       		.sleb128 0
+ 480 01b9 31       		.byte	0x31
+ 481 01ba 24       		.byte	0x24
+ 482 01bb 91       		.byte	0x91
+ 483 01bc 00       		.sleb128 0
+ 484 01bd 22       		.byte	0x22
+ 485 01be 08       		.byte	0x8
+ 486 01bf 50       		.byte	0x50
+ 487 01c0 1C       		.byte	0x1c
+ 488 01c1 94       		.byte	0x94
+ 489 01c2 02       		.byte	0x2
+ 490 01c3 00       		.byte	0
+ 491 01c4 12       		.uleb128 0x12
+ 492 01c5 54000000 		.4byte	.LVL10
+ 493 01c9 5A030000 		.4byte	0x35a
+ 494 01cd 11       		.uleb128 0x11
+ 495 01ce 01       		.uleb128 0x1
+ 496 01cf 50       		.byte	0x50
+ 497 01d0 03       		.uleb128 0x3
+ 498 01d1 0A       		.byte	0xa
+ 499 01d2 E803     		.2byte	0x3e8
+ 500 01d4 00       		.byte	0
+ 501 01d5 00       		.byte	0
+ 502 01d6 10       		.uleb128 0x10
+ 503 01d7 2E000000 		.4byte	.LVL4
+ 504 01db 65030000 		.4byte	0x365
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 11
+
+
+ 505 01df ED010000 		.4byte	0x1ed
+ 506 01e3 11       		.uleb128 0x11
+ 507 01e4 01       		.uleb128 0x1
+ 508 01e5 50       		.byte	0x50
+ 509 01e6 05       		.uleb128 0x5
+ 510 01e7 03       		.byte	0x3
+ 511 01e8 00000000 		.4byte	Waveform_ISR
+ 512 01ec 00       		.byte	0
+ 513 01ed 0B       		.uleb128 0xb
+ 514 01ee 32000000 		.4byte	.LVL5
+ 515 01f2 70030000 		.4byte	0x370
+ 516 01f6 0B       		.uleb128 0xb
+ 517 01f7 36000000 		.4byte	.LVL6
+ 518 01fb 7B030000 		.4byte	0x37b
+ 519 01ff 0B       		.uleb128 0xb
+ 520 0200 3A000000 		.4byte	.LVL7
+ 521 0204 86030000 		.4byte	0x386
+ 522 0208 00       		.byte	0
+ 523 0209 13       		.uleb128 0x13
+ 524 020a C3000000 		.4byte	0xc3
+ 525 020e 19020000 		.4byte	0x219
+ 526 0212 14       		.uleb128 0x14
+ 527 0213 EB000000 		.4byte	0xeb
+ 528 0217 1B       		.byte	0x1b
+ 529 0218 00       		.byte	0
+ 530 0219 15       		.uleb128 0x15
+ 531 021a DF010000 		.4byte	.LASF27
+ 532 021e 05       		.byte	0x5
+ 533 021f 1207     		.2byte	0x712
+ 534 0221 25020000 		.4byte	0x225
+ 535 0225 06       		.uleb128 0x6
+ 536 0226 AD000000 		.4byte	0xad
+ 537 022a 13       		.uleb128 0x13
+ 538 022b B8000000 		.4byte	0xb8
+ 539 022f 3A020000 		.4byte	0x23a
+ 540 0233 14       		.uleb128 0x14
+ 541 0234 EB000000 		.4byte	0xeb
+ 542 0238 03       		.byte	0x3
+ 543 0239 00       		.byte	0
+ 544 023a 16       		.uleb128 0x16
+ 545 023b F7010000 		.4byte	.LASF28
+ 546 023f 06       		.byte	0x6
+ 547 0240 14       		.byte	0x14
+ 548 0241 2A020000 		.4byte	0x22a
+ 549 0245 13       		.uleb128 0x13
+ 550 0246 A2000000 		.4byte	0xa2
+ 551 024a 56020000 		.4byte	0x256
+ 552 024e 17       		.uleb128 0x17
+ 553 024f EB000000 		.4byte	0xeb
+ 554 0253 0B09     		.2byte	0x90b
+ 555 0255 00       		.byte	0
+ 556 0256 16       		.uleb128 0x16
+ 557 0257 2A000000 		.4byte	.LASF29
+ 558 025b 06       		.byte	0x6
+ 559 025c 15       		.byte	0x15
+ 560 025d 45020000 		.4byte	0x245
+ 561 0261 13       		.uleb128 0x13
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 12
+
+
+ 562 0262 A2000000 		.4byte	0xa2
+ 563 0266 71020000 		.4byte	0x271
+ 564 026a 14       		.uleb128 0x14
+ 565 026b EB000000 		.4byte	0xeb
+ 566 026f 37       		.byte	0x37
+ 567 0270 00       		.byte	0
+ 568 0271 16       		.uleb128 0x16
+ 569 0272 F9020000 		.4byte	.LASF30
+ 570 0276 06       		.byte	0x6
+ 571 0277 16       		.byte	0x16
+ 572 0278 61020000 		.4byte	0x261
+ 573 027c 13       		.uleb128 0x13
+ 574 027d A2000000 		.4byte	0xa2
+ 575 0281 8D020000 		.4byte	0x28d
+ 576 0285 17       		.uleb128 0x17
+ 577 0286 EB000000 		.4byte	0xeb
+ 578 028a 8316     		.2byte	0x1683
+ 579 028c 00       		.byte	0
+ 580 028d 16       		.uleb128 0x16
+ 581 028e 80000000 		.4byte	.LASF31
+ 582 0292 06       		.byte	0x6
+ 583 0293 17       		.byte	0x17
+ 584 0294 7C020000 		.4byte	0x27c
+ 585 0298 13       		.uleb128 0x13
+ 586 0299 A2000000 		.4byte	0xa2
+ 587 029d A8020000 		.4byte	0x2a8
+ 588 02a1 14       		.uleb128 0x14
+ 589 02a2 EB000000 		.4byte	0xeb
+ 590 02a6 00       		.byte	0
+ 591 02a7 00       		.byte	0
+ 592 02a8 16       		.uleb128 0x16
+ 593 02a9 8B020000 		.4byte	.LASF32
+ 594 02ad 06       		.byte	0x6
+ 595 02ae 18       		.byte	0x18
+ 596 02af 98020000 		.4byte	0x298
+ 597 02b3 18       		.uleb128 0x18
+ 598 02b4 9C010000 		.4byte	.LASF33
+ 599 02b8 01       		.byte	0x1
+ 600 02b9 0F       		.byte	0xf
+ 601 02ba F2000000 		.4byte	0xf2
+ 602 02be 05       		.uleb128 0x5
+ 603 02bf 03       		.byte	0x3
+ 604 02c0 00000000 		.4byte	waveformIndex
+ 605 02c4 18       		.uleb128 0x18
+ 606 02c5 C4010000 		.4byte	.LASF34
+ 607 02c9 01       		.byte	0x1
+ 608 02ca 10       		.byte	0x10
+ 609 02cb FC000000 		.4byte	0xfc
+ 610 02cf 05       		.uleb128 0x5
+ 611 02d0 03       		.byte	0x3
+ 612 02d1 00000000 		.4byte	waveVal
+ 613 02d5 18       		.uleb128 0x18
+ 614 02d6 F9000000 		.4byte	.LASF35
+ 615 02da 01       		.byte	0x1
+ 616 02db 11       		.byte	0x11
+ 617 02dc F7000000 		.4byte	0xf7
+ 618 02e0 05       		.uleb128 0x5
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 13
+
+
+ 619 02e1 03       		.byte	0x3
+ 620 02e2 00000000 		.4byte	volume
+ 621 02e6 18       		.uleb128 0x18
+ 622 02e7 33030000 		.4byte	.LASF36
+ 623 02eb 01       		.byte	0x1
+ 624 02ec 12       		.byte	0x12
+ 625 02ed F7020000 		.4byte	0x2f7
+ 626 02f1 05       		.uleb128 0x5
+ 627 02f2 03       		.byte	0x3
+ 628 02f3 00000000 		.4byte	waveform_select
+ 629 02f7 06       		.uleb128 0x6
+ 630 02f8 01010000 		.4byte	0x101
+ 631 02fc 13       		.uleb128 0x13
+ 632 02fd 0C030000 		.4byte	0x30c
+ 633 0301 0C030000 		.4byte	0x30c
+ 634 0305 14       		.uleb128 0x14
+ 635 0306 EB000000 		.4byte	0xeb
+ 636 030a 03       		.byte	0x3
+ 637 030b 00       		.byte	0
+ 638 030c 19       		.uleb128 0x19
+ 639 030d 04       		.byte	0x4
+ 640 030e A2000000 		.4byte	0xa2
+ 641 0312 18       		.uleb128 0x18
+ 642 0313 94000000 		.4byte	.LASF37
+ 643 0317 01       		.byte	0x1
+ 644 0318 13       		.byte	0x13
+ 645 0319 FC020000 		.4byte	0x2fc
+ 646 031d 05       		.uleb128 0x5
+ 647 031e 03       		.byte	0x3
+ 648 031f 00000000 		.4byte	waveforms
+ 649 0323 1A       		.uleb128 0x1a
+ 650 0324 AA010000 		.4byte	.LASF38
+ 651 0328 AA010000 		.4byte	.LASF38
+ 652 032c 07       		.byte	0x7
+ 653 032d 29       		.byte	0x29
+ 654 032e 1A       		.uleb128 0x1a
+ 655 032f 9E000000 		.4byte	.LASF39
+ 656 0333 9E000000 		.4byte	.LASF39
+ 657 0337 07       		.byte	0x7
+ 658 0338 26       		.byte	0x26
+ 659 0339 1A       		.uleb128 0x1a
+ 660 033a 18000000 		.4byte	.LASF40
+ 661 033e 18000000 		.4byte	.LASF40
+ 662 0342 08       		.byte	0x8
+ 663 0343 4A       		.byte	0x4a
+ 664 0344 1A       		.uleb128 0x1a
+ 665 0345 57000000 		.4byte	.LASF41
+ 666 0349 57000000 		.4byte	.LASF41
+ 667 034d 09       		.byte	0x9
+ 668 034e 5E       		.byte	0x5e
+ 669 034f 1A       		.uleb128 0x1a
+ 670 0350 DF020000 		.4byte	.LASF42
+ 671 0354 DF020000 		.4byte	.LASF42
+ 672 0358 09       		.byte	0x9
+ 673 0359 68       		.byte	0x68
+ 674 035a 1A       		.uleb128 0x1a
+ 675 035b 4B030000 		.4byte	.LASF43
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 14
+
+
+ 676 035f 4B030000 		.4byte	.LASF43
+ 677 0363 0A       		.byte	0xa
+ 678 0364 76       		.byte	0x76
+ 679 0365 1A       		.uleb128 0x1a
+ 680 0366 A8020000 		.4byte	.LASF44
+ 681 036a A8020000 		.4byte	.LASF44
+ 682 036e 0B       		.byte	0xb
+ 683 036f 18       		.byte	0x18
+ 684 0370 1A       		.uleb128 0x1a
+ 685 0371 06020000 		.4byte	.LASF45
+ 686 0375 06020000 		.4byte	.LASF45
+ 687 0379 09       		.byte	0x9
+ 688 037a 5A       		.byte	0x5a
+ 689 037b 1A       		.uleb128 0x1a
+ 690 037c D0020000 		.4byte	.LASF46
+ 691 0380 D0020000 		.4byte	.LASF46
+ 692 0384 08       		.byte	0x8
+ 693 0385 48       		.byte	0x48
+ 694 0386 1A       		.uleb128 0x1a
+ 695 0387 3D000000 		.4byte	.LASF47
+ 696 038b 3D000000 		.4byte	.LASF47
+ 697 038f 0C       		.byte	0xc
+ 698 0390 33       		.byte	0x33
+ 699 0391 00       		.byte	0
+ 700              		.section	.debug_abbrev,"",%progbits
+ 701              	.Ldebug_abbrev0:
+ 702 0000 01       		.uleb128 0x1
+ 703 0001 11       		.uleb128 0x11
+ 704 0002 01       		.byte	0x1
+ 705 0003 25       		.uleb128 0x25
+ 706 0004 0E       		.uleb128 0xe
+ 707 0005 13       		.uleb128 0x13
+ 708 0006 0B       		.uleb128 0xb
+ 709 0007 03       		.uleb128 0x3
+ 710 0008 0E       		.uleb128 0xe
+ 711 0009 1B       		.uleb128 0x1b
+ 712 000a 0E       		.uleb128 0xe
+ 713 000b 55       		.uleb128 0x55
+ 714 000c 17       		.uleb128 0x17
+ 715 000d 11       		.uleb128 0x11
+ 716 000e 01       		.uleb128 0x1
+ 717 000f 10       		.uleb128 0x10
+ 718 0010 17       		.uleb128 0x17
+ 719 0011 00       		.byte	0
+ 720 0012 00       		.byte	0
+ 721 0013 02       		.uleb128 0x2
+ 722 0014 24       		.uleb128 0x24
+ 723 0015 00       		.byte	0
+ 724 0016 0B       		.uleb128 0xb
+ 725 0017 0B       		.uleb128 0xb
+ 726 0018 3E       		.uleb128 0x3e
+ 727 0019 0B       		.uleb128 0xb
+ 728 001a 03       		.uleb128 0x3
+ 729 001b 0E       		.uleb128 0xe
+ 730 001c 00       		.byte	0
+ 731 001d 00       		.byte	0
+ 732 001e 03       		.uleb128 0x3
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 15
+
+
+ 733 001f 16       		.uleb128 0x16
+ 734 0020 00       		.byte	0
+ 735 0021 03       		.uleb128 0x3
+ 736 0022 0E       		.uleb128 0xe
+ 737 0023 3A       		.uleb128 0x3a
+ 738 0024 0B       		.uleb128 0xb
+ 739 0025 3B       		.uleb128 0x3b
+ 740 0026 0B       		.uleb128 0xb
+ 741 0027 49       		.uleb128 0x49
+ 742 0028 13       		.uleb128 0x13
+ 743 0029 00       		.byte	0
+ 744 002a 00       		.byte	0
+ 745 002b 04       		.uleb128 0x4
+ 746 002c 24       		.uleb128 0x24
+ 747 002d 00       		.byte	0
+ 748 002e 0B       		.uleb128 0xb
+ 749 002f 0B       		.uleb128 0xb
+ 750 0030 3E       		.uleb128 0x3e
+ 751 0031 0B       		.uleb128 0xb
+ 752 0032 03       		.uleb128 0x3
+ 753 0033 08       		.uleb128 0x8
+ 754 0034 00       		.byte	0
+ 755 0035 00       		.byte	0
+ 756 0036 05       		.uleb128 0x5
+ 757 0037 16       		.uleb128 0x16
+ 758 0038 00       		.byte	0
+ 759 0039 03       		.uleb128 0x3
+ 760 003a 0E       		.uleb128 0xe
+ 761 003b 3A       		.uleb128 0x3a
+ 762 003c 0B       		.uleb128 0xb
+ 763 003d 3B       		.uleb128 0x3b
+ 764 003e 05       		.uleb128 0x5
+ 765 003f 49       		.uleb128 0x49
+ 766 0040 13       		.uleb128 0x13
+ 767 0041 00       		.byte	0
+ 768 0042 00       		.byte	0
+ 769 0043 06       		.uleb128 0x6
+ 770 0044 35       		.uleb128 0x35
+ 771 0045 00       		.byte	0
+ 772 0046 49       		.uleb128 0x49
+ 773 0047 13       		.uleb128 0x13
+ 774 0048 00       		.byte	0
+ 775 0049 00       		.byte	0
+ 776 004a 07       		.uleb128 0x7
+ 777 004b 04       		.uleb128 0x4
+ 778 004c 01       		.byte	0x1
+ 779 004d 03       		.uleb128 0x3
+ 780 004e 0E       		.uleb128 0xe
+ 781 004f 0B       		.uleb128 0xb
+ 782 0050 0B       		.uleb128 0xb
+ 783 0051 49       		.uleb128 0x49
+ 784 0052 13       		.uleb128 0x13
+ 785 0053 3A       		.uleb128 0x3a
+ 786 0054 0B       		.uleb128 0xb
+ 787 0055 3B       		.uleb128 0x3b
+ 788 0056 0B       		.uleb128 0xb
+ 789 0057 01       		.uleb128 0x1
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 16
+
+
+ 790 0058 13       		.uleb128 0x13
+ 791 0059 00       		.byte	0
+ 792 005a 00       		.byte	0
+ 793 005b 08       		.uleb128 0x8
+ 794 005c 28       		.uleb128 0x28
+ 795 005d 00       		.byte	0
+ 796 005e 03       		.uleb128 0x3
+ 797 005f 0E       		.uleb128 0xe
+ 798 0060 1C       		.uleb128 0x1c
+ 799 0061 0B       		.uleb128 0xb
+ 800 0062 00       		.byte	0
+ 801 0063 00       		.byte	0
+ 802 0064 09       		.uleb128 0x9
+ 803 0065 28       		.uleb128 0x28
+ 804 0066 00       		.byte	0
+ 805 0067 03       		.uleb128 0x3
+ 806 0068 08       		.uleb128 0x8
+ 807 0069 1C       		.uleb128 0x1c
+ 808 006a 0B       		.uleb128 0xb
+ 809 006b 00       		.byte	0
+ 810 006c 00       		.byte	0
+ 811 006d 0A       		.uleb128 0xa
+ 812 006e 2E       		.uleb128 0x2e
+ 813 006f 01       		.byte	0x1
+ 814 0070 3F       		.uleb128 0x3f
+ 815 0071 19       		.uleb128 0x19
+ 816 0072 03       		.uleb128 0x3
+ 817 0073 0E       		.uleb128 0xe
+ 818 0074 3A       		.uleb128 0x3a
+ 819 0075 0B       		.uleb128 0xb
+ 820 0076 3B       		.uleb128 0x3b
+ 821 0077 0B       		.uleb128 0xb
+ 822 0078 27       		.uleb128 0x27
+ 823 0079 19       		.uleb128 0x19
+ 824 007a 11       		.uleb128 0x11
+ 825 007b 01       		.uleb128 0x1
+ 826 007c 12       		.uleb128 0x12
+ 827 007d 06       		.uleb128 0x6
+ 828 007e 40       		.uleb128 0x40
+ 829 007f 18       		.uleb128 0x18
+ 830 0080 9742     		.uleb128 0x2117
+ 831 0082 19       		.uleb128 0x19
+ 832 0083 01       		.uleb128 0x1
+ 833 0084 13       		.uleb128 0x13
+ 834 0085 00       		.byte	0
+ 835 0086 00       		.byte	0
+ 836 0087 0B       		.uleb128 0xb
+ 837 0088 898201   		.uleb128 0x4109
+ 838 008b 00       		.byte	0
+ 839 008c 11       		.uleb128 0x11
+ 840 008d 01       		.uleb128 0x1
+ 841 008e 31       		.uleb128 0x31
+ 842 008f 13       		.uleb128 0x13
+ 843 0090 00       		.byte	0
+ 844 0091 00       		.byte	0
+ 845 0092 0C       		.uleb128 0xc
+ 846 0093 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 17
+
+
+ 847 0094 01       		.byte	0x1
+ 848 0095 3F       		.uleb128 0x3f
+ 849 0096 19       		.uleb128 0x19
+ 850 0097 03       		.uleb128 0x3
+ 851 0098 0E       		.uleb128 0xe
+ 852 0099 3A       		.uleb128 0x3a
+ 853 009a 0B       		.uleb128 0xb
+ 854 009b 3B       		.uleb128 0x3b
+ 855 009c 0B       		.uleb128 0xb
+ 856 009d 27       		.uleb128 0x27
+ 857 009e 19       		.uleb128 0x19
+ 858 009f 49       		.uleb128 0x49
+ 859 00a0 13       		.uleb128 0x13
+ 860 00a1 8701     		.uleb128 0x87
+ 861 00a3 19       		.uleb128 0x19
+ 862 00a4 11       		.uleb128 0x11
+ 863 00a5 01       		.uleb128 0x1
+ 864 00a6 12       		.uleb128 0x12
+ 865 00a7 06       		.uleb128 0x6
+ 866 00a8 40       		.uleb128 0x40
+ 867 00a9 18       		.uleb128 0x18
+ 868 00aa 9742     		.uleb128 0x2117
+ 869 00ac 19       		.uleb128 0x19
+ 870 00ad 01       		.uleb128 0x1
+ 871 00ae 13       		.uleb128 0x13
+ 872 00af 00       		.byte	0
+ 873 00b0 00       		.byte	0
+ 874 00b1 0D       		.uleb128 0xd
+ 875 00b2 34       		.uleb128 0x34
+ 876 00b3 00       		.byte	0
+ 877 00b4 03       		.uleb128 0x3
+ 878 00b5 0E       		.uleb128 0xe
+ 879 00b6 3A       		.uleb128 0x3a
+ 880 00b7 0B       		.uleb128 0xb
+ 881 00b8 3B       		.uleb128 0x3b
+ 882 00b9 0B       		.uleb128 0xb
+ 883 00ba 49       		.uleb128 0x49
+ 884 00bb 13       		.uleb128 0x13
+ 885 00bc 02       		.uleb128 0x2
+ 886 00bd 18       		.uleb128 0x18
+ 887 00be 00       		.byte	0
+ 888 00bf 00       		.byte	0
+ 889 00c0 0E       		.uleb128 0xe
+ 890 00c1 0B       		.uleb128 0xb
+ 891 00c2 01       		.byte	0x1
+ 892 00c3 11       		.uleb128 0x11
+ 893 00c4 01       		.uleb128 0x1
+ 894 00c5 12       		.uleb128 0x12
+ 895 00c6 06       		.uleb128 0x6
+ 896 00c7 01       		.uleb128 0x1
+ 897 00c8 13       		.uleb128 0x13
+ 898 00c9 00       		.byte	0
+ 899 00ca 00       		.byte	0
+ 900 00cb 0F       		.uleb128 0xf
+ 901 00cc 34       		.uleb128 0x34
+ 902 00cd 00       		.byte	0
+ 903 00ce 03       		.uleb128 0x3
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 18
+
+
+ 904 00cf 08       		.uleb128 0x8
+ 905 00d0 3A       		.uleb128 0x3a
+ 906 00d1 0B       		.uleb128 0xb
+ 907 00d2 3B       		.uleb128 0x3b
+ 908 00d3 0B       		.uleb128 0xb
+ 909 00d4 49       		.uleb128 0x49
+ 910 00d5 13       		.uleb128 0x13
+ 911 00d6 02       		.uleb128 0x2
+ 912 00d7 17       		.uleb128 0x17
+ 913 00d8 00       		.byte	0
+ 914 00d9 00       		.byte	0
+ 915 00da 10       		.uleb128 0x10
+ 916 00db 898201   		.uleb128 0x4109
+ 917 00de 01       		.byte	0x1
+ 918 00df 11       		.uleb128 0x11
+ 919 00e0 01       		.uleb128 0x1
+ 920 00e1 31       		.uleb128 0x31
+ 921 00e2 13       		.uleb128 0x13
+ 922 00e3 01       		.uleb128 0x1
+ 923 00e4 13       		.uleb128 0x13
+ 924 00e5 00       		.byte	0
+ 925 00e6 00       		.byte	0
+ 926 00e7 11       		.uleb128 0x11
+ 927 00e8 8A8201   		.uleb128 0x410a
+ 928 00eb 00       		.byte	0
+ 929 00ec 02       		.uleb128 0x2
+ 930 00ed 18       		.uleb128 0x18
+ 931 00ee 9142     		.uleb128 0x2111
+ 932 00f0 18       		.uleb128 0x18
+ 933 00f1 00       		.byte	0
+ 934 00f2 00       		.byte	0
+ 935 00f3 12       		.uleb128 0x12
+ 936 00f4 898201   		.uleb128 0x4109
+ 937 00f7 01       		.byte	0x1
+ 938 00f8 11       		.uleb128 0x11
+ 939 00f9 01       		.uleb128 0x1
+ 940 00fa 31       		.uleb128 0x31
+ 941 00fb 13       		.uleb128 0x13
+ 942 00fc 00       		.byte	0
+ 943 00fd 00       		.byte	0
+ 944 00fe 13       		.uleb128 0x13
+ 945 00ff 01       		.uleb128 0x1
+ 946 0100 01       		.byte	0x1
+ 947 0101 49       		.uleb128 0x49
+ 948 0102 13       		.uleb128 0x13
+ 949 0103 01       		.uleb128 0x1
+ 950 0104 13       		.uleb128 0x13
+ 951 0105 00       		.byte	0
+ 952 0106 00       		.byte	0
+ 953 0107 14       		.uleb128 0x14
+ 954 0108 21       		.uleb128 0x21
+ 955 0109 00       		.byte	0
+ 956 010a 49       		.uleb128 0x49
+ 957 010b 13       		.uleb128 0x13
+ 958 010c 2F       		.uleb128 0x2f
+ 959 010d 0B       		.uleb128 0xb
+ 960 010e 00       		.byte	0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 19
+
+
+ 961 010f 00       		.byte	0
+ 962 0110 15       		.uleb128 0x15
+ 963 0111 34       		.uleb128 0x34
+ 964 0112 00       		.byte	0
+ 965 0113 03       		.uleb128 0x3
+ 966 0114 0E       		.uleb128 0xe
+ 967 0115 3A       		.uleb128 0x3a
+ 968 0116 0B       		.uleb128 0xb
+ 969 0117 3B       		.uleb128 0x3b
+ 970 0118 05       		.uleb128 0x5
+ 971 0119 49       		.uleb128 0x49
+ 972 011a 13       		.uleb128 0x13
+ 973 011b 3F       		.uleb128 0x3f
+ 974 011c 19       		.uleb128 0x19
+ 975 011d 3C       		.uleb128 0x3c
+ 976 011e 19       		.uleb128 0x19
+ 977 011f 00       		.byte	0
+ 978 0120 00       		.byte	0
+ 979 0121 16       		.uleb128 0x16
+ 980 0122 34       		.uleb128 0x34
+ 981 0123 00       		.byte	0
+ 982 0124 03       		.uleb128 0x3
+ 983 0125 0E       		.uleb128 0xe
+ 984 0126 3A       		.uleb128 0x3a
+ 985 0127 0B       		.uleb128 0xb
+ 986 0128 3B       		.uleb128 0x3b
+ 987 0129 0B       		.uleb128 0xb
+ 988 012a 49       		.uleb128 0x49
+ 989 012b 13       		.uleb128 0x13
+ 990 012c 3F       		.uleb128 0x3f
+ 991 012d 19       		.uleb128 0x19
+ 992 012e 3C       		.uleb128 0x3c
+ 993 012f 19       		.uleb128 0x19
+ 994 0130 00       		.byte	0
+ 995 0131 00       		.byte	0
+ 996 0132 17       		.uleb128 0x17
+ 997 0133 21       		.uleb128 0x21
+ 998 0134 00       		.byte	0
+ 999 0135 49       		.uleb128 0x49
+ 1000 0136 13       		.uleb128 0x13
+ 1001 0137 2F       		.uleb128 0x2f
+ 1002 0138 05       		.uleb128 0x5
+ 1003 0139 00       		.byte	0
+ 1004 013a 00       		.byte	0
+ 1005 013b 18       		.uleb128 0x18
+ 1006 013c 34       		.uleb128 0x34
+ 1007 013d 00       		.byte	0
+ 1008 013e 03       		.uleb128 0x3
+ 1009 013f 0E       		.uleb128 0xe
+ 1010 0140 3A       		.uleb128 0x3a
+ 1011 0141 0B       		.uleb128 0xb
+ 1012 0142 3B       		.uleb128 0x3b
+ 1013 0143 0B       		.uleb128 0xb
+ 1014 0144 49       		.uleb128 0x49
+ 1015 0145 13       		.uleb128 0x13
+ 1016 0146 3F       		.uleb128 0x3f
+ 1017 0147 19       		.uleb128 0x19
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 20
+
+
+ 1018 0148 02       		.uleb128 0x2
+ 1019 0149 18       		.uleb128 0x18
+ 1020 014a 00       		.byte	0
+ 1021 014b 00       		.byte	0
+ 1022 014c 19       		.uleb128 0x19
+ 1023 014d 0F       		.uleb128 0xf
+ 1024 014e 00       		.byte	0
+ 1025 014f 0B       		.uleb128 0xb
+ 1026 0150 0B       		.uleb128 0xb
+ 1027 0151 49       		.uleb128 0x49
+ 1028 0152 13       		.uleb128 0x13
+ 1029 0153 00       		.byte	0
+ 1030 0154 00       		.byte	0
+ 1031 0155 1A       		.uleb128 0x1a
+ 1032 0156 2E       		.uleb128 0x2e
+ 1033 0157 00       		.byte	0
+ 1034 0158 3F       		.uleb128 0x3f
+ 1035 0159 19       		.uleb128 0x19
+ 1036 015a 3C       		.uleb128 0x3c
+ 1037 015b 19       		.uleb128 0x19
+ 1038 015c 6E       		.uleb128 0x6e
+ 1039 015d 0E       		.uleb128 0xe
+ 1040 015e 03       		.uleb128 0x3
+ 1041 015f 0E       		.uleb128 0xe
+ 1042 0160 3A       		.uleb128 0x3a
+ 1043 0161 0B       		.uleb128 0xb
+ 1044 0162 3B       		.uleb128 0x3b
+ 1045 0163 0B       		.uleb128 0xb
+ 1046 0164 00       		.byte	0
+ 1047 0165 00       		.byte	0
+ 1048 0166 00       		.byte	0
+ 1049              		.section	.debug_loc,"",%progbits
+ 1050              	.Ldebug_loc0:
+ 1051              	.LLST0:
+ 1052 0000 3A000000 		.4byte	.LVL7
+ 1053 0004 3E000000 		.4byte	.LVL8
+ 1054 0008 0200     		.2byte	0x2
+ 1055 000a 30       		.byte	0x30
+ 1056 000b 9F       		.byte	0x9f
+ 1057 000c 3E000000 		.4byte	.LVL8
+ 1058 0010 64000000 		.4byte	.LFE64
+ 1059 0014 0100     		.2byte	0x1
+ 1060 0016 54       		.byte	0x54
+ 1061 0017 00000000 		.4byte	0
+ 1062 001b 00000000 		.4byte	0
+ 1063              		.section	.debug_aranges,"",%progbits
+ 1064 0000 24000000 		.4byte	0x24
+ 1065 0004 0200     		.2byte	0x2
+ 1066 0006 00000000 		.4byte	.Ldebug_info0
+ 1067 000a 04       		.byte	0x4
+ 1068 000b 00       		.byte	0
+ 1069 000c 0000     		.2byte	0
+ 1070 000e 0000     		.2byte	0
+ 1071 0010 00000000 		.4byte	.LFB63
+ 1072 0014 7C000000 		.4byte	.LFE63-.LFB63
+ 1073 0018 00000000 		.4byte	.LFB64
+ 1074 001c 64000000 		.4byte	.LFE64-.LFB64
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 21
+
+
+ 1075 0020 00000000 		.4byte	0
+ 1076 0024 00000000 		.4byte	0
+ 1077              		.section	.debug_ranges,"",%progbits
+ 1078              	.Ldebug_ranges0:
+ 1079 0000 00000000 		.4byte	.LFB63
+ 1080 0004 7C000000 		.4byte	.LFE63
+ 1081 0008 00000000 		.4byte	.LFB64
+ 1082 000c 64000000 		.4byte	.LFE64
+ 1083 0010 00000000 		.4byte	0
+ 1084 0014 00000000 		.4byte	0
+ 1085              		.section	.debug_line,"",%progbits
+ 1086              	.Ldebug_line0:
+ 1087 0000 F9010000 		.section	.debug_str,"MS",%progbits,1
+ 1087      0200B001 
+ 1087      00000201 
+ 1087      FB0E0D00 
+ 1087      01010101 
+ 1088              	.LASF10:
+ 1089 0000 6C6F6E67 		.ascii	"long long int\000"
+ 1089      206C6F6E 
+ 1089      6720696E 
+ 1089      7400
+ 1090              	.LASF3:
+ 1091 000e 5F5F7569 		.ascii	"__uint8_t\000"
+ 1091      6E74385F 
+ 1091      7400
+ 1092              	.LASF40:
+ 1093 0018 57617665 		.ascii	"Wave_Out_SetValue\000"
+ 1093      5F4F7574 
+ 1093      5F536574 
+ 1093      56616C75 
+ 1093      6500
+ 1094              	.LASF29:
+ 1095 002a 62656769 		.ascii	"beginning_waveform\000"
+ 1095      6E6E696E 
+ 1095      675F7761 
+ 1095      7665666F 
+ 1095      726D00
+ 1096              	.LASF47:
+ 1097 003d 44414342 		.ascii	"DACBuffer_Start\000"
+ 1097      75666665 
+ 1097      725F5374 
+ 1097      61727400 
+ 1098              	.LASF6:
+ 1099 004d 5F5F696E 		.ascii	"__int32_t\000"
+ 1099      7433325F 
+ 1099      7400
+ 1100              	.LASF41:
+ 1101 0057 57617665 		.ascii	"Waveform_Send_ReadStatusRegister\000"
+ 1101      666F726D 
+ 1101      5F53656E 
+ 1101      645F5265 
+ 1101      61645374 
+ 1102              	.LASF26:
+ 1103 0078 70657269 		.ascii	"periods\000"
+ 1103      6F647300 
+ 1104              	.LASF31:
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 22
+
+
+ 1105 0080 656E645F 		.ascii	"end_waveform\000"
+ 1105      77617665 
+ 1105      666F726D 
+ 1105      00
+ 1106              	.LASF19:
+ 1107 008d 646F7562 		.ascii	"double\000"
+ 1107      6C6500
+ 1108              	.LASF37:
+ 1109 0094 77617665 		.ascii	"waveforms\000"
+ 1109      666F726D 
+ 1109      7300
+ 1110              	.LASF39:
+ 1111 009e 46735F57 		.ascii	"Fs_Write\000"
+ 1111      72697465 
+ 1111      00
+ 1112              	.LASF50:
+ 1113 00a7 433A5C55 		.ascii	"C:\\Users\\simon\\OneDrive\\Documents\\PSoC Creator"
+ 1113      73657273 
+ 1113      5C73696D 
+ 1113      6F6E5C4F 
+ 1113      6E654472 
+ 1114 00d5 5C46696E 		.ascii	"\\FinalProject\\Waveforms.cydsn\000"
+ 1114      616C5072 
+ 1114      6F6A6563 
+ 1114      745C5761 
+ 1114      7665666F 
+ 1115              	.LASF18:
+ 1116 00f3 666C6F61 		.ascii	"float\000"
+ 1116      7400
+ 1117              	.LASF35:
+ 1118 00f9 766F6C75 		.ascii	"volume\000"
+ 1118      6D6500
+ 1119              	.LASF1:
+ 1120 0100 756E7369 		.ascii	"unsigned char\000"
+ 1120      676E6564 
+ 1120      20636861 
+ 1120      7200
+ 1121              	.LASF48:
+ 1122 010e 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1122      43313120 
+ 1122      352E342E 
+ 1122      31203230 
+ 1122      31363036 
+ 1123 0141 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1123      20726576 
+ 1123      6973696F 
+ 1123      6E203233 
+ 1123      37373135 
+ 1124 0174 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1124      66756E63 
+ 1124      74696F6E 
+ 1124      2D736563 
+ 1124      74696F6E 
+ 1125              	.LASF33:
+ 1126 019c 77617665 		.ascii	"waveformIndex\000"
+ 1126      666F726D 
+ 1126      496E6465 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 23
+
+
+ 1126      7800
+ 1127              	.LASF38:
+ 1128 01aa 46735F52 		.ascii	"Fs_Read\000"
+ 1128      65616400 
+ 1129              	.LASF9:
+ 1130 01b2 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1130      20756E73 
+ 1130      69676E65 
+ 1130      6420696E 
+ 1130      7400
+ 1131              	.LASF34:
+ 1132 01c4 77617665 		.ascii	"waveVal\000"
+ 1132      56616C00 
+ 1133              	.LASF5:
+ 1134 01cc 73686F72 		.ascii	"short unsigned int\000"
+ 1134      7420756E 
+ 1134      7369676E 
+ 1134      65642069 
+ 1134      6E7400
+ 1135              	.LASF27:
+ 1136 01df 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1136      52784275 
+ 1136      66666572 
+ 1136      00
+ 1137              	.LASF4:
+ 1138 01ec 5F5F7569 		.ascii	"__uint16_t\000"
+ 1138      6E743136 
+ 1138      5F7400
+ 1139              	.LASF28:
+ 1140 01f7 77617665 		.ascii	"waveform_sizes\000"
+ 1140      666F726D 
+ 1140      5F73697A 
+ 1140      657300
+ 1141              	.LASF45:
+ 1142 0206 57617665 		.ascii	"Waveform_Send_Start\000"
+ 1142      666F726D 
+ 1142      5F53656E 
+ 1142      645F5374 
+ 1142      61727400 
+ 1143              	.LASF8:
+ 1144 021a 5F5F7569 		.ascii	"__uint32_t\000"
+ 1144      6E743332 
+ 1144      5F7400
+ 1145              	.LASF17:
+ 1146 0225 75696E74 		.ascii	"uint16\000"
+ 1146      313600
+ 1147              	.LASF53:
+ 1148 022c 6D61696E 		.ascii	"main\000"
+ 1148      00
+ 1149              	.LASF24:
+ 1150 0231 52657065 		.ascii	"Repeat\000"
+ 1150      617400
+ 1151              	.LASF12:
+ 1152 0238 756E7369 		.ascii	"unsigned int\000"
+ 1152      676E6564 
+ 1152      20696E74 
+ 1152      00
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 24
+
+
+ 1153              	.LASF11:
+ 1154 0245 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1154      206C6F6E 
+ 1154      6720756E 
+ 1154      7369676E 
+ 1154      65642069 
+ 1155              	.LASF13:
+ 1156 025c 75696E74 		.ascii	"uint8_t\000"
+ 1156      385F7400 
+ 1157              	.LASF52:
+ 1158 0264 57617665 		.ascii	"Waveform_ISR\000"
+ 1158      666F726D 
+ 1158      5F495352 
+ 1158      00
+ 1159              	.LASF51:
+ 1160 0271 57617665 		.ascii	"Waveform\000"
+ 1160      666F726D 
+ 1160      00
+ 1161              	.LASF15:
+ 1162 027a 696E7433 		.ascii	"int32_t\000"
+ 1162      325F7400 
+ 1163              	.LASF22:
+ 1164 0282 73697A65 		.ascii	"sizetype\000"
+ 1164      74797065 
+ 1164      00
+ 1165              	.LASF32:
+ 1166 028b 64656661 		.ascii	"default_waveform\000"
+ 1166      756C745F 
+ 1166      77617665 
+ 1166      666F726D 
+ 1166      00
+ 1167              	.LASF49:
+ 1168 029c 6D61696E 		.ascii	"main.c\000"
+ 1168      2E6300
+ 1169              	.LASF20:
+ 1170 02a3 63686172 		.ascii	"char\000"
+ 1170      00
+ 1171              	.LASF44:
+ 1172 02a8 57617665 		.ascii	"Waveform_ISR_StartEx\000"
+ 1172      666F726D 
+ 1172      5F495352 
+ 1172      5F537461 
+ 1172      72744578 
+ 1173              	.LASF14:
+ 1174 02bd 75696E74 		.ascii	"uint16_t\000"
+ 1174      31365F74 
+ 1174      00
+ 1175              	.LASF2:
+ 1176 02c6 73686F72 		.ascii	"short int\000"
+ 1176      7420696E 
+ 1176      7400
+ 1177              	.LASF46:
+ 1178 02d0 57617665 		.ascii	"Wave_Out_Start\000"
+ 1178      5F4F7574 
+ 1178      5F537461 
+ 1178      727400
+ 1179              	.LASF42:
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccsdkusR.s 			page 25
+
+
+ 1180 02df 57617665 		.ascii	"Waveform_Send_WritePeriod\000"
+ 1180      666F726D 
+ 1180      5F53656E 
+ 1180      645F5772 
+ 1180      69746550 
+ 1181              	.LASF30:
+ 1182 02f9 72657065 		.ascii	"repeat_waveform\000"
+ 1182      61745F77 
+ 1182      61766566 
+ 1182      6F726D00 
+ 1183              	.LASF16:
+ 1184 0309 75696E74 		.ascii	"uint32_t\000"
+ 1184      33325F74 
+ 1184      00
+ 1185              	.LASF7:
+ 1186 0312 6C6F6E67 		.ascii	"long int\000"
+ 1186      20696E74 
+ 1186      00
+ 1187              	.LASF21:
+ 1188 031b 6C6F6E67 		.ascii	"long double\000"
+ 1188      20646F75 
+ 1188      626C6500 
+ 1189              	.LASF0:
+ 1190 0327 7369676E 		.ascii	"signed char\000"
+ 1190      65642063 
+ 1190      68617200 
+ 1191              	.LASF36:
+ 1192 0333 77617665 		.ascii	"waveform_select\000"
+ 1192      666F726D 
+ 1192      5F73656C 
+ 1192      65637400 
+ 1193              	.LASF25:
+ 1194 0343 44656661 		.ascii	"Default\000"
+ 1194      756C7400 
+ 1195              	.LASF43:
+ 1196 034b 43794465 		.ascii	"CyDelay\000"
+ 1196      6C617900 
+ 1197              	.LASF23:
+ 1198 0353 42656769 		.ascii	"Beginning\000"
+ 1198      6E6E696E 
+ 1198      6700
+ 1199              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

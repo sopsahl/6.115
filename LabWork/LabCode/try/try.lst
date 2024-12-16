@@ -1,0 +1,4 @@
+                   main:
+0000: 75 90 11              mov P1, #11h
+0003: 80 FB                 sjmp main
+                            

@@ -1,0 +1,22 @@
+                   main:
+0000: D2 B3                 setb P3.3 
+0002: D2 B4                 setb P3.4 ;   sets 3.4-3 => 11 (display 3)
+0004: 75 90 C0              mov P1, #0C0h ; 0
+0007: 75 90 FF              mov P1, #0FFh ; clear the display before moving on
+                            
+000A: C2 B3                 clr P3.3 ; sets 3.4-3 => 10 (display 2)
+000C: 75 90 F9              mov P1, #0F9h ; 1
+000F: 75 90 FF              mov P1, #0FFh ; clear the display before moving on
+                            
+0012: D2 B3                 setb P3.3 
+0014: C2 B4                 clr P3.4 ; sets 3.4-3 => 01 (display 1)
+0016: 75 90 A4              mov P1, #0A4h ; 2
+0019: 75 90 FF              mov P1, #0FFh ; clear the display before moving on
+                   
+001C: C2 B3                 clr P3.3 
+001E: C2 B4                 clr P3.4 ; sets 3.4-3 => 00 (display 0)
+0020: 75 90 B0              mov P1, #0B0h ; 3
+0023: 75 90 FF              mov P1, #0FFh ; clear the display before moving on
+                   
+0026: 80 D8                 sjmp main
+                   

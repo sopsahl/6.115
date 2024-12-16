@@ -1,0 +1,24 @@
+                   main: 
+                            
+0000: 75 90 19              mov P1, #19h ; Value for 0.5 V
+0003: 78 64                 mov R0, #100d ; Arbitrary number of cycles for each
+                            
+                            loop1:
+0005: D2 87                         setb P0.7
+0007: C2 87                         clr P0.7
+0009: D8 FA                         djnz R0, loop1 ; cycles 100 times before mo
+                            
+000B: 75 90 E6              mov P1, #0E6h ; Value for 4.5 V
+000E: 78 64                 mov R0, #100d ; Arbitrary number of cycles for each
+                            
+                            loop2:
+0010: D2 87                         setb P0.7
+0012: C2 87                         clr P0.7
+0014: D8 FA                         djnz R0, loop2 ; cycles 100 times before mo
+                   
+0016: 80 E8                 sjmp main
+                   
+                            
+                   
+                            
+                            

@@ -1,0 +1,6 @@
+0000: 75 90 11     mov P1, #11h ;makes port 1 pins 0 and 4 high
+0003: 75 90 22     mov P1, #22h ;makes port 1 pins 1 and 5 high and all else lo
+                   loop:
+0006: 75 90 55              mov P1, #55h ; makes port 1 pins 0, 2, 4, and 6 hig
+0009: 80 FB                 sjmp loop ; previous line will be repeated indefini
+                   

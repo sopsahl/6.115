@@ -1,0 +1,33 @@
+                   main:
+                            func1:
+0000: B8 01 08                      cjne R0, #1h, func2
+0003: 75 90 AA                      mov P1, #0AAh ; mov AAh into P1
+0006: 12 00 34                      lcall delay ; display lasts for visibility
+0009: 80 F5                         sjmp func1
+                            func2:
+000B: B8 02 08                      cjne R0, #2h, func3
+000E: 75 90 B0                      mov P1, #0B0h ; move '3' into the display
+0011: 12 00 34                      lcall delay ; display lasts for visibility
+0014: 80 F5                         sjmp func2
+                            func3:
+0016: B8 03 0C                      cjne R0, #3h, func4
+0019: 75 90 7F                      mov P1, #7Fh ; Moving 2.5V into P1
+001C: C2 87                         clr P0.7 ; shows 2.5V
+001E: 12 00 34                      lcall delay ; display lasts for visibility
+0021: D2 87                         setb P0.7
+0023: 80 F1                         sjmp func3
+                            func4:
+0025: B8 04 D8                      cjne R0, #4h, func1
+0028: 75 90 CC                      mov P1, #0CCh ; Moving 4V into P1
+002B: C2 87                         clr P0.7 ; shows 4V
+002D: 12 00 34                      lcall delay ; display lasts for visibility
+0030: D2 87                         setb P0.7
+0032: 80 F1                         sjmp func4
+                   
+                   
+                   delay:
+0034: 79 64                 mov R1, #100d ; counter just for visibility
+                            loop:
+0036: D9 FE                         djnz R1, loop
+0038: 22                    ret
+                   

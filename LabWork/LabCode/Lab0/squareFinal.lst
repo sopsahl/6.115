@@ -1,0 +1,52 @@
+0000: 78 19        mov R0, #19h
+0002: 79 E6        mov R1, #0E6h
+                   
+0004: 7A 7F        mov R2, #7fh
+0006: 7B 01        mov R3, #01h
+                   
+0008: C0 00        push 00h
+000A: C0 01        push 01h ; stores R0 and R1 on the stack
+                   
+                   main: 
+000C: D0 01                 pop 01h
+000E: D0 00                 pop 00h ; removes R0 and R1 from the stack
+                            
+                            loop:
+                                    
+0010: C0 02                         push 02h ; Stores Value of the duty cycling
+                                    
+0012: 74 00                         mov A, #0h
+0014: 9A                            subb A, R2 ; gets 255 - duty cycle for the 
+0015: FA                            mov R2, A
+                                    
+0016: E8                            mov A, R0 ; moves 0.5 V into the Accumulato
+                                    
+0017: 12 00 26                      lcall dacme
+                   
+001A: D0 02                         pop 02h ; Restores value of the duty cyclin
+001C: C0 02                         push 02h ; Stores it again
+                            
+001E: E9                            mov A, R1 ; moves 4.5 V into the Accumulato
+                   
+001F: 12 00 26                      lcall dacme 
+                   
+0022: D0 02                         pop 02h ; gets the value of the duty cyclin
+                   
+0024: 80 EA                         sjmp loop
+                            
+                   
+                   dacme:
+0026: F5 90                 mov P1, A ; moves the accumulator to the DAC
+0028: C2 87                 clr P0.7
+                            mainloop:
+                            
+002A: C0 03                         push 03h ; stores the period scaling factor
+                                    innerloop:
+002C: DB FE                                 djnz R3, innerloop ; if the period 
+002E: D0 03                         pop 03h ; restores the period scaling facto
+                   
+0030: DA F8                         djnz R2, mainloop ; cycles before moving to
+                   
+0032: D2 87                 setb P0.7
+0034: 22                    ret
+                   

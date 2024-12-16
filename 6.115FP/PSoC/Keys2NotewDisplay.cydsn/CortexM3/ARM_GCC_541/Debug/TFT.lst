@@ -1,0 +1,1385 @@
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"tft.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.write8_a0,"ax",%progbits
+  20              		.align	2
+  21              		.global	write8_a0
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	write8_a0, %function
+  25              	write8_a0:
+  26              	.LFB63:
+  27              		.file 1 "tft.c"
+   1:tft.c         **** /* ========================================
+   2:tft.c         ****  *
+   3:tft.c         ****  * Copyright YOUR COMPANY, THE YEAR
+   4:tft.c         ****  * All Rights Reserved
+   5:tft.c         ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:tft.c         ****  *
+   7:tft.c         ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:tft.c         ****  * WHICH IS THE PROPERTY OF your company.
+   9:tft.c         ****  *
+  10:tft.c         ****  * ========================================
+  11:tft.c         **** */
+  12:tft.c         **** #include "tft.h"
+  13:tft.c         **** 
+  14:tft.c         **** //==============================================================
+  15:tft.c         **** // write8_a0()
+  16:tft.c         **** // writes an 8-bit value to the TFT with the D/C line low
+  17:tft.c         **** //
+  18:tft.c         **** // Arguments:
+  19:tft.c         **** //      data - 8-bit value
+  20:tft.c         **** //==============================================================
+  21:tft.c         **** void write8_a0(uint8 data)
+  22:tft.c         **** {
+  28              		.loc 1 22 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 10B5     		push	{r4, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 4, -8
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 2
+
+
+  36              		.cfi_offset 14, -4
+  37 0002 0446     		mov	r4, r0
+  23:tft.c         **** 	DC_Write(0x00); 						        // set DC line low
+  38              		.loc 1 23 0
+  39 0004 0020     		movs	r0, #0
+  40              	.LVL1:
+  41 0006 FFF7FEFF 		bl	DC_Write
+  42              	.LVL2:
+  24:tft.c         ****     SPIM_1_WriteTxData(data);         		        // send data to transmit buffer
+  43              		.loc 1 24 0
+  44 000a 2046     		mov	r0, r4
+  45 000c FFF7FEFF 		bl	SPIM_1_WriteTxData
+  46              	.LVL3:
+  47              	.L2:
+  25:tft.c         ****     while (!(SPIM_1_ReadTxStatus() & 0x01)){};	    // wait for data to be sent
+  48              		.loc 1 25 0 discriminator 1
+  49 0010 FFF7FEFF 		bl	SPIM_1_ReadTxStatus
+  50              	.LVL4:
+  51 0014 10F0010F 		tst	r0, #1
+  52 0018 FAD0     		beq	.L2
+  26:tft.c         **** }
+  53              		.loc 1 26 0
+  54 001a 10BD     		pop	{r4, pc}
+  55              		.cfi_endproc
+  56              	.LFE63:
+  57              		.size	write8_a0, .-write8_a0
+  58              		.section	.text.write8_a1,"ax",%progbits
+  59              		.align	2
+  60              		.global	write8_a1
+  61              		.thumb
+  62              		.thumb_func
+  63              		.type	write8_a1, %function
+  64              	write8_a1:
+  65              	.LFB64:
+  27:tft.c         **** 
+  28:tft.c         **** //==============================================================
+  29:tft.c         **** // write8_a1()
+  30:tft.c         **** // writes an 8-bit value to the TFT with the D/C line high
+  31:tft.c         **** //
+  32:tft.c         **** // Arguments:
+  33:tft.c         **** //      data - 8-bit value
+  34:tft.c         **** //==============================================================
+  35:tft.c         **** void write8_a1(uint8 data)
+  36:tft.c         **** {
+  66              		.loc 1 36 0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 0
+  69              		@ frame_needed = 0, uses_anonymous_args = 0
+  70              	.LVL5:
+  71 0000 10B5     		push	{r4, lr}
+  72              		.cfi_def_cfa_offset 8
+  73              		.cfi_offset 4, -8
+  74              		.cfi_offset 14, -4
+  75 0002 0446     		mov	r4, r0
+  37:tft.c         **** 	DC_Write(0x01); 						        // set DC line high
+  76              		.loc 1 37 0
+  77 0004 0120     		movs	r0, #1
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 3
+
+
+  78              	.LVL6:
+  79 0006 FFF7FEFF 		bl	DC_Write
+  80              	.LVL7:
+  38:tft.c         ****     SPIM_1_WriteTxData(data);                       // send data to transmit buffer
+  81              		.loc 1 38 0
+  82 000a 2046     		mov	r0, r4
+  83 000c FFF7FEFF 		bl	SPIM_1_WriteTxData
+  84              	.LVL8:
+  85              	.L5:
+  39:tft.c         ****     while (!(SPIM_1_ReadTxStatus() & 0x01)){};	    // wait for data to be sent
+  86              		.loc 1 39 0 discriminator 1
+  87 0010 FFF7FEFF 		bl	SPIM_1_ReadTxStatus
+  88              	.LVL9:
+  89 0014 10F0010F 		tst	r0, #1
+  90 0018 FAD0     		beq	.L5
+  40:tft.c         **** }
+  91              		.loc 1 40 0
+  92 001a 10BD     		pop	{r4, pc}
+  93              		.cfi_endproc
+  94              	.LFE64:
+  95              		.size	write8_a1, .-write8_a1
+  96              		.section	.text.writeM8_a1,"ax",%progbits
+  97              		.align	2
+  98              		.global	writeM8_a1
+  99              		.thumb
+ 100              		.thumb_func
+ 101              		.type	writeM8_a1, %function
+ 102              	writeM8_a1:
+ 103              	.LFB65:
+  41:tft.c         **** 
+  42:tft.c         **** //==============================================================
+  43:tft.c         **** // writeM8_a1()
+  44:tft.c         **** // writes multiple bytes to the TFT with the D/C line high
+  45:tft.c         **** //
+  46:tft.c         **** // Arguments:
+  47:tft.c         **** //      pData - pointer to an array of 8-bit data values
+  48:tft.c         **** //      N - the size of the array *pData
+  49:tft.c         **** //==============================================================
+  50:tft.c         **** void writeM8_a1(uint8 *pData, int N)
+  51:tft.c         **** {
+ 104              		.loc 1 51 0
+ 105              		.cfi_startproc
+ 106              		@ args = 0, pretend = 0, frame = 0
+ 107              		@ frame_needed = 0, uses_anonymous_args = 0
+ 108              	.LVL10:
+ 109 0000 70B5     		push	{r4, r5, r6, lr}
+ 110              		.cfi_def_cfa_offset 16
+ 111              		.cfi_offset 4, -16
+ 112              		.cfi_offset 5, -12
+ 113              		.cfi_offset 6, -8
+ 114              		.cfi_offset 14, -4
+ 115 0002 0646     		mov	r6, r0
+ 116 0004 0D46     		mov	r5, r1
+  52:tft.c         **** 	DC_Write(0x01); 						        // set DC line high
+ 117              		.loc 1 52 0
+ 118 0006 0120     		movs	r0, #1
+ 119              	.LVL11:
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 4
+
+
+ 120 0008 FFF7FEFF 		bl	DC_Write
+ 121              	.LVL12:
+  53:tft.c         ****     int i;
+  54:tft.c         ****     for (i=0; i<N; i++)
+ 122              		.loc 1 54 0
+ 123 000c 0024     		movs	r4, #0
+ 124 000e 08E0     		b	.L8
+ 125              	.LVL13:
+ 126              	.L10:
+  55:tft.c         ****     {
+  56:tft.c         ****         SPIM_1_WriteTxData(pData[i]);               // send data to transmit buffer
+ 127              		.loc 1 56 0
+ 128 0010 305D     		ldrb	r0, [r6, r4]	@ zero_extendqisi2
+ 129 0012 FFF7FEFF 		bl	SPIM_1_WriteTxData
+ 130              	.LVL14:
+ 131              	.L9:
+  57:tft.c         ****         while (!(SPIM_1_ReadTxStatus() & 0x01)){};  // wait for data to be sent
+ 132              		.loc 1 57 0 discriminator 1
+ 133 0016 FFF7FEFF 		bl	SPIM_1_ReadTxStatus
+ 134              	.LVL15:
+ 135 001a 10F0010F 		tst	r0, #1
+ 136 001e FAD0     		beq	.L9
+  54:tft.c         ****     {
+ 137              		.loc 1 54 0 discriminator 2
+ 138 0020 0134     		adds	r4, r4, #1
+ 139              	.LVL16:
+ 140              	.L8:
+  54:tft.c         ****     {
+ 141              		.loc 1 54 0 is_stmt 0 discriminator 1
+ 142 0022 AC42     		cmp	r4, r5
+ 143 0024 F4DB     		blt	.L10
+  58:tft.c         ****     }
+  59:tft.c         **** }
+ 144              		.loc 1 59 0 is_stmt 1
+ 145 0026 70BD     		pop	{r4, r5, r6, pc}
+ 146              		.cfi_endproc
+ 147              	.LFE65:
+ 148              		.size	writeM8_a1, .-writeM8_a1
+ 149              		.section	.text.read8_a1,"ax",%progbits
+ 150              		.align	2
+ 151              		.global	read8_a1
+ 152              		.thumb
+ 153              		.thumb_func
+ 154              		.type	read8_a1, %function
+ 155              	read8_a1:
+ 156              	.LFB66:
+  60:tft.c         **** 
+  61:tft.c         **** //==============================================================
+  62:tft.c         **** // read8_a1()
+  63:tft.c         **** // reads an 8-bit value to the TFT with the D/C line high
+  64:tft.c         **** //==============================================================
+  65:tft.c         **** uint8 read8_a1(void)
+  66:tft.c         **** {
+ 157              		.loc 1 66 0
+ 158              		.cfi_startproc
+ 159              		@ Volatile: function does not return.
+ 160              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 5
+
+
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 162              		@ link register save eliminated.
+ 163              	.L13:
+ 164 0000 FEE7     		b	.L13
+ 165              		.cfi_endproc
+ 166              	.LFE66:
+ 167              		.size	read8_a1, .-read8_a1
+ 168 0002 00BF     		.section	.text.readM8_a1,"ax",%progbits
+ 169              		.align	2
+ 170              		.global	readM8_a1
+ 171              		.thumb
+ 172              		.thumb_func
+ 173              		.type	readM8_a1, %function
+ 174              	readM8_a1:
+ 175              	.LFB67:
+  67:tft.c         **** 	for (;;) {}                                     // read function not implemented
+  68:tft.c         **** };
+  69:tft.c         **** 
+  70:tft.c         **** //==============================================================
+  71:tft.c         **** // readM8_a1()
+  72:tft.c         **** // reads multple 8-bit values from the TFT with the D/C line high
+  73:tft.c         **** //
+  74:tft.c         **** // Arguments:
+  75:tft.c         **** //      pData - an array where the read values we be stored
+  76:tft.c         **** //      N - the number of values that will be read (also size of 
+  77:tft.c         **** //          the array pData)
+  78:tft.c         **** //==============================================================
+  79:tft.c         **** void readM8_a1(uint8 *pData, int N)
+  80:tft.c         **** {
+ 176              		.loc 1 80 0
+ 177              		.cfi_startproc
+ 178              		@ Volatile: function does not return.
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181              		@ link register save eliminated.
+ 182              	.LVL17:
+ 183              	.L15:
+ 184 0000 FEE7     		b	.L15
+ 185              		.cfi_endproc
+ 186              	.LFE67:
+ 187              		.size	readM8_a1, .-readM8_a1
+ 188 0002 00BF     		.section	.text.tftStart,"ax",%progbits
+ 189              		.align	2
+ 190              		.global	tftStart
+ 191              		.thumb
+ 192              		.thumb_func
+ 193              		.type	tftStart, %function
+ 194              	tftStart:
+ 195              	.LFB68:
+  81:tft.c         **** 	for (;;) {}                                     // read function not implemented
+  82:tft.c         **** }
+  83:tft.c         **** 
+  84:tft.c         **** //==============================================================
+  85:tft.c         **** // tftStart()
+  86:tft.c         **** // this function must be called to initializes the TFT
+  87:tft.c         **** //==============================================================
+  88:tft.c         **** void tftStart(void)
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 6
+
+
+  89:tft.c         **** {
+ 196              		.loc 1 89 0
+ 197              		.cfi_startproc
+ 198              		@ args = 0, pretend = 0, frame = 0
+ 199              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200              		.loc 1 89 0
+ 201 0000 08B5     		push	{r3, lr}
+ 202              		.cfi_def_cfa_offset 8
+ 203              		.cfi_offset 3, -8
+ 204              		.cfi_offset 14, -4
+  90:tft.c         ****     write8_a0(0x01);         			// send Software Reset Command (must wait at least 5ms after comman
+ 205              		.loc 1 90 0
+ 206 0002 0120     		movs	r0, #1
+ 207 0004 FFF7FEFF 		bl	write8_a0
+ 208              	.LVL18:
+  91:tft.c         ****     CyDelay(10);
+ 209              		.loc 1 91 0
+ 210 0008 0A20     		movs	r0, #10
+ 211 000a FFF7FEFF 		bl	CyDelay
+ 212              	.LVL19:
+  92:tft.c         ****     write8_a0(0x36);         			// send Memory Access Control command
+ 213              		.loc 1 92 0
+ 214 000e 3620     		movs	r0, #54
+ 215 0010 FFF7FEFF 		bl	write8_a0
+ 216              	.LVL20:
+  93:tft.c         **** 	write8_a1(0x88);
+ 217              		.loc 1 93 0
+ 218 0014 8820     		movs	r0, #136
+ 219 0016 FFF7FEFF 		bl	write8_a1
+ 220              	.LVL21:
+  94:tft.c         ****     write8_a0(0x3A);         			// send COLMOD: Pixel Format Set command
+ 221              		.loc 1 94 0
+ 222 001a 3A20     		movs	r0, #58
+ 223 001c FFF7FEFF 		bl	write8_a0
+ 224              	.LVL22:
+  95:tft.c         ****     write8_a1(0x55);
+ 225              		.loc 1 95 0
+ 226 0020 5520     		movs	r0, #85
+ 227 0022 FFF7FEFF 		bl	write8_a1
+ 228              	.LVL23:
+  96:tft.c         ****     write8_a0(0x11);         			// send Sleep Out command
+ 229              		.loc 1 96 0
+ 230 0026 1120     		movs	r0, #17
+ 231 0028 FFF7FEFF 		bl	write8_a0
+ 232              	.LVL24:
+  97:tft.c         ****     write8_a0(0x29);         			// send Display ON command
+ 233              		.loc 1 97 0
+ 234 002c 2920     		movs	r0, #41
+ 235 002e FFF7FEFF 		bl	write8_a0
+ 236              	.LVL25:
+  98:tft.c         ****     CyDelay(250);            			// delay to allow all changes to take effect	
+ 237              		.loc 1 98 0
+ 238 0032 FA20     		movs	r0, #250
+ 239 0034 FFF7FEFF 		bl	CyDelay
+ 240              	.LVL26:
+ 241 0038 08BD     		pop	{r3, pc}
+ 242              		.cfi_endproc
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 7
+
+
+ 243              	.LFE68:
+ 244              		.size	tftStart, .-tftStart
+ 245 003a 00BF     		.text
+ 246              	.Letext0:
+ 247              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 248              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 249              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 250              		.file 5 "Generated_Source\\PSoC5/DC.h"
+ 251              		.file 6 "Generated_Source\\PSoC5/SPIM_1.h"
+ 252              		.file 7 "Generated_Source\\PSoC5/CyLib.h"
+ 253              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
+ 254              		.section	.debug_info,"",%progbits
+ 255              	.Ldebug_info0:
+ 256 0000 04030000 		.4byte	0x304
+ 257 0004 0400     		.2byte	0x4
+ 258 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 259 000a 04       		.byte	0x4
+ 260 000b 01       		.uleb128 0x1
+ 261 000c 5C000000 		.4byte	.LASF27
+ 262 0010 0C       		.byte	0xc
+ 263 0011 30020000 		.4byte	.LASF28
+ 264 0015 0F010000 		.4byte	.LASF29
+ 265 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 266 001d 00000000 		.4byte	0
+ 267 0021 00000000 		.4byte	.Ldebug_line0
+ 268 0025 02       		.uleb128 0x2
+ 269 0026 01       		.byte	0x1
+ 270 0027 06       		.byte	0x6
+ 271 0028 09020000 		.4byte	.LASF0
+ 272 002c 02       		.uleb128 0x2
+ 273 002d 01       		.byte	0x1
+ 274 002e 08       		.byte	0x8
+ 275 002f 79010000 		.4byte	.LASF1
+ 276 0033 02       		.uleb128 0x2
+ 277 0034 02       		.byte	0x2
+ 278 0035 05       		.byte	0x5
+ 279 0036 E1010000 		.4byte	.LASF2
+ 280 003a 02       		.uleb128 0x2
+ 281 003b 02       		.byte	0x2
+ 282 003c 07       		.byte	0x7
+ 283 003d FC000000 		.4byte	.LASF3
+ 284 0041 03       		.uleb128 0x3
+ 285 0042 00000000 		.4byte	.LASF9
+ 286 0046 02       		.byte	0x2
+ 287 0047 3F       		.byte	0x3f
+ 288 0048 4C000000 		.4byte	0x4c
+ 289 004c 02       		.uleb128 0x2
+ 290 004d 04       		.byte	0x4
+ 291 004e 05       		.byte	0x5
+ 292 004f F4010000 		.4byte	.LASF4
+ 293 0053 02       		.uleb128 0x2
+ 294 0054 04       		.byte	0x4
+ 295 0055 07       		.byte	0x7
+ 296 0056 EA000000 		.4byte	.LASF5
+ 297 005a 02       		.uleb128 0x2
+ 298 005b 08       		.byte	0x8
+ 299 005c 05       		.byte	0x5
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 8
+
+
+ 300 005d CE010000 		.4byte	.LASF6
+ 301 0061 02       		.uleb128 0x2
+ 302 0062 08       		.byte	0x8
+ 303 0063 07       		.byte	0x7
+ 304 0064 A6010000 		.4byte	.LASF7
+ 305 0068 04       		.uleb128 0x4
+ 306 0069 04       		.byte	0x4
+ 307 006a 05       		.byte	0x5
+ 308 006b 696E7400 		.ascii	"int\000"
+ 309 006f 02       		.uleb128 0x2
+ 310 0070 04       		.byte	0x4
+ 311 0071 07       		.byte	0x7
+ 312 0072 8E010000 		.4byte	.LASF8
+ 313 0076 03       		.uleb128 0x3
+ 314 0077 BD010000 		.4byte	.LASF10
+ 315 007b 03       		.byte	0x3
+ 316 007c 2C       		.byte	0x2c
+ 317 007d 41000000 		.4byte	0x41
+ 318 0081 05       		.uleb128 0x5
+ 319 0082 4D000000 		.4byte	.LASF11
+ 320 0086 04       		.byte	0x4
+ 321 0087 E901     		.2byte	0x1e9
+ 322 0089 2C000000 		.4byte	0x2c
+ 323 008d 02       		.uleb128 0x2
+ 324 008e 04       		.byte	0x4
+ 325 008f 04       		.byte	0x4
+ 326 0090 42000000 		.4byte	.LASF12
+ 327 0094 02       		.uleb128 0x2
+ 328 0095 08       		.byte	0x8
+ 329 0096 04       		.byte	0x4
+ 330 0097 87010000 		.4byte	.LASF13
+ 331 009b 02       		.uleb128 0x2
+ 332 009c 01       		.byte	0x1
+ 333 009d 08       		.byte	0x8
+ 334 009e DC010000 		.4byte	.LASF14
+ 335 00a2 02       		.uleb128 0x2
+ 336 00a3 08       		.byte	0x8
+ 337 00a4 04       		.byte	0x4
+ 338 00a5 FD010000 		.4byte	.LASF15
+ 339 00a9 02       		.uleb128 0x2
+ 340 00aa 04       		.byte	0x4
+ 341 00ab 07       		.byte	0x7
+ 342 00ac C5010000 		.4byte	.LASF16
+ 343 00b0 06       		.uleb128 0x6
+ 344 00b1 14000000 		.4byte	.LASF17
+ 345 00b5 01       		.byte	0x1
+ 346 00b6 15       		.byte	0x15
+ 347 00b7 00000000 		.4byte	.LFB63
+ 348 00bb 1C000000 		.4byte	.LFE63-.LFB63
+ 349 00bf 01       		.uleb128 0x1
+ 350 00c0 9C       		.byte	0x9c
+ 351 00c1 05010000 		.4byte	0x105
+ 352 00c5 07       		.uleb128 0x7
+ 353 00c6 48000000 		.4byte	.LASF19
+ 354 00ca 01       		.byte	0x1
+ 355 00cb 15       		.byte	0x15
+ 356 00cc 81000000 		.4byte	0x81
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 9
+
+
+ 357 00d0 00000000 		.4byte	.LLST0
+ 358 00d4 08       		.uleb128 0x8
+ 359 00d5 0A000000 		.4byte	.LVL2
+ 360 00d9 DB020000 		.4byte	0x2db
+ 361 00dd E7000000 		.4byte	0xe7
+ 362 00e1 09       		.uleb128 0x9
+ 363 00e2 01       		.uleb128 0x1
+ 364 00e3 50       		.byte	0x50
+ 365 00e4 01       		.uleb128 0x1
+ 366 00e5 30       		.byte	0x30
+ 367 00e6 00       		.byte	0
+ 368 00e7 08       		.uleb128 0x8
+ 369 00e8 10000000 		.4byte	.LVL3
+ 370 00ec E6020000 		.4byte	0x2e6
+ 371 00f0 FB000000 		.4byte	0xfb
+ 372 00f4 09       		.uleb128 0x9
+ 373 00f5 01       		.uleb128 0x1
+ 374 00f6 50       		.byte	0x50
+ 375 00f7 02       		.uleb128 0x2
+ 376 00f8 74       		.byte	0x74
+ 377 00f9 00       		.sleb128 0
+ 378 00fa 00       		.byte	0
+ 379 00fb 0A       		.uleb128 0xa
+ 380 00fc 14000000 		.4byte	.LVL4
+ 381 0100 F1020000 		.4byte	0x2f1
+ 382 0104 00       		.byte	0
+ 383 0105 06       		.uleb128 0x6
+ 384 0106 1E000000 		.4byte	.LASF18
+ 385 010a 01       		.byte	0x1
+ 386 010b 23       		.byte	0x23
+ 387 010c 00000000 		.4byte	.LFB64
+ 388 0110 1C000000 		.4byte	.LFE64-.LFB64
+ 389 0114 01       		.uleb128 0x1
+ 390 0115 9C       		.byte	0x9c
+ 391 0116 5A010000 		.4byte	0x15a
+ 392 011a 07       		.uleb128 0x7
+ 393 011b 48000000 		.4byte	.LASF19
+ 394 011f 01       		.byte	0x1
+ 395 0120 23       		.byte	0x23
+ 396 0121 81000000 		.4byte	0x81
+ 397 0125 21000000 		.4byte	.LLST1
+ 398 0129 08       		.uleb128 0x8
+ 399 012a 0A000000 		.4byte	.LVL7
+ 400 012e DB020000 		.4byte	0x2db
+ 401 0132 3C010000 		.4byte	0x13c
+ 402 0136 09       		.uleb128 0x9
+ 403 0137 01       		.uleb128 0x1
+ 404 0138 50       		.byte	0x50
+ 405 0139 01       		.uleb128 0x1
+ 406 013a 31       		.byte	0x31
+ 407 013b 00       		.byte	0
+ 408 013c 08       		.uleb128 0x8
+ 409 013d 10000000 		.4byte	.LVL8
+ 410 0141 E6020000 		.4byte	0x2e6
+ 411 0145 50010000 		.4byte	0x150
+ 412 0149 09       		.uleb128 0x9
+ 413 014a 01       		.uleb128 0x1
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 10
+
+
+ 414 014b 50       		.byte	0x50
+ 415 014c 02       		.uleb128 0x2
+ 416 014d 74       		.byte	0x74
+ 417 014e 00       		.sleb128 0
+ 418 014f 00       		.byte	0
+ 419 0150 0A       		.uleb128 0xa
+ 420 0151 14000000 		.4byte	.LVL9
+ 421 0155 F1020000 		.4byte	0x2f1
+ 422 0159 00       		.byte	0
+ 423 015a 06       		.uleb128 0x6
+ 424 015b 9B010000 		.4byte	.LASF20
+ 425 015f 01       		.byte	0x1
+ 426 0160 32       		.byte	0x32
+ 427 0161 00000000 		.4byte	.LFB65
+ 428 0165 28000000 		.4byte	.LFE65-.LFB65
+ 429 0169 01       		.uleb128 0x1
+ 430 016a 9C       		.byte	0x9c
+ 431 016b BE010000 		.4byte	0x1be
+ 432 016f 07       		.uleb128 0x7
+ 433 0170 28000000 		.4byte	.LASF21
+ 434 0174 01       		.byte	0x1
+ 435 0175 32       		.byte	0x32
+ 436 0176 BE010000 		.4byte	0x1be
+ 437 017a 42000000 		.4byte	.LLST2
+ 438 017e 0B       		.uleb128 0xb
+ 439 017f 4E00     		.ascii	"N\000"
+ 440 0181 01       		.byte	0x1
+ 441 0182 32       		.byte	0x32
+ 442 0183 68000000 		.4byte	0x68
+ 443 0187 60000000 		.4byte	.LLST3
+ 444 018b 0C       		.uleb128 0xc
+ 445 018c 6900     		.ascii	"i\000"
+ 446 018e 01       		.byte	0x1
+ 447 018f 35       		.byte	0x35
+ 448 0190 68000000 		.4byte	0x68
+ 449 0194 7E000000 		.4byte	.LLST4
+ 450 0198 08       		.uleb128 0x8
+ 451 0199 0C000000 		.4byte	.LVL12
+ 452 019d DB020000 		.4byte	0x2db
+ 453 01a1 AB010000 		.4byte	0x1ab
+ 454 01a5 09       		.uleb128 0x9
+ 455 01a6 01       		.uleb128 0x1
+ 456 01a7 50       		.byte	0x50
+ 457 01a8 01       		.uleb128 0x1
+ 458 01a9 31       		.byte	0x31
+ 459 01aa 00       		.byte	0
+ 460 01ab 0A       		.uleb128 0xa
+ 461 01ac 16000000 		.4byte	.LVL14
+ 462 01b0 E6020000 		.4byte	0x2e6
+ 463 01b4 0A       		.uleb128 0xa
+ 464 01b5 1A000000 		.4byte	.LVL15
+ 465 01b9 F1020000 		.4byte	0x2f1
+ 466 01bd 00       		.byte	0
+ 467 01be 0D       		.uleb128 0xd
+ 468 01bf 04       		.byte	0x4
+ 469 01c0 81000000 		.4byte	0x81
+ 470 01c4 0E       		.uleb128 0xe
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 11
+
+
+ 471 01c5 53000000 		.4byte	.LASF30
+ 472 01c9 01       		.byte	0x1
+ 473 01ca 41       		.byte	0x41
+ 474 01cb 81000000 		.4byte	0x81
+ 475 01cf 00000000 		.4byte	.LFB66
+ 476 01d3 02000000 		.4byte	.LFE66-.LFB66
+ 477 01d7 01       		.uleb128 0x1
+ 478 01d8 9C       		.byte	0x9c
+ 479 01d9 0F       		.uleb128 0xf
+ 480 01da 0A000000 		.4byte	.LASF31
+ 481 01de 01       		.byte	0x1
+ 482 01df 4F       		.byte	0x4f
+ 483 01e0 00000000 		.4byte	.LFB67
+ 484 01e4 02000000 		.4byte	.LFE67-.LFB67
+ 485 01e8 01       		.uleb128 0x1
+ 486 01e9 9C       		.byte	0x9c
+ 487 01ea 07020000 		.4byte	0x207
+ 488 01ee 10       		.uleb128 0x10
+ 489 01ef 28000000 		.4byte	.LASF21
+ 490 01f3 01       		.byte	0x1
+ 491 01f4 4F       		.byte	0x4f
+ 492 01f5 BE010000 		.4byte	0x1be
+ 493 01f9 01       		.uleb128 0x1
+ 494 01fa 50       		.byte	0x50
+ 495 01fb 11       		.uleb128 0x11
+ 496 01fc 4E00     		.ascii	"N\000"
+ 497 01fe 01       		.byte	0x1
+ 498 01ff 4F       		.byte	0x4f
+ 499 0200 68000000 		.4byte	0x68
+ 500 0204 01       		.uleb128 0x1
+ 501 0205 51       		.byte	0x51
+ 502 0206 00       		.byte	0
+ 503 0207 06       		.uleb128 0x6
+ 504 0208 EB010000 		.4byte	.LASF22
+ 505 020c 01       		.byte	0x1
+ 506 020d 58       		.byte	0x58
+ 507 020e 00000000 		.4byte	.LFB68
+ 508 0212 3A000000 		.4byte	.LFE68-.LFB68
+ 509 0216 01       		.uleb128 0x1
+ 510 0217 9C       		.byte	0x9c
+ 511 0218 CA020000 		.4byte	0x2ca
+ 512 021c 08       		.uleb128 0x8
+ 513 021d 08000000 		.4byte	.LVL18
+ 514 0221 B0000000 		.4byte	0xb0
+ 515 0225 2F020000 		.4byte	0x22f
+ 516 0229 09       		.uleb128 0x9
+ 517 022a 01       		.uleb128 0x1
+ 518 022b 50       		.byte	0x50
+ 519 022c 01       		.uleb128 0x1
+ 520 022d 31       		.byte	0x31
+ 521 022e 00       		.byte	0
+ 522 022f 08       		.uleb128 0x8
+ 523 0230 0E000000 		.4byte	.LVL19
+ 524 0234 FC020000 		.4byte	0x2fc
+ 525 0238 42020000 		.4byte	0x242
+ 526 023c 09       		.uleb128 0x9
+ 527 023d 01       		.uleb128 0x1
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 12
+
+
+ 528 023e 50       		.byte	0x50
+ 529 023f 01       		.uleb128 0x1
+ 530 0240 3A       		.byte	0x3a
+ 531 0241 00       		.byte	0
+ 532 0242 08       		.uleb128 0x8
+ 533 0243 14000000 		.4byte	.LVL20
+ 534 0247 B0000000 		.4byte	0xb0
+ 535 024b 56020000 		.4byte	0x256
+ 536 024f 09       		.uleb128 0x9
+ 537 0250 01       		.uleb128 0x1
+ 538 0251 50       		.byte	0x50
+ 539 0252 02       		.uleb128 0x2
+ 540 0253 08       		.byte	0x8
+ 541 0254 36       		.byte	0x36
+ 542 0255 00       		.byte	0
+ 543 0256 08       		.uleb128 0x8
+ 544 0257 1A000000 		.4byte	.LVL21
+ 545 025b 05010000 		.4byte	0x105
+ 546 025f 6A020000 		.4byte	0x26a
+ 547 0263 09       		.uleb128 0x9
+ 548 0264 01       		.uleb128 0x1
+ 549 0265 50       		.byte	0x50
+ 550 0266 02       		.uleb128 0x2
+ 551 0267 09       		.byte	0x9
+ 552 0268 88       		.byte	0x88
+ 553 0269 00       		.byte	0
+ 554 026a 08       		.uleb128 0x8
+ 555 026b 20000000 		.4byte	.LVL22
+ 556 026f B0000000 		.4byte	0xb0
+ 557 0273 7E020000 		.4byte	0x27e
+ 558 0277 09       		.uleb128 0x9
+ 559 0278 01       		.uleb128 0x1
+ 560 0279 50       		.byte	0x50
+ 561 027a 02       		.uleb128 0x2
+ 562 027b 08       		.byte	0x8
+ 563 027c 3A       		.byte	0x3a
+ 564 027d 00       		.byte	0
+ 565 027e 08       		.uleb128 0x8
+ 566 027f 26000000 		.4byte	.LVL23
+ 567 0283 05010000 		.4byte	0x105
+ 568 0287 92020000 		.4byte	0x292
+ 569 028b 09       		.uleb128 0x9
+ 570 028c 01       		.uleb128 0x1
+ 571 028d 50       		.byte	0x50
+ 572 028e 02       		.uleb128 0x2
+ 573 028f 08       		.byte	0x8
+ 574 0290 55       		.byte	0x55
+ 575 0291 00       		.byte	0
+ 576 0292 08       		.uleb128 0x8
+ 577 0293 2C000000 		.4byte	.LVL24
+ 578 0297 B0000000 		.4byte	0xb0
+ 579 029b A5020000 		.4byte	0x2a5
+ 580 029f 09       		.uleb128 0x9
+ 581 02a0 01       		.uleb128 0x1
+ 582 02a1 50       		.byte	0x50
+ 583 02a2 01       		.uleb128 0x1
+ 584 02a3 41       		.byte	0x41
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 13
+
+
+ 585 02a4 00       		.byte	0
+ 586 02a5 08       		.uleb128 0x8
+ 587 02a6 32000000 		.4byte	.LVL25
+ 588 02aa B0000000 		.4byte	0xb0
+ 589 02ae B9020000 		.4byte	0x2b9
+ 590 02b2 09       		.uleb128 0x9
+ 591 02b3 01       		.uleb128 0x1
+ 592 02b4 50       		.byte	0x50
+ 593 02b5 02       		.uleb128 0x2
+ 594 02b6 08       		.byte	0x8
+ 595 02b7 29       		.byte	0x29
+ 596 02b8 00       		.byte	0
+ 597 02b9 12       		.uleb128 0x12
+ 598 02ba 38000000 		.4byte	.LVL26
+ 599 02be FC020000 		.4byte	0x2fc
+ 600 02c2 09       		.uleb128 0x9
+ 601 02c3 01       		.uleb128 0x1
+ 602 02c4 50       		.byte	0x50
+ 603 02c5 02       		.uleb128 0x2
+ 604 02c6 08       		.byte	0x8
+ 605 02c7 FA       		.byte	0xfa
+ 606 02c8 00       		.byte	0
+ 607 02c9 00       		.byte	0
+ 608 02ca 13       		.uleb128 0x13
+ 609 02cb 63010000 		.4byte	.LASF32
+ 610 02cf 08       		.byte	0x8
+ 611 02d0 1207     		.2byte	0x712
+ 612 02d2 D6020000 		.4byte	0x2d6
+ 613 02d6 14       		.uleb128 0x14
+ 614 02d7 76000000 		.4byte	0x76
+ 615 02db 15       		.uleb128 0x15
+ 616 02dc 70010000 		.4byte	.LASF23
+ 617 02e0 70010000 		.4byte	.LASF23
+ 618 02e4 05       		.byte	0x5
+ 619 02e5 26       		.byte	0x26
+ 620 02e6 15       		.uleb128 0x15
+ 621 02e7 15020000 		.4byte	.LASF24
+ 622 02eb 15020000 		.4byte	.LASF24
+ 623 02ef 06       		.byte	0x6
+ 624 02f0 5E       		.byte	0x5e
+ 625 02f1 15       		.uleb128 0x15
+ 626 02f2 2E000000 		.4byte	.LASF25
+ 627 02f6 2E000000 		.4byte	.LASF25
+ 628 02fa 06       		.byte	0x6
+ 629 02fb 5C       		.byte	0x5c
+ 630 02fc 15       		.uleb128 0x15
+ 631 02fd 28020000 		.4byte	.LASF26
+ 632 0301 28020000 		.4byte	.LASF26
+ 633 0305 07       		.byte	0x7
+ 634 0306 76       		.byte	0x76
+ 635 0307 00       		.byte	0
+ 636              		.section	.debug_abbrev,"",%progbits
+ 637              	.Ldebug_abbrev0:
+ 638 0000 01       		.uleb128 0x1
+ 639 0001 11       		.uleb128 0x11
+ 640 0002 01       		.byte	0x1
+ 641 0003 25       		.uleb128 0x25
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 14
+
+
+ 642 0004 0E       		.uleb128 0xe
+ 643 0005 13       		.uleb128 0x13
+ 644 0006 0B       		.uleb128 0xb
+ 645 0007 03       		.uleb128 0x3
+ 646 0008 0E       		.uleb128 0xe
+ 647 0009 1B       		.uleb128 0x1b
+ 648 000a 0E       		.uleb128 0xe
+ 649 000b 55       		.uleb128 0x55
+ 650 000c 17       		.uleb128 0x17
+ 651 000d 11       		.uleb128 0x11
+ 652 000e 01       		.uleb128 0x1
+ 653 000f 10       		.uleb128 0x10
+ 654 0010 17       		.uleb128 0x17
+ 655 0011 00       		.byte	0
+ 656 0012 00       		.byte	0
+ 657 0013 02       		.uleb128 0x2
+ 658 0014 24       		.uleb128 0x24
+ 659 0015 00       		.byte	0
+ 660 0016 0B       		.uleb128 0xb
+ 661 0017 0B       		.uleb128 0xb
+ 662 0018 3E       		.uleb128 0x3e
+ 663 0019 0B       		.uleb128 0xb
+ 664 001a 03       		.uleb128 0x3
+ 665 001b 0E       		.uleb128 0xe
+ 666 001c 00       		.byte	0
+ 667 001d 00       		.byte	0
+ 668 001e 03       		.uleb128 0x3
+ 669 001f 16       		.uleb128 0x16
+ 670 0020 00       		.byte	0
+ 671 0021 03       		.uleb128 0x3
+ 672 0022 0E       		.uleb128 0xe
+ 673 0023 3A       		.uleb128 0x3a
+ 674 0024 0B       		.uleb128 0xb
+ 675 0025 3B       		.uleb128 0x3b
+ 676 0026 0B       		.uleb128 0xb
+ 677 0027 49       		.uleb128 0x49
+ 678 0028 13       		.uleb128 0x13
+ 679 0029 00       		.byte	0
+ 680 002a 00       		.byte	0
+ 681 002b 04       		.uleb128 0x4
+ 682 002c 24       		.uleb128 0x24
+ 683 002d 00       		.byte	0
+ 684 002e 0B       		.uleb128 0xb
+ 685 002f 0B       		.uleb128 0xb
+ 686 0030 3E       		.uleb128 0x3e
+ 687 0031 0B       		.uleb128 0xb
+ 688 0032 03       		.uleb128 0x3
+ 689 0033 08       		.uleb128 0x8
+ 690 0034 00       		.byte	0
+ 691 0035 00       		.byte	0
+ 692 0036 05       		.uleb128 0x5
+ 693 0037 16       		.uleb128 0x16
+ 694 0038 00       		.byte	0
+ 695 0039 03       		.uleb128 0x3
+ 696 003a 0E       		.uleb128 0xe
+ 697 003b 3A       		.uleb128 0x3a
+ 698 003c 0B       		.uleb128 0xb
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 15
+
+
+ 699 003d 3B       		.uleb128 0x3b
+ 700 003e 05       		.uleb128 0x5
+ 701 003f 49       		.uleb128 0x49
+ 702 0040 13       		.uleb128 0x13
+ 703 0041 00       		.byte	0
+ 704 0042 00       		.byte	0
+ 705 0043 06       		.uleb128 0x6
+ 706 0044 2E       		.uleb128 0x2e
+ 707 0045 01       		.byte	0x1
+ 708 0046 3F       		.uleb128 0x3f
+ 709 0047 19       		.uleb128 0x19
+ 710 0048 03       		.uleb128 0x3
+ 711 0049 0E       		.uleb128 0xe
+ 712 004a 3A       		.uleb128 0x3a
+ 713 004b 0B       		.uleb128 0xb
+ 714 004c 3B       		.uleb128 0x3b
+ 715 004d 0B       		.uleb128 0xb
+ 716 004e 27       		.uleb128 0x27
+ 717 004f 19       		.uleb128 0x19
+ 718 0050 11       		.uleb128 0x11
+ 719 0051 01       		.uleb128 0x1
+ 720 0052 12       		.uleb128 0x12
+ 721 0053 06       		.uleb128 0x6
+ 722 0054 40       		.uleb128 0x40
+ 723 0055 18       		.uleb128 0x18
+ 724 0056 9742     		.uleb128 0x2117
+ 725 0058 19       		.uleb128 0x19
+ 726 0059 01       		.uleb128 0x1
+ 727 005a 13       		.uleb128 0x13
+ 728 005b 00       		.byte	0
+ 729 005c 00       		.byte	0
+ 730 005d 07       		.uleb128 0x7
+ 731 005e 05       		.uleb128 0x5
+ 732 005f 00       		.byte	0
+ 733 0060 03       		.uleb128 0x3
+ 734 0061 0E       		.uleb128 0xe
+ 735 0062 3A       		.uleb128 0x3a
+ 736 0063 0B       		.uleb128 0xb
+ 737 0064 3B       		.uleb128 0x3b
+ 738 0065 0B       		.uleb128 0xb
+ 739 0066 49       		.uleb128 0x49
+ 740 0067 13       		.uleb128 0x13
+ 741 0068 02       		.uleb128 0x2
+ 742 0069 17       		.uleb128 0x17
+ 743 006a 00       		.byte	0
+ 744 006b 00       		.byte	0
+ 745 006c 08       		.uleb128 0x8
+ 746 006d 898201   		.uleb128 0x4109
+ 747 0070 01       		.byte	0x1
+ 748 0071 11       		.uleb128 0x11
+ 749 0072 01       		.uleb128 0x1
+ 750 0073 31       		.uleb128 0x31
+ 751 0074 13       		.uleb128 0x13
+ 752 0075 01       		.uleb128 0x1
+ 753 0076 13       		.uleb128 0x13
+ 754 0077 00       		.byte	0
+ 755 0078 00       		.byte	0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 16
+
+
+ 756 0079 09       		.uleb128 0x9
+ 757 007a 8A8201   		.uleb128 0x410a
+ 758 007d 00       		.byte	0
+ 759 007e 02       		.uleb128 0x2
+ 760 007f 18       		.uleb128 0x18
+ 761 0080 9142     		.uleb128 0x2111
+ 762 0082 18       		.uleb128 0x18
+ 763 0083 00       		.byte	0
+ 764 0084 00       		.byte	0
+ 765 0085 0A       		.uleb128 0xa
+ 766 0086 898201   		.uleb128 0x4109
+ 767 0089 00       		.byte	0
+ 768 008a 11       		.uleb128 0x11
+ 769 008b 01       		.uleb128 0x1
+ 770 008c 31       		.uleb128 0x31
+ 771 008d 13       		.uleb128 0x13
+ 772 008e 00       		.byte	0
+ 773 008f 00       		.byte	0
+ 774 0090 0B       		.uleb128 0xb
+ 775 0091 05       		.uleb128 0x5
+ 776 0092 00       		.byte	0
+ 777 0093 03       		.uleb128 0x3
+ 778 0094 08       		.uleb128 0x8
+ 779 0095 3A       		.uleb128 0x3a
+ 780 0096 0B       		.uleb128 0xb
+ 781 0097 3B       		.uleb128 0x3b
+ 782 0098 0B       		.uleb128 0xb
+ 783 0099 49       		.uleb128 0x49
+ 784 009a 13       		.uleb128 0x13
+ 785 009b 02       		.uleb128 0x2
+ 786 009c 17       		.uleb128 0x17
+ 787 009d 00       		.byte	0
+ 788 009e 00       		.byte	0
+ 789 009f 0C       		.uleb128 0xc
+ 790 00a0 34       		.uleb128 0x34
+ 791 00a1 00       		.byte	0
+ 792 00a2 03       		.uleb128 0x3
+ 793 00a3 08       		.uleb128 0x8
+ 794 00a4 3A       		.uleb128 0x3a
+ 795 00a5 0B       		.uleb128 0xb
+ 796 00a6 3B       		.uleb128 0x3b
+ 797 00a7 0B       		.uleb128 0xb
+ 798 00a8 49       		.uleb128 0x49
+ 799 00a9 13       		.uleb128 0x13
+ 800 00aa 02       		.uleb128 0x2
+ 801 00ab 17       		.uleb128 0x17
+ 802 00ac 00       		.byte	0
+ 803 00ad 00       		.byte	0
+ 804 00ae 0D       		.uleb128 0xd
+ 805 00af 0F       		.uleb128 0xf
+ 806 00b0 00       		.byte	0
+ 807 00b1 0B       		.uleb128 0xb
+ 808 00b2 0B       		.uleb128 0xb
+ 809 00b3 49       		.uleb128 0x49
+ 810 00b4 13       		.uleb128 0x13
+ 811 00b5 00       		.byte	0
+ 812 00b6 00       		.byte	0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 17
+
+
+ 813 00b7 0E       		.uleb128 0xe
+ 814 00b8 2E       		.uleb128 0x2e
+ 815 00b9 00       		.byte	0
+ 816 00ba 3F       		.uleb128 0x3f
+ 817 00bb 19       		.uleb128 0x19
+ 818 00bc 03       		.uleb128 0x3
+ 819 00bd 0E       		.uleb128 0xe
+ 820 00be 3A       		.uleb128 0x3a
+ 821 00bf 0B       		.uleb128 0xb
+ 822 00c0 3B       		.uleb128 0x3b
+ 823 00c1 0B       		.uleb128 0xb
+ 824 00c2 27       		.uleb128 0x27
+ 825 00c3 19       		.uleb128 0x19
+ 826 00c4 49       		.uleb128 0x49
+ 827 00c5 13       		.uleb128 0x13
+ 828 00c6 8701     		.uleb128 0x87
+ 829 00c8 19       		.uleb128 0x19
+ 830 00c9 11       		.uleb128 0x11
+ 831 00ca 01       		.uleb128 0x1
+ 832 00cb 12       		.uleb128 0x12
+ 833 00cc 06       		.uleb128 0x6
+ 834 00cd 40       		.uleb128 0x40
+ 835 00ce 18       		.uleb128 0x18
+ 836 00cf 9742     		.uleb128 0x2117
+ 837 00d1 19       		.uleb128 0x19
+ 838 00d2 00       		.byte	0
+ 839 00d3 00       		.byte	0
+ 840 00d4 0F       		.uleb128 0xf
+ 841 00d5 2E       		.uleb128 0x2e
+ 842 00d6 01       		.byte	0x1
+ 843 00d7 3F       		.uleb128 0x3f
+ 844 00d8 19       		.uleb128 0x19
+ 845 00d9 03       		.uleb128 0x3
+ 846 00da 0E       		.uleb128 0xe
+ 847 00db 3A       		.uleb128 0x3a
+ 848 00dc 0B       		.uleb128 0xb
+ 849 00dd 3B       		.uleb128 0x3b
+ 850 00de 0B       		.uleb128 0xb
+ 851 00df 27       		.uleb128 0x27
+ 852 00e0 19       		.uleb128 0x19
+ 853 00e1 8701     		.uleb128 0x87
+ 854 00e3 19       		.uleb128 0x19
+ 855 00e4 11       		.uleb128 0x11
+ 856 00e5 01       		.uleb128 0x1
+ 857 00e6 12       		.uleb128 0x12
+ 858 00e7 06       		.uleb128 0x6
+ 859 00e8 40       		.uleb128 0x40
+ 860 00e9 18       		.uleb128 0x18
+ 861 00ea 9742     		.uleb128 0x2117
+ 862 00ec 19       		.uleb128 0x19
+ 863 00ed 01       		.uleb128 0x1
+ 864 00ee 13       		.uleb128 0x13
+ 865 00ef 00       		.byte	0
+ 866 00f0 00       		.byte	0
+ 867 00f1 10       		.uleb128 0x10
+ 868 00f2 05       		.uleb128 0x5
+ 869 00f3 00       		.byte	0
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 18
+
+
+ 870 00f4 03       		.uleb128 0x3
+ 871 00f5 0E       		.uleb128 0xe
+ 872 00f6 3A       		.uleb128 0x3a
+ 873 00f7 0B       		.uleb128 0xb
+ 874 00f8 3B       		.uleb128 0x3b
+ 875 00f9 0B       		.uleb128 0xb
+ 876 00fa 49       		.uleb128 0x49
+ 877 00fb 13       		.uleb128 0x13
+ 878 00fc 02       		.uleb128 0x2
+ 879 00fd 18       		.uleb128 0x18
+ 880 00fe 00       		.byte	0
+ 881 00ff 00       		.byte	0
+ 882 0100 11       		.uleb128 0x11
+ 883 0101 05       		.uleb128 0x5
+ 884 0102 00       		.byte	0
+ 885 0103 03       		.uleb128 0x3
+ 886 0104 08       		.uleb128 0x8
+ 887 0105 3A       		.uleb128 0x3a
+ 888 0106 0B       		.uleb128 0xb
+ 889 0107 3B       		.uleb128 0x3b
+ 890 0108 0B       		.uleb128 0xb
+ 891 0109 49       		.uleb128 0x49
+ 892 010a 13       		.uleb128 0x13
+ 893 010b 02       		.uleb128 0x2
+ 894 010c 18       		.uleb128 0x18
+ 895 010d 00       		.byte	0
+ 896 010e 00       		.byte	0
+ 897 010f 12       		.uleb128 0x12
+ 898 0110 898201   		.uleb128 0x4109
+ 899 0113 01       		.byte	0x1
+ 900 0114 11       		.uleb128 0x11
+ 901 0115 01       		.uleb128 0x1
+ 902 0116 31       		.uleb128 0x31
+ 903 0117 13       		.uleb128 0x13
+ 904 0118 00       		.byte	0
+ 905 0119 00       		.byte	0
+ 906 011a 13       		.uleb128 0x13
+ 907 011b 34       		.uleb128 0x34
+ 908 011c 00       		.byte	0
+ 909 011d 03       		.uleb128 0x3
+ 910 011e 0E       		.uleb128 0xe
+ 911 011f 3A       		.uleb128 0x3a
+ 912 0120 0B       		.uleb128 0xb
+ 913 0121 3B       		.uleb128 0x3b
+ 914 0122 05       		.uleb128 0x5
+ 915 0123 49       		.uleb128 0x49
+ 916 0124 13       		.uleb128 0x13
+ 917 0125 3F       		.uleb128 0x3f
+ 918 0126 19       		.uleb128 0x19
+ 919 0127 3C       		.uleb128 0x3c
+ 920 0128 19       		.uleb128 0x19
+ 921 0129 00       		.byte	0
+ 922 012a 00       		.byte	0
+ 923 012b 14       		.uleb128 0x14
+ 924 012c 35       		.uleb128 0x35
+ 925 012d 00       		.byte	0
+ 926 012e 49       		.uleb128 0x49
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 19
+
+
+ 927 012f 13       		.uleb128 0x13
+ 928 0130 00       		.byte	0
+ 929 0131 00       		.byte	0
+ 930 0132 15       		.uleb128 0x15
+ 931 0133 2E       		.uleb128 0x2e
+ 932 0134 00       		.byte	0
+ 933 0135 3F       		.uleb128 0x3f
+ 934 0136 19       		.uleb128 0x19
+ 935 0137 3C       		.uleb128 0x3c
+ 936 0138 19       		.uleb128 0x19
+ 937 0139 6E       		.uleb128 0x6e
+ 938 013a 0E       		.uleb128 0xe
+ 939 013b 03       		.uleb128 0x3
+ 940 013c 0E       		.uleb128 0xe
+ 941 013d 3A       		.uleb128 0x3a
+ 942 013e 0B       		.uleb128 0xb
+ 943 013f 3B       		.uleb128 0x3b
+ 944 0140 0B       		.uleb128 0xb
+ 945 0141 00       		.byte	0
+ 946 0142 00       		.byte	0
+ 947 0143 00       		.byte	0
+ 948              		.section	.debug_loc,"",%progbits
+ 949              	.Ldebug_loc0:
+ 950              	.LLST0:
+ 951 0000 00000000 		.4byte	.LVL0
+ 952 0004 06000000 		.4byte	.LVL1
+ 953 0008 0100     		.2byte	0x1
+ 954 000a 50       		.byte	0x50
+ 955 000b 06000000 		.4byte	.LVL1
+ 956 000f 1C000000 		.4byte	.LFE63
+ 957 0013 0400     		.2byte	0x4
+ 958 0015 F3       		.byte	0xf3
+ 959 0016 01       		.uleb128 0x1
+ 960 0017 50       		.byte	0x50
+ 961 0018 9F       		.byte	0x9f
+ 962 0019 00000000 		.4byte	0
+ 963 001d 00000000 		.4byte	0
+ 964              	.LLST1:
+ 965 0021 00000000 		.4byte	.LVL5
+ 966 0025 06000000 		.4byte	.LVL6
+ 967 0029 0100     		.2byte	0x1
+ 968 002b 50       		.byte	0x50
+ 969 002c 06000000 		.4byte	.LVL6
+ 970 0030 1C000000 		.4byte	.LFE64
+ 971 0034 0400     		.2byte	0x4
+ 972 0036 F3       		.byte	0xf3
+ 973 0037 01       		.uleb128 0x1
+ 974 0038 50       		.byte	0x50
+ 975 0039 9F       		.byte	0x9f
+ 976 003a 00000000 		.4byte	0
+ 977 003e 00000000 		.4byte	0
+ 978              	.LLST2:
+ 979 0042 00000000 		.4byte	.LVL10
+ 980 0046 08000000 		.4byte	.LVL11
+ 981 004a 0100     		.2byte	0x1
+ 982 004c 50       		.byte	0x50
+ 983 004d 08000000 		.4byte	.LVL11
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 20
+
+
+ 984 0051 28000000 		.4byte	.LFE65
+ 985 0055 0100     		.2byte	0x1
+ 986 0057 56       		.byte	0x56
+ 987 0058 00000000 		.4byte	0
+ 988 005c 00000000 		.4byte	0
+ 989              	.LLST3:
+ 990 0060 00000000 		.4byte	.LVL10
+ 991 0064 0B000000 		.4byte	.LVL12-1
+ 992 0068 0100     		.2byte	0x1
+ 993 006a 51       		.byte	0x51
+ 994 006b 0B000000 		.4byte	.LVL12-1
+ 995 006f 28000000 		.4byte	.LFE65
+ 996 0073 0100     		.2byte	0x1
+ 997 0075 55       		.byte	0x55
+ 998 0076 00000000 		.4byte	0
+ 999 007a 00000000 		.4byte	0
+ 1000              	.LLST4:
+ 1001 007e 0C000000 		.4byte	.LVL12
+ 1002 0082 10000000 		.4byte	.LVL13
+ 1003 0086 0200     		.2byte	0x2
+ 1004 0088 30       		.byte	0x30
+ 1005 0089 9F       		.byte	0x9f
+ 1006 008a 10000000 		.4byte	.LVL13
+ 1007 008e 28000000 		.4byte	.LFE65
+ 1008 0092 0100     		.2byte	0x1
+ 1009 0094 54       		.byte	0x54
+ 1010 0095 00000000 		.4byte	0
+ 1011 0099 00000000 		.4byte	0
+ 1012              		.section	.debug_aranges,"",%progbits
+ 1013 0000 44000000 		.4byte	0x44
+ 1014 0004 0200     		.2byte	0x2
+ 1015 0006 00000000 		.4byte	.Ldebug_info0
+ 1016 000a 04       		.byte	0x4
+ 1017 000b 00       		.byte	0
+ 1018 000c 0000     		.2byte	0
+ 1019 000e 0000     		.2byte	0
+ 1020 0010 00000000 		.4byte	.LFB63
+ 1021 0014 1C000000 		.4byte	.LFE63-.LFB63
+ 1022 0018 00000000 		.4byte	.LFB64
+ 1023 001c 1C000000 		.4byte	.LFE64-.LFB64
+ 1024 0020 00000000 		.4byte	.LFB65
+ 1025 0024 28000000 		.4byte	.LFE65-.LFB65
+ 1026 0028 00000000 		.4byte	.LFB66
+ 1027 002c 02000000 		.4byte	.LFE66-.LFB66
+ 1028 0030 00000000 		.4byte	.LFB67
+ 1029 0034 02000000 		.4byte	.LFE67-.LFB67
+ 1030 0038 00000000 		.4byte	.LFB68
+ 1031 003c 3A000000 		.4byte	.LFE68-.LFB68
+ 1032 0040 00000000 		.4byte	0
+ 1033 0044 00000000 		.4byte	0
+ 1034              		.section	.debug_ranges,"",%progbits
+ 1035              	.Ldebug_ranges0:
+ 1036 0000 00000000 		.4byte	.LFB63
+ 1037 0004 1C000000 		.4byte	.LFE63
+ 1038 0008 00000000 		.4byte	.LFB64
+ 1039 000c 1C000000 		.4byte	.LFE64
+ 1040 0010 00000000 		.4byte	.LFB65
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 21
+
+
+ 1041 0014 28000000 		.4byte	.LFE65
+ 1042 0018 00000000 		.4byte	.LFB66
+ 1043 001c 02000000 		.4byte	.LFE66
+ 1044 0020 00000000 		.4byte	.LFB67
+ 1045 0024 02000000 		.4byte	.LFE67
+ 1046 0028 00000000 		.4byte	.LFB68
+ 1047 002c 3A000000 		.4byte	.LFE68
+ 1048 0030 00000000 		.4byte	0
+ 1049 0034 00000000 		.4byte	0
+ 1050              		.section	.debug_line,"",%progbits
+ 1051              	.Ldebug_line0:
+ 1052 0000 FC010000 		.section	.debug_str,"MS",%progbits,1
+ 1052      02006A01 
+ 1052      00000201 
+ 1052      FB0E0D00 
+ 1052      01010101 
+ 1053              	.LASF9:
+ 1054 0000 5F5F696E 		.ascii	"__int32_t\000"
+ 1054      7433325F 
+ 1054      7400
+ 1055              	.LASF31:
+ 1056 000a 72656164 		.ascii	"readM8_a1\000"
+ 1056      4D385F61 
+ 1056      3100
+ 1057              	.LASF17:
+ 1058 0014 77726974 		.ascii	"write8_a0\000"
+ 1058      65385F61 
+ 1058      3000
+ 1059              	.LASF18:
+ 1060 001e 77726974 		.ascii	"write8_a1\000"
+ 1060      65385F61 
+ 1060      3100
+ 1061              	.LASF21:
+ 1062 0028 70446174 		.ascii	"pData\000"
+ 1062      6100
+ 1063              	.LASF25:
+ 1064 002e 5350494D 		.ascii	"SPIM_1_ReadTxStatus\000"
+ 1064      5F315F52 
+ 1064      65616454 
+ 1064      78537461 
+ 1064      74757300 
+ 1065              	.LASF12:
+ 1066 0042 666C6F61 		.ascii	"float\000"
+ 1066      7400
+ 1067              	.LASF19:
+ 1068 0048 64617461 		.ascii	"data\000"
+ 1068      00
+ 1069              	.LASF11:
+ 1070 004d 75696E74 		.ascii	"uint8\000"
+ 1070      3800
+ 1071              	.LASF30:
+ 1072 0053 72656164 		.ascii	"read8_a1\000"
+ 1072      385F6131 
+ 1072      00
+ 1073              	.LASF27:
+ 1074 005c 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1074      43313120 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 22
+
+
+ 1074      352E342E 
+ 1074      31203230 
+ 1074      31363036 
+ 1075 008f 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1075      20726576 
+ 1075      6973696F 
+ 1075      6E203233 
+ 1075      37373135 
+ 1076 00c2 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1076      66756E63 
+ 1076      74696F6E 
+ 1076      2D736563 
+ 1076      74696F6E 
+ 1077              	.LASF5:
+ 1078 00ea 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1078      20756E73 
+ 1078      69676E65 
+ 1078      6420696E 
+ 1078      7400
+ 1079              	.LASF3:
+ 1080 00fc 73686F72 		.ascii	"short unsigned int\000"
+ 1080      7420756E 
+ 1080      7369676E 
+ 1080      65642069 
+ 1080      6E7400
+ 1081              	.LASF29:
+ 1082 010f 433A5C55 		.ascii	"C:\\Users\\simon\\OneDrive\\Documents\\PSoC Creator"
+ 1082      73657273 
+ 1082      5C73696D 
+ 1082      6F6E5C4F 
+ 1082      6E654472 
+ 1083 013d 5C46696E 		.ascii	"\\FinalProject\\Keys2NotewDisplay.cydsn\000"
+ 1083      616C5072 
+ 1083      6F6A6563 
+ 1083      745C4B65 
+ 1083      7973324E 
+ 1084              	.LASF32:
+ 1085 0163 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1085      52784275 
+ 1085      66666572 
+ 1085      00
+ 1086              	.LASF23:
+ 1087 0170 44435F57 		.ascii	"DC_Write\000"
+ 1087      72697465 
+ 1087      00
+ 1088              	.LASF1:
+ 1089 0179 756E7369 		.ascii	"unsigned char\000"
+ 1089      676E6564 
+ 1089      20636861 
+ 1089      7200
+ 1090              	.LASF13:
+ 1091 0187 646F7562 		.ascii	"double\000"
+ 1091      6C6500
+ 1092              	.LASF8:
+ 1093 018e 756E7369 		.ascii	"unsigned int\000"
+ 1093      676E6564 
+ 1093      20696E74 
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 23
+
+
+ 1093      00
+ 1094              	.LASF20:
+ 1095 019b 77726974 		.ascii	"writeM8_a1\000"
+ 1095      654D385F 
+ 1095      613100
+ 1096              	.LASF7:
+ 1097 01a6 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1097      206C6F6E 
+ 1097      6720756E 
+ 1097      7369676E 
+ 1097      65642069 
+ 1098              	.LASF10:
+ 1099 01bd 696E7433 		.ascii	"int32_t\000"
+ 1099      325F7400 
+ 1100              	.LASF16:
+ 1101 01c5 73697A65 		.ascii	"sizetype\000"
+ 1101      74797065 
+ 1101      00
+ 1102              	.LASF6:
+ 1103 01ce 6C6F6E67 		.ascii	"long long int\000"
+ 1103      206C6F6E 
+ 1103      6720696E 
+ 1103      7400
+ 1104              	.LASF14:
+ 1105 01dc 63686172 		.ascii	"char\000"
+ 1105      00
+ 1106              	.LASF2:
+ 1107 01e1 73686F72 		.ascii	"short int\000"
+ 1107      7420696E 
+ 1107      7400
+ 1108              	.LASF22:
+ 1109 01eb 74667453 		.ascii	"tftStart\000"
+ 1109      74617274 
+ 1109      00
+ 1110              	.LASF4:
+ 1111 01f4 6C6F6E67 		.ascii	"long int\000"
+ 1111      20696E74 
+ 1111      00
+ 1112              	.LASF15:
+ 1113 01fd 6C6F6E67 		.ascii	"long double\000"
+ 1113      20646F75 
+ 1113      626C6500 
+ 1114              	.LASF0:
+ 1115 0209 7369676E 		.ascii	"signed char\000"
+ 1115      65642063 
+ 1115      68617200 
+ 1116              	.LASF24:
+ 1117 0215 5350494D 		.ascii	"SPIM_1_WriteTxData\000"
+ 1117      5F315F57 
+ 1117      72697465 
+ 1117      54784461 
+ 1117      746100
+ 1118              	.LASF26:
+ 1119 0228 43794465 		.ascii	"CyDelay\000"
+ 1119      6C617900 
+ 1120              	.LASF28:
+ 1121 0230 7466742E 		.ascii	"tft.c\000"
+ARM GAS  C:\Users\simon\AppData\Local\Temp\ccDldw3U.s 			page 24
+
+
+ 1121      6300
+ 1122              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

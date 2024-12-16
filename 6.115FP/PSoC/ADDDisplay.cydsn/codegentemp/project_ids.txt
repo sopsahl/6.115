@@ -1,0 +1,12 @@
+C:\Users\simon\OneDrive\Documents\PSoC Creator\FinalProject\Timers.cydsn\Timers.cyprj|b9ec2eed-2868-4613-a234-6553d1415d45
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|7dd168f7-6095-4762-92a1-bec67f467d15
+C:\Users\simon\OneDrive\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\Downloads ( 4.4).cyprj|51101b3e-0a4c-4a01-b6ff-c833ff6361c3
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|880057ab-76dd-4963-ad63-2ee51d221995
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|0c8eacb9-31c9-4475-babf-b7583a053d99
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|420f4a57-3ea5-4c1e-a788-8ad393ba9322
+C:\Users\simon\OneDrive\Documents\PSoC Creator\FinalProject\Waveforms.cydsn\Waveforms.cyprj|c97de6d2-ef26-45ca-8c10-22e7d07a72af
+C:\Users\simon\OneDrive\Documents\PSoC Creator\My Templates\KeysToNote.cydsn\KeysToNote.cyprj|eb6a133a-9e67-47a5-992b-be88bad03530
+C:\Users\simon\OneDrive\Documents\PSoC Creator\FinalProject\KeysToNote.cydsn\KeysToNote.cyprj|03da5065-d49f-4df1-b1c1-647bd9372491
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\dev\psoc3\AnalogDevice\PSoC35AnalogDevice.cylib\PSoC35AnalogDevice.cyprj|f19eb02c-3b16-4d27-90d2-0cab810ab2a6
+C:\Users\simon\OneDrive\Documents\PSoC Creator\FinalProject\Keys2NotewDisplay.cydsn\Keys2NotewDisplay.cyprj|e8829263-f7ff-4850-a9a6-811ceef74b33
+C:\Users\simon\OneDrive\Documents\PSoC Creator\FinalProject\ADDDisplay.cydsn\ADDDisplay.cyprj|4d801a2c-e6be-4641-bab2-889bc6277840

@@ -1,0 +1,7 @@
+0000: 75 90 FF     mov P1, #0FFh ;adds 255d to the pointer to begin
+                   loop:
+0003: 78 61                 mov R0, #97d ; initializes the delay to 97 (not 100
+                            delay:
+0005: D8 FE                         djnz R0, delay ;decrements the counter and 
+0007: 15 90                 dec P1 ; decreases the value in P1 by 1
+0009: 80 F8                 sjmp loop ; jumps to loop
